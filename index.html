@@ -27,6 +27,178 @@
             margin: 0 auto;
         }
 
+        /* 使用 7.css 自带的 Win7 风格滚动条承载整个页面，避免浏览器原生滚动条干扰最大化窗口。 */
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            padding: 0;
+        }
+
+        #page-scroll {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            box-sizing: border-box;
+            padding: 30px 20px;
+        }
+
+        /* ==================== 左上角工作室 LOGO ==================== */
+        #studio-logo {
+            position: fixed;
+            top: 18px;
+            left: 18px;
+            width: 120px;
+            height: auto;
+            z-index: 1;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-drag: none;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        /* ==================== 右上角 Win7 风格天气小工具 ==================== */
+        .weather-widget {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            width: 280px;
+            z-index: 50;
+            margin: 0 !important;
+        }
+
+        .weather-widget .title-bar {
+            cursor: default !important;
+            user-select: none;
+        }
+
+        .weather-widget.weather-closing {
+            transform-origin: center center !important;
+            animation: winClose 0.28s forwards cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .weather-widget.weather-closed {
+            display: none !important;
+        }
+
+        .weather-body {
+            min-height: 142px;
+            padding: 12px !important;
+            background: linear-gradient(180deg, rgba(238, 249, 255, 0.94) 0%, rgba(218, 238, 250, 0.88) 100%);
+            color: #17324a;
+        }
+
+        .weather-main {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .weather-icon {
+            width: 74px;
+            height: 74px;
+            flex: 0 0 74px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.35rem;
+            line-height: 1;
+            border-radius: 50%;
+            background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.55) 24%, rgba(174,220,246,0.35) 62%, rgba(103,168,207,0.22) 100%);
+            border: 1px solid rgba(105, 157, 193, 0.32);
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.9), 0 2px 6px rgba(77, 123, 154, 0.22);
+        }
+
+        .weather-info {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .weather-location {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #0b2545;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .weather-condition {
+            margin-top: 2px;
+            font-size: 0.88rem;
+            color: #49657b;
+        }
+
+        .weather-temp {
+            margin-top: 2px;
+            font-size: 2.05rem;
+            line-height: 1.05;
+            font-weight: 700;
+            color: #0b2545;
+            white-space: nowrap;
+        }
+
+        .weather-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 12px;
+            margin-top: 10px;
+            padding-top: 9px;
+            border-top: 1px solid rgba(110, 155, 185, 0.3);
+            font-size: 0.78rem;
+            color: #476176;
+        }
+
+        .weather-status-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .weather-status {
+            flex: 1;
+            min-width: 0;
+            font-size: 0.72rem;
+            color: #688196;
+            text-align: right;
+            min-height: 18px;
+        }
+
+        .weather-status button {
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            margin-left: 6px;
+            cursor: pointer;
+        }
+
+        .weather-refresh-btn {
+            flex-shrink: 0;
+            padding: 4px 8px !important;
+            font-size: 0.76rem !important;
+            white-space: nowrap;
+        }
+
+        .weather-attribution {
+            margin-top: 4px;
+            font-size: 0.62rem;
+            color: #7890a2;
+            text-align: right;
+        }
+
+        @media (max-width: 900px) {
+            #studio-logo { width: 92px; top: 12px; left: 12px; }
+            .weather-widget { width: 235px; top: 12px; right: 12px; }
+            .weather-body { min-height: 126px; padding: 10px !important; }
+            .weather-icon { width: 60px; height: 60px; flex-basis: 60px; font-size: 2.65rem; }
+            .weather-temp { font-size: 1.7rem; }
+        }
+
         /* ---------------- 1. 窗口基础样式与 Flex 布局 ---------------- */
         .window {
             margin-bottom: 25px;
@@ -105,10 +277,9 @@
         /* 最大化 */
         .window.maximized {
             position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
+            inset: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
             max-width: none !important;
             margin: 0 !important;
             border-radius: 0 !important;
@@ -158,7 +329,64 @@
         }
 
         /* ---------------- 4. 计时器自适应与最大化占满网页样式 ---------------- */
-        .timer-window {
+        .timer-dark-toggle {
+            margin-top: 10px;
+        }
+
+        /* 仅影响计时器窗口内部，不改变页面和其他窗口。 */
+        .timer-window.dark-mode .window-body {
+            background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+            color: #e5e7eb;
+        }
+
+        .timer-window.dark-mode .timer-tabs button {
+            color: #e5e7eb;
+            background: linear-gradient(180deg, #374151 0%, #1f2937 100%);
+            border-color: #4b5563;
+        }
+
+        .timer-window.dark-mode .timer-tabs button:hover {
+            background: linear-gradient(180deg, #4b5563 0%, #374151 100%);
+            border-color: #60a5fa;
+        }
+
+        .timer-window.dark-mode .timer-tabs button.active {
+            color: #f9fafb;
+            background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+            border-color: #60a5fa;
+        }
+
+        .timer-window.dark-mode .time-display {
+            color: #f8fafc;
+            background: rgba(17, 24, 39, 0.92);
+            border-color: rgba(96, 165, 250, 0.45);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 2px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        .timer-window.dark-mode .ntp-status,
+        .timer-window.dark-mode .timer-inputs-group {
+            color: #cbd5e1;
+        }
+
+        .timer-window.dark-mode .timer-inputs-group input {
+            color: #f8fafc;
+            background: #111827;
+            border-color: #4b5563;
+        }
+
+        .timer-window.dark-mode .timer-panel button {
+            color: #f8fafc;
+            background: linear-gradient(180deg, #374151 0%, #1f2937 100%);
+            border-color: #4b5563;
+        }
+
+        .timer-window.dark-mode .timer-panel button:hover {
+            background: linear-gradient(180deg, #4b5563 0%, #374151 100%);
+            border-color: #60a5fa;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 8px rgba(59, 130, 246, 0.35);
+        }
+
+.timer-window {
             font-size: clamp(0.9rem, 1.2vw + 0.5rem, 1.3rem);
         }
         
@@ -348,9 +576,46 @@
 </head>
 <body>
 
+    <img
+        id="studio-logo"
+        src="logo.webp"
+        alt="逗乐工作室 Logo"
+        draggable="false">
+
+    <div class="window glass weather-widget" id="weather-widget">
+        <div class="title-bar">
+            <div class="title-bar-text">🌤️ 本地天气</div>
+            <div class="title-bar-controls" aria-hidden="true">
+                <button type="button" aria-label="Close" onclick="closeWeatherWidget()"></button>
+            </div>
+        </div>
+        <div class="window-body weather-body">
+            <div class="weather-main">
+                <div class="weather-icon" id="weather-icon">🌤️</div>
+                <div class="weather-info">
+                    <div class="weather-location" id="weather-location">正在获取位置...</div>
+                    <div class="weather-condition" id="weather-condition">正在读取天气</div>
+                    <div class="weather-temp" id="weather-temp">--°C</div>
+                </div>
+            </div>
+            <div class="weather-details">
+                <div id="weather-feels">体感：--°C</div>
+                <div id="weather-humidity">湿度：--%</div>
+                <div id="weather-wind">风速：-- km/h</div>
+                <div id="weather-updated">更新：--:--</div>
+            </div>
+            <div class="weather-status-row">
+                <div class="weather-status" id="weather-status">正在获取当前位置…</div>
+                <button type="button" class="weather-refresh-btn" onclick="refreshWeatherAndLocation()">🔄 更新天气</button>
+            </div>
+            <div class="weather-attribution">天气数据：Open-Meteo</div>
+        </div>
+    </div>
+
     <div id="minimized-container"></div>
 
-    <div class="container" id="main-container">
+    <div id="page-scroll" class="has-scrollbar">
+        <div class="container" id="main-container">
 
         <!-- 1. 顶部 Header 窗口 -->
         <div class="window glass">
@@ -362,10 +627,18 @@
                     <button aria-label="Close" onclick="closeWindow(this)"></button>
                 </div>
             </div>
-            <div class="window-body" style="padding: 10px;">
+            <div class="window-body has-scrollbar" style="padding: 10px;">
                 <div class="glass-card" style="text-align: center;">
                     <h1 style="margin: 0 0 6px 0; color: #0b2545;">逗乐工作室</h1>
-                    <p style="margin: 0; opacity: 0.85;">注重快乐、愉悦、高效的线上工作室</p>
+                    <p style="margin: 0 0 12px 0; opacity: 0.85;">注重快乐、愉悦、高效的线上工作室</p>
+                    <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                        <a href="team.html" style="text-decoration: none;">
+                            <button type="button">👥 人员介绍</button>
+                        </a>
+                        <a href="download.html" style="text-decoration: none;">
+                            <button type="button">📦 下载中心</button>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -380,9 +653,10 @@
                     <button aria-label="Close" onclick="closeWindow(this)"></button>
                 </div>
             </div>
-            <div class="window-body">
+            <div class="window-body has-scrollbar">
                 <p style="margin-top: 0;">欢迎来到我们的主页！这里是专注于视频创作、愉快游玩和软件开发等的逗乐工作室！</p>
                 <p style="margin-bottom: 0;">我们追求快乐且团结的团队精神！</p>
+                <p style="margin-bottom: 0; margin-top: 10px;">你知道吗？这个网页的窗口是可以交互拖拽的哦！像真的Windows一样！</p>
             </div>
         </div>
 
@@ -396,7 +670,7 @@
                     <button aria-label="Close" onclick="closeWindow(this)"></button>
                 </div>
             </div>
-            <div class="window-body">
+            <div class="window-body has-scrollbar">
                 <div class="timer-tabs">
                     <button class="active" onclick="switchTimerTab('clock', this)">当前时间</button>
                     <button onclick="switchTimerTab('stopwatch', this)">秒表</button>
@@ -408,6 +682,9 @@
                     <div class="time-display" id="ntp-time-box">正在校准授时...</div>
                     <div class="ntp-status" id="ntp-status-box">状态: 正在连接授时中心...</div>
                     <button onclick="syncNtpTime()" style="margin-top: 8px; font-size: 0.9em;">手动重新校准</button>
+                    <div class="timer-dark-toggle">
+                        <button type="button" id="timer-theme-btn" onclick="toggleTimerDarkMode()">🌙 深色模式</button>
+                    </div>
                 </div>
 
                 <!-- 选项二：秒表 -->
@@ -445,7 +722,7 @@
                     <button aria-label="Close" onclick="closeWindow(this)"></button>
                 </div>
             </div>
-            <div class="window-body">
+            <div class="window-body has-scrollbar">
                 <div class="music-item">
                     <strong style="font-size: 1.05em; color: #0b2545;">01. 渡口-蔡琴</strong>
                     <p style="margin: 4px 0 0 0; font-size: 0.85em; opacity: 0.85;">经典音乐，测音必备！（侵删）</p>
@@ -514,8 +791,8 @@
                     <button aria-label="Close" onclick="closeWindow(this)"></button>
                 </div>
             </div>
-            <div class="window-body">
-                <p style="margin-top: 0;">✉ 电子邮件：a1256063388@outlook.com</p>
+            <div class="window-body has-scrollbar">
+                <p style="margin-top: 0;">📧 电子邮件：a1256063388@outlook.com</p>
                 <p style="margin-bottom: 0;">💬 哔哩哔哩账号：超级末影人</p>
             </div>
         </div>
@@ -530,7 +807,7 @@
                     <button aria-label="Close" onclick="closeWindow(this)"></button>
                 </div>
             </div>
-            <div class="window-body">
+            <div class="window-body has-scrollbar">
                 <p style="margin-top: 0;">默认使用 <code>Windows Vista</code> 默认壁纸。你也可以临时选择本地图片体验不同效果：</p>
                 <div class="bg-control">
                     <button onclick="document.getElementById('bgInput').click()">选择本地壁纸</button>
@@ -544,10 +821,10 @@
         <footer>
             <div class="restore-box">
                 <button onclick="restoreAllWindows()">🔄 还原所有已关闭/最小化/最大化的窗口</button>
-                <button onclick="location.href='download.html'">📦 下载中心</button>
             </div>
-            <p>© 2026 逗乐工作室.</p>
+            <p>© 2026 逗乐工作室</p>
         </footer>
+        </div>
     </div>
 
     <script>
@@ -561,6 +838,14 @@
 
         // 初始化窗口
         document.querySelectorAll('.window').forEach((win, index) => {
+            if (win.classList.contains('weather-widget')) {
+                makeWeatherDraggable(win);
+                win.addEventListener('mousedown', () => {
+                    bringToFront(win);
+                });
+                return;
+            }
+
             win.dataset.originalIndex = index;
             makeDraggable(win);
             makeResizable(win);
@@ -613,6 +898,16 @@
             const box = document.getElementById('ntp-time-box');
             if (box) box.innerText = timeStr;
         }, 1000);
+
+        // 仅切换计时器窗口内部的深色模式，不影响其他窗口和页面背景。
+        function toggleTimerDarkMode() {
+            const timerWindow = document.querySelector('.timer-window');
+            const themeButton = document.getElementById('timer-theme-btn');
+            if (!timerWindow || !themeButton) return;
+
+            const enabled = timerWindow.classList.toggle('dark-mode');
+            themeButton.innerText = enabled ? '☀️ 浅色模式' : '🌙 深色模式';
+        }
 
         function switchTimerTab(tabName, btn) {
             document.querySelectorAll('.timer-tabs button').forEach(b => b.classList.remove('active'));
@@ -804,7 +1099,10 @@
         // ---------------- 窗口布局平滑过渡（FLIP） ----------------
         function getWindowElements() {
             return Array.from(document.querySelectorAll('.window'))
-                .filter(win => !win.classList.contains('window-closed'));
+                .filter(win =>
+                    !win.classList.contains('window-closed') &&
+                    !win.classList.contains('weather-widget')
+                );
         }
 
         function captureWindowRects(windows = getWindowElements()) {
@@ -1026,22 +1324,478 @@
 
         // ---------------- 5. 一键还原所有窗口 ----------------
         function restoreAllWindows() {
-            // 关键：必须在移除 minimized/maximized 前捕获所有“当前可见”窗口的位置。
-            // 旧实现只捕获普通窗口，因此最大化/最小化窗口没有 first rect，恢复后不会播放动画。
+            // 普通窗口仍按原有 FLIP 逻辑恢复。
             const firstRects = captureWindowRects();
-            const windows = Array.from(document.querySelectorAll('.window'));
+            const windows = Array.from(document.querySelectorAll('.window'))
+                .filter(win => !win.classList.contains('weather-widget'));
 
-            // 关闭过的窗口原本 display:none，没有可测量的起点；它们仍然需要恢复，
-            // 因此这里必须遍历全部窗口，而不能继续使用 getWindowElements()。
             windows.forEach(win => {
                 win.classList.remove('window-closed', 'window-closing', 'minimized', 'maximized');
                 restoreWindowToBody(win);
             });
 
-            // 恢复到原始 DOM 顺序后统一重新分配层级；保持原有功能不变。
             windows.forEach(win => bringToFront(win));
             playWindowFLIP(firstRects);
+
+            // 天气窗口是独立的“受限窗口”：允许关闭/拖动，但不能最小化、
+            // 最大化或缩放。现在“一键还原所有窗口”也会把它恢复到右上角默认位置。
+            const weather = document.getElementById('weather-widget');
+            if (weather) {
+                const wasClosed = weather.classList.contains('weather-closed');
+                const wasClosing = weather.classList.contains('weather-closing');
+                const weatherRect = !wasClosed && !wasClosing
+                    ? weather.getBoundingClientRect()
+                    : null;
+
+                clearTimeout(weather._closeTimer);
+                weather.classList.remove('weather-closing', 'weather-closed');
+
+                // 恢复默认的右上角位置。
+                weather.style.left = '';
+                weather.style.top = '';
+                weather.style.right = '';
+                weather.style.margin = '';
+
+                bringToFront(weather);
+
+                // 如果天气窗口原本可见且被拖走，则播放与普通窗口一致的移动动画。
+                if (weatherRect) {
+                    const last = weather.getBoundingClientRect();
+                    const dx = weatherRect.left - last.left;
+                    const dy = weatherRect.top - last.top;
+
+                    if (Math.abs(dx) >= 0.5 || Math.abs(dy) >= 0.5) {
+                        weather.style.animation = 'none';
+                        weather.style.transition = 'none';
+                        weather.style.transform = `translate(${dx}px, ${dy}px)`;
+                        void weather.offsetWidth;
+                        requestAnimationFrame(() => {
+                            weather.style.transition = 'transform 400ms cubic-bezier(0.16, 1, 0.3, 1)';
+                            weather.style.transform = '';
+
+                            const cleanupWeather = () => {
+                                weather.style.transition = '';
+                                weather.style.transform = '';
+                                weather.style.animation = '';
+                                weather.removeEventListener('transitionend', cleanupWeather);
+                            };
+
+                            weather.addEventListener('transitionend', cleanupWeather);
+                            setTimeout(cleanupWeather, 480);
+                        });
+                    }
+                } else {
+                    // 已关闭的天气窗口：用与关闭方向相反的淡入缩放效果重新出现。
+                    weather.style.animation = 'none';
+                    weather.style.opacity = '0';
+                    weather.style.transform = 'scale(0.88) translateY(20px)';
+                    void weather.offsetWidth;
+                    requestAnimationFrame(() => {
+                        weather.style.transition = 'opacity 280ms ease, transform 280ms cubic-bezier(0.16, 1, 0.3, 1)';
+                        weather.style.opacity = '1';
+                        weather.style.transform = '';
+
+                        const cleanupWeatherAppear = () => {
+                            weather.style.transition = '';
+                            weather.style.opacity = '';
+                            weather.style.transform = '';
+                            weather.style.animation = '';
+                            weather.removeEventListener('transitionend', cleanupWeatherAppear);
+                        };
+
+                        weather.addEventListener('transitionend', cleanupWeatherAppear);
+                        setTimeout(cleanupWeatherAppear, 360);
+                    });
+                }
+            }
         }
+
+        // 天气窗口：允许移动，但不提供最小化、最大化或边框缩放。
+        function makeWeatherDraggable(win) {
+            const titleBar = win.querySelector('.title-bar');
+            let pendingDrag = false;
+            let isDragging = false;
+            let dragStartX = 0;
+            let dragStartY = 0;
+            let offsetX = 0;
+            let offsetY = 0;
+            const DRAG_THRESHOLD = 4;
+
+            titleBar.addEventListener('mousedown', e => {
+                if (e.button !== 0) return;
+                if (e.target.tagName.toLowerCase() === 'button') return;
+                if (win.classList.contains('weather-closed') || win.classList.contains('weather-closing')) return;
+
+                pendingDrag = true;
+                isDragging = false;
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+
+                const rect = win.getBoundingClientRect();
+                offsetX = e.clientX - rect.left;
+                offsetY = e.clientY - rect.top;
+
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+
+            function onMouseMove(e) {
+                if (!pendingDrag && !isDragging) return;
+
+                if (pendingDrag && Math.hypot(e.clientX - dragStartX, e.clientY - dragStartY) >= DRAG_THRESHOLD) {
+                    pendingDrag = false;
+                    isDragging = true;
+                    bringToFront(win);
+
+                    const rect = win.getBoundingClientRect();
+                    win.style.left = rect.left + 'px';
+                    win.style.top = rect.top + 'px';
+                    win.style.right = 'auto';
+                    win.style.margin = '0';
+                    win.classList.add('dragging');
+                }
+
+                if (!isDragging) return;
+
+                win.style.left = (e.clientX - offsetX) + 'px';
+                win.style.top = (e.clientY - offsetY) + 'px';
+            }
+
+            function onMouseUp() {
+                pendingDrag = false;
+                isDragging = false;
+                win.classList.remove('dragging');
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            }
+        }
+
+        function closeWeatherWidget() {
+            const widget = document.getElementById('weather-widget');
+            if (!widget || widget.classList.contains('weather-closed') || widget.classList.contains('weather-closing')) return;
+
+            widget.classList.remove('dragging');
+            widget.classList.add('weather-closing');
+
+            setTimeout(() => {
+                widget.classList.remove('weather-closing');
+                widget.classList.add('weather-closed');
+            }, 280);
+        }
+
+        /* ==================== 本地天气小工具 ==================== */
+        const WEATHER_CODES = {
+            0:{day:'☀️',night:'🌙',text:'晴'},1:{day:'🌤️',night:'🌙',text:'大致晴朗'},2:{day:'⛅',night:'☁️',text:'局部多云'},3:{day:'☁️',night:'☁️',text:'阴天'},
+            45:{day:'🌫️',night:'🌫️',text:'雾'},48:{day:'🌫️',night:'🌫️',text:'霜雾'},51:{day:'🌦️',night:'🌧️',text:'毛毛雨'},53:{day:'🌦️',night:'🌧️',text:'中等毛毛雨'},55:{day:'🌧️',night:'🌧️',text:'较强毛毛雨'},
+            56:{day:'🌧️',night:'🌧️',text:'冻毛毛雨'},57:{day:'🌧️',night:'🌧️',text:'较强冻毛毛雨'},61:{day:'🌧️',night:'🌧️',text:'小雨'},63:{day:'🌧️',night:'🌧️',text:'中雨'},65:{day:'🌧️',night:'🌧️',text:'大雨'},
+            66:{day:'🌧️',night:'🌧️',text:'冻雨'},67:{day:'🌧️',night:'🌧️',text:'强冻雨'},71:{day:'🌨️',night:'🌨️',text:'小雪'},73:{day:'🌨️',night:'🌨️',text:'中雪'},75:{day:'❄️',night:'❄️',text:'大雪'},77:{day:'🌨️',night:'🌨️',text:'雪粒'},
+            80:{day:'🌦️',night:'🌧️',text:'阵雨'},81:{day:'🌦️',night:'🌧️',text:'中等阵雨'},82:{day:'⛈️',night:'⛈️',text:'强阵雨'},85:{day:'🌨️',night:'🌨️',text:'阵雪'},86:{day:'❄️',night:'❄️',text:'强阵雪'},
+            95:{day:'⛈️',night:'⛈️',text:'雷雨'},96:{day:'⛈️',night:'⛈️',text:'雷雨伴小冰雹'},99:{day:'⛈️',night:'⛈️',text:'雷雨伴强冰雹'}
+        };
+
+        /* ==================== 天气本地缓存 ==================== */
+        const WEATHER_LOCATION_KEY = 'dotel_weather_location_v1';
+        const WEATHER_CACHE_KEY = 'dotel_weather_cache_v1';
+
+        function saveWeatherLocation(latitude, longitude) {
+            try {
+                localStorage.setItem(
+                    WEATHER_LOCATION_KEY,
+                    JSON.stringify({
+                        latitude: Number(latitude),
+                        longitude: Number(longitude),
+                        savedAt: Date.now()
+                    })
+                );
+            } catch (error) {
+                console.warn('保存天气位置失败：', error);
+            }
+        }
+
+        function getSavedWeatherLocation() {
+            try {
+                const raw = localStorage.getItem(WEATHER_LOCATION_KEY);
+                if (!raw) return null;
+
+                const saved = JSON.parse(raw);
+                const latitude = Number(saved.latitude);
+                const longitude = Number(saved.longitude);
+
+                if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+                    return null;
+                }
+
+                return {
+                    latitude,
+                    longitude,
+                    savedAt: Number(saved.savedAt) || 0
+                };
+            } catch (error) {
+                console.warn('读取天气位置失败：', error);
+                return null;
+            }
+        }
+
+        function saveWeatherCache(data) {
+            try {
+                localStorage.setItem(
+                    WEATHER_CACHE_KEY,
+                    JSON.stringify(data)
+                );
+            } catch (error) {
+                console.warn('保存天气缓存失败：', error);
+            }
+        }
+
+        function loadWeatherCache() {
+            try {
+                const raw = localStorage.getItem(WEATHER_CACHE_KEY);
+                if (!raw) return null;
+                return JSON.parse(raw);
+            } catch (error) {
+                console.warn('读取天气缓存失败：', error);
+                return null;
+            }
+        }
+
+        function renderCachedWeather(cache) {
+            if (!cache || !cache.current) return false;
+
+            const current = cache.current;
+            const meta = WEATHER_CODES[current.weather_code] || {
+                day: '🌡️',
+                night: '🌡️',
+                text: '未知天气'
+            };
+
+            const locationName = cache.locationName || '当前位置';
+
+            document.getElementById('weather-location').textContent = locationName;
+            document.getElementById('weather-condition').textContent = meta.text;
+            document.getElementById('weather-temp').textContent = `${Math.round(current.temperature_2m)}°C`;
+            document.getElementById('weather-icon').textContent = current.is_day === 1 ? meta.day : meta.night;
+            document.getElementById('weather-feels').textContent = `体感：${Math.round(current.apparent_temperature)}°C`;
+            document.getElementById('weather-humidity').textContent = `湿度：${Math.round(current.relative_humidity_2m)}%`;
+            document.getElementById('weather-wind').textContent = `风速：${Math.round(current.wind_speed_10m)} km/h`;
+
+            if (cache.updatedAt) {
+                const cachedDate = new Date(cache.updatedAt);
+                document.getElementById('weather-updated').textContent =
+                    `上次更新：${cachedDate.toLocaleTimeString('zh-CN', {hour:'2-digit', minute:'2-digit'})}`;
+            }
+
+            setWeatherStatus('显示上次天气，正在更新…');
+            return true;
+        }
+
+        function setWeatherStatus(message, withRetry=false) {
+            const box=document.getElementById('weather-status');
+            if(!box)return;
+            box.textContent=message;
+            if(withRetry){
+                const btn=document.createElement('button');
+                btn.type='button';
+                btn.textContent='重试';
+                btn.onclick=loadWeather;
+                box.appendChild(btn);
+            }
+        }
+
+        function formatWeatherUpdateTime(){
+            return new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+        }
+
+        async function reverseGeocode(latitude,longitude,useIpFallback=false){
+            const base='https://api.bigdatacloud.net/data/reverse-geocode-client';
+            const params=new URLSearchParams({localityLanguage:'zh'});
+            if(!useIpFallback){
+                params.set('latitude',latitude);
+                params.set('longitude',longitude);
+            }
+            const res=await fetch(`${base}?${params.toString()}`);
+            if(!res.ok)throw new Error(`位置解析失败：HTTP ${res.status}`);
+            return res.json();
+        }
+
+        function buildLocationName(data,fallback='当前位置'){
+            const city=data.city || data.locality || data.principalSubdivision;
+            return city || fallback;
+        }
+
+        async function fetchWeather(latitude,longitude,locationName,source){
+            const url=new URL('https://api.open-meteo.com/v1/forecast');
+            url.searchParams.set('latitude',latitude);
+            url.searchParams.set('longitude',longitude);
+            url.searchParams.set('current','temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,is_day');
+            url.searchParams.set('timezone','auto');
+            url.searchParams.set('temperature_unit','celsius');
+            url.searchParams.set('wind_speed_unit','kmh');
+
+            const res=await fetch(url.toString());
+            if(!res.ok)throw new Error(`天气请求失败：HTTP ${res.status}`);
+
+            const data=await res.json();
+            const current=data.current;
+            const meta=WEATHER_CODES[current.weather_code] || {day:'🌡️',night:'🌡️',text:'未知天气'};
+
+            document.getElementById('weather-location').textContent=locationName;
+            document.getElementById('weather-condition').textContent=meta.text;
+            document.getElementById('weather-temp').textContent=`${Math.round(current.temperature_2m)}°C`;
+            document.getElementById('weather-icon').textContent=current.is_day===1 ? meta.day : meta.night;
+            document.getElementById('weather-feels').textContent=`体感：${Math.round(current.apparent_temperature)}°C`;
+            document.getElementById('weather-humidity').textContent=`湿度：${Math.round(current.relative_humidity_2m)}%`;
+            document.getElementById('weather-wind').textContent=`风速：${Math.round(current.wind_speed_10m)} km/h`;
+            document.getElementById('weather-updated').textContent=`更新：${formatWeatherUpdateTime()}`;
+            setWeatherStatus(source==='browser' ? '已使用浏览器定位' : '使用网络位置估算');
+        }
+
+        async function loadWeatherFromCoordinates(latitude,longitude){
+            try{
+                let locationName='当前位置';
+                try{
+                    const place=await reverseGeocode(latitude,longitude,false);
+                    locationName=buildLocationName(place);
+                }catch(e){
+                    console.warn('反向地理编码失败，继续显示天气。',e);
+                }
+
+                const url=new URL('https://api.open-meteo.com/v1/forecast');
+                url.searchParams.set('latitude',latitude);
+                url.searchParams.set('longitude',longitude);
+                url.searchParams.set('current','temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,is_day');
+                url.searchParams.set('timezone','auto');
+                url.searchParams.set('temperature_unit','celsius');
+                url.searchParams.set('wind_speed_unit','kmh');
+
+                const res=await fetch(url.toString());
+                if(!res.ok)throw new Error(`天气请求失败：HTTP ${res.status}`);
+                const data=await res.json();
+                const current=data.current;
+                const meta=WEATHER_CODES[current.weather_code] || {day:'🌡️',night:'🌡️',text:'未知天气'};
+
+                document.getElementById('weather-location').textContent=locationName;
+                document.getElementById('weather-condition').textContent=meta.text;
+                document.getElementById('weather-temp').textContent=`${Math.round(current.temperature_2m)}°C`;
+                document.getElementById('weather-icon').textContent=current.is_day===1 ? meta.day : meta.night;
+                document.getElementById('weather-feels').textContent=`体感：${Math.round(current.apparent_temperature)}°C`;
+                document.getElementById('weather-humidity').textContent=`湿度：${Math.round(current.relative_humidity_2m)}%`;
+                document.getElementById('weather-wind').textContent=`风速：${Math.round(current.wind_speed_10m)} km/h`;
+                const updatedAt=Date.now();
+                document.getElementById('weather-updated').textContent=`更新：${formatWeatherUpdateTime()}`;
+                setWeatherStatus('天气已更新');
+
+                saveWeatherCache({
+                    locationName,
+                    current,
+                    updatedAt
+                });
+            }catch(e){
+                console.error(e);
+                const cached=loadWeatherCache();
+                if(!renderCachedWeather(cached)){
+                    document.getElementById('weather-location').textContent='天气获取失败';
+                    document.getElementById('weather-condition').textContent='请稍后重试';
+                    document.getElementById('weather-temp').textContent='--°C';
+                    setWeatherStatus('天气服务暂时不可用',true);
+                }else{
+                    setWeatherStatus('当前网络不可用，显示上次天气');
+                }
+            }
+        }
+
+        async function loadWeatherByIpFallback(){
+            try{
+                setWeatherStatus('正在使用网络位置估算…');
+                const place=await reverseGeocode(null,null,true);
+                if(!Number.isFinite(place.latitude)||!Number.isFinite(place.longitude))throw new Error('备用位置接口未返回有效坐标');
+                await loadWeatherFromCoordinates(place.latitude,place.longitude);
+                saveWeatherLocation(place.latitude,place.longitude);
+            }catch(e){
+                console.error(e);
+                const cached=loadWeatherCache();
+                if(!renderCachedWeather(cached)){
+                    document.getElementById('weather-location').textContent='无法获取位置';
+                    document.getElementById('weather-condition').textContent='请允许定位后重试';
+                    setWeatherStatus('未能获取当前位置',true);
+                }
+            }
+        }
+
+        function requestWeatherLocation(){
+            if(!navigator.geolocation){
+                loadWeatherByIpFallback();
+                return;
+            }
+
+            setWeatherStatus('正在请求定位权限…');
+
+            navigator.geolocation.getCurrentPosition(
+                position=>{
+                    const {latitude,longitude}=position.coords;
+                    saveWeatherLocation(latitude,longitude);
+                    loadWeatherFromCoordinates(latitude,longitude);
+                },
+                error=>{
+                    console.warn('浏览器定位不可用：',error);
+                    loadWeatherByIpFallback();
+                },
+                {enableHighAccuracy:false,timeout:8000,maximumAge:300000}
+            );
+        }
+
+        function refreshWeather(){
+            const saved=getSavedWeatherLocation();
+            if(saved){
+                loadWeatherFromCoordinates(saved.latitude,saved.longitude);
+                return;
+            }
+            requestWeatherLocation();
+        }
+
+        // 手动更新：同时重新获取当前位置并刷新天气。
+        // 与自动刷新不同，这个按钮会主动更新 localStorage 中保存的位置。
+        function refreshWeatherAndLocation(){
+            const button=document.querySelector('.weather-refresh-btn');
+            if(button){
+                button.disabled=true;
+                button.innerText='📍 正在更新…';
+            }
+
+            setWeatherStatus('正在重新获取当前位置…');
+
+            const finish=()=>{
+                if(button){
+                    button.disabled=false;
+                    button.innerText='🔄 更新天气';
+                }
+            };
+
+            if(!navigator.geolocation){
+                loadWeatherByIpFallback().finally(finish);
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                position=>{
+                    const {latitude,longitude}=position.coords;
+                    saveWeatherLocation(latitude,longitude);
+                    loadWeatherFromCoordinates(latitude,longitude).finally(finish);
+                },
+                error=>{
+                    console.warn('手动更新位置失败：',error);
+                    loadWeatherByIpFallback().finally(finish);
+                },
+                {enableHighAccuracy:false,timeout:8000,maximumAge:0}
+            );
+        }
+
+        // 首次打开时读取上次缓存；有已保存的位置后，不再重复请求浏览器定位权限。
+        const initialWeatherCache=loadWeatherCache();
+        if(initialWeatherCache){
+            renderCachedWeather(initialWeatherCache);
+        }
+        refreshWeather();
+        setInterval(refreshWeather,10*60*1000);
 
         // 网易云音乐控件
         function playNeteaseMusic() {
@@ -1067,22 +1821,46 @@
             button.innerText = '🎵 网易云音乐已加载';
         }
 
-        // 背景切换
+        // 背景切换：使用 localStorage 持久保存用户选择的背景。
         function changeBackground(event) {
             const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.body.style.backgroundImage = `url('${e.target.result}')`;
-                };
-                reader.readAsDataURL(file);
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = e.target.result;
+                document.body.style.backgroundImage = `url('${imageData}')`;
+                try {
+                    localStorage.setItem(BACKGROUND_KEY, imageData);
+                } catch (error) {
+                    console.warn('背景图片过大，无法保存到 localStorage：', error);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function loadSavedBackground() {
+            try {
+                const saved = localStorage.getItem(BACKGROUND_KEY);
+                if (saved) {
+                    document.body.style.backgroundImage = `url('${saved}')`;
+                }
+            } catch (error) {
+                console.warn('读取保存的背景失败：', error);
             }
         }
 
         function resetBackground() {
             document.body.style.backgroundImage = "url('background.webp'), linear-gradient(135deg, #0052d4, #4364f7, #6fb1fc)";
+            try {
+                localStorage.removeItem(BACKGROUND_KEY);
+            } catch (error) {
+                console.warn('清除背景设置失败：', error);
+            }
             document.getElementById('bgInput').value = '';
         }
+
+        loadSavedBackground();
     </script>
 
 </body>
