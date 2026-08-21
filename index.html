@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>逗乐工作室 - 官网</title>
+    <!-- 引入 7.css 核心样式库 -->
+    <link rel="stylesheet" href="https://unpkg.com/7.css">
+    <style>
+        /* 全局背景设置 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 30px 20px;
+            background-image: url('background.webp'), linear-gradient(135deg, #0052d4, #4364f7, #6fb1fc);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: #1a2a3a;
+            min-height: 100vh;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        /* ---------------- 1. 窗口基础样式与 Flex 布局 ---------------- */
+        .window {
+            margin-bottom: 25px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                        opacity 0.35s ease, 
+                        top 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-origin: top left;
+            min-width: 220px;
+            min-height: 80px;
+            
+            display: flex !important;
+            flex-direction: column !important;
+            box-sizing: border-box;
+            border-radius: 6px !important;
+            overflow: hidden; 
+        }
+
+        .window-body {
+            flex: 1 !important;
+            overflow: auto;
+            box-sizing: border-box;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+            
+            /* 让最大化时的 body 充满内部并支持完美居中 */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .title-bar {
+            cursor: default !important;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .window.dragging, .window.resizing {
+            transition: none !important;
+            transform: none !important;
+        }
+
+        /* ---------------- 2. 八向拉伸触控边框 ---------------- */
+        .resizer {
+            position: absolute;
+            z-index: 10;
+        }
+        .resizer.top    { top: -4px; left: 6px; right: 6px; height: 8px; cursor: ns-resize; }
+        .resizer.bottom { bottom: -4px; left: 6px; right: 6px; height: 8px; cursor: ns-resize; }
+        .resizer.left   { left: -4px; top: 6px; bottom: 6px; width: 8px; cursor: ew-resize; }
+        .resizer.right  { right: -4px; top: 6px; bottom: 6px; width: 8px; cursor: ew-resize; }
+        
+        .resizer.top-left     { top: -4px; left: -4px; width: 10px; height: 10px; cursor: nwse-resize; }
+        .resizer.top-right    { top: -4px; right: -4px; width: 10px; height: 10px; cursor: nesw-resize; }
+        .resizer.bottom-left  { bottom: -4px; left: -4px; width: 10px; height: 10px; cursor: nesw-resize; }
+        .resizer.bottom-right { bottom: -4px; right: -4px; width: 10px; height: 10px; cursor: nwse-resize; }
+
+        .window.minimized .resizer,
+        .window.maximized .resizer {
+            display: none !important;
+        }
+
+        /* ---------------- 3. 关闭动画修正 ---------------- */
+        .window.window-closing {
+            transform-origin: center center !important;
+            animation: winClose 0.28s forwards cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        @keyframes winClose {
+            0% { opacity: 1; transform: scale(1) translateY(0); }
+            100% { opacity: 0; transform: scale(0.88) translateY(20px); }
+        }
+        .window.window-closed {
+            display: none !important;
+        }
+
+        /* 最大化 */
+        .window.maximized {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: none !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+            z-index: 99998 !important;
+            box-shadow: none !important;
+        }
+
+        .window.maximized .window-body {
+            height: auto !important;
+            max-height: none !important;
+            overflow-y: auto;
+            border-radius: 0 !important;
+        }
+
+        /* 最小化容器 */
+        #minimized-container {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            display: flex;
+            flex-wrap: wrap-reverse;
+            align-content: flex-start;
+            gap: 10px;
+            max-width: calc(100vw - 30px);
+            z-index: 99990;
+            pointer-events: none;
+        }
+
+        .window.minimized {
+            position: fixed !important;
+            pointer-events: auto !important;
+            width: 240px !important;
+            height: auto !important;
+            min-height: 0 !important;
+            margin: 0 !important;
+            border-radius: 6px !important;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        .window.minimized .window-body {
+            display: none !important;
+            max-height: 0 !important;
+            opacity: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            border: none !important;
+        }
+
+        /* ---------------- 4. 计时器自适应与最大化占满网页样式 ---------------- */
+        .timer-window {
+            font-size: clamp(0.9rem, 1.2vw + 0.5rem, 1.3rem);
+        }
+        
+        .window.maximized.timer-window .window-body {
+            justify-content: center;
+            align-items: center;
+            padding: 40px !important;
+        }
+        .window.maximized.timer-window .timer-panel {
+            width: min(100%, 1200px);
+            max-width: 1200px;
+            min-width: 0;
+        }
+        .window.maximized.timer-window .time-display {
+            font-size: clamp(4rem, 11vw, 11rem) !important;
+            padding: 30px;
+            white-space: nowrap;
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        .window.maximized.timer-window .ntp-status,
+        .window.maximized.timer-window button {
+            font-size: 1.4rem !important;
+        }
+
+        .timer-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            justify-content: center;
+            align-items: stretch;
+            flex-wrap: nowrap;
+            min-width: 0;
+            width: 100%;
+        }
+        .timer-tabs button {
+            flex: 1 1 0;
+            min-width: 0;
+            max-width: 180px;
+            padding: 8px 10px;
+            cursor: pointer;
+            font-size: 1em;
+            white-space: nowrap;
+            word-break: keep-all;
+            overflow: hidden;
+            text-overflow: clip;
+        }
+        .window.maximized.timer-window .timer-tabs {
+            transform: none;
+            margin-bottom: 30px;
+            gap: 14px;
+        }
+        .window.maximized.timer-window .timer-tabs button {
+            flex: 0 1 220px;
+            max-width: 220px;
+            font-size: clamp(1rem, 1.2vw, 1.4rem) !important;
+            padding-inline: 16px;
+        }
+        .timer-tabs button.active {
+            background: linear-gradient(180deg, #e1f3ff 0%, #cce5ff 100%);
+            border-color: #3b82f6;
+            font-weight: bold;
+        }
+        .timer-panel {
+            display: none;
+            text-align: center;
+        }
+        .timer-panel.active {
+            display: block;
+        }
+        .time-display {
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: clamp(1.6em, 3.5vw, 2.8em);
+            font-weight: bold;
+            color: #0b2545;
+            margin: 12px 0;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(135, 175, 215, 0.4);
+            letter-spacing: 1px;
+            transition: font-size 0.2s ease;
+        }
+        .ntp-status {
+            font-size: 0.85em;
+            color: #333;
+            margin-top: 6px;
+        }
+        .timer-inputs-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 1em;
+        }
+        .timer-inputs-group input {
+            width: 60px;
+            text-align: center;
+            font-size: 1em;
+            padding: 4px;
+        }
+
+        /* ---------------- 5. Win7 Aero 按钮细节 ---------------- */
+        .title-bar-controls button {
+            cursor: pointer !important;
+            transition: all 0.15s ease-in-out;
+            border-radius: 0 0 3px 3px !important;
+        }
+
+        .title-bar-controls button[aria-label="Close"] {
+            background: linear-gradient(180deg, rgba(210, 100, 100, 0.6) 0%, rgba(180, 50, 50, 0.75) 48%, rgba(130, 20, 20, 0.85) 52%, rgba(200, 70, 70, 0.7) 100%) !important;
+            border-color: rgba(100, 20, 20, 0.6) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+        }
+
+        .title-bar-controls button[aria-label="Close"]:hover {
+            background: linear-gradient(180deg, #ff9ca3 0%, #e81123 48%, #bd000f 52%, #f14c59 100%) !important;
+            border-color: #80000a !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 10px rgba(232, 17, 35, 0.8) !important;
+        }
+
+        .title-bar-controls button[aria-label="Minimize"]:hover,
+        .title-bar-controls button[aria-label="Maximize"]:hover {
+            background: linear-gradient(180deg, rgba(235, 245, 255, 0.8) 0%, rgba(160, 210, 255, 0.6) 48%, rgba(0, 140, 240, 0.85) 52%, rgba(0, 210, 255, 0.95) 100%) !important;
+            border-color: #3b82f6 !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 0 8px rgba(0, 180, 255, 0.9) !important;
+        }
+
+        .bg-control { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+        #bgInput { display: none; }
+        
+        .glass-card {
+            background: linear-gradient(180deg, rgba(225, 243, 255, 0.85) 0%, rgba(240, 248, 255, 0.75) 100%);
+            border: 1px solid rgba(135, 175, 215, 0.45);
+            border-radius: 5px;
+            padding: 16px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .music-item {
+            background: linear-gradient(180deg, rgba(225, 243, 255, 0.85) 0%, rgba(240, 248, 255, 0.75) 100%);
+            border: 1px solid rgba(135, 175, 215, 0.45);
+            border-radius: 5px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        audio { width: 100%; margin-top: 8px; }
+        .netease-item button {
+            margin-top: 2px;
+        }
+        .netease-player-wrap {
+            width: 100%;
+            margin-top: 10px;
+            overflow: hidden;
+            border-radius: 6px;
+        }
+        .netease-player-wrap iframe {
+            display: block;
+            width: 100%;
+            min-height: 86px;
+            border: 0;
+            background: rgba(255, 255, 255, 0.55);
+        }
+        footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 0.9em;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .restore-box {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="minimized-container"></div>
+
+    <div class="container" id="main-container">
+
+        <!-- 1. 顶部 Header 窗口 -->
+        <div class="window glass">
+            <div class="title-bar">
+                <div class="title-bar-text">逗乐工作室</div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize" onclick="toggleMinimize(this)"></button>
+                    <button aria-label="Maximize" onclick="toggleMaximize(this)"></button>
+                    <button aria-label="Close" onclick="closeWindow(this)"></button>
+                </div>
+            </div>
+            <div class="window-body" style="padding: 10px;">
+                <div class="glass-card" style="text-align: center;">
+                    <h1 style="margin: 0 0 6px 0; color: #0b2545;">逗乐工作室</h1>
+                    <p style="margin: 0; opacity: 0.85;">注重快乐、愉悦、高效的线上工作室</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 关于工作室 -->
+        <div class="window glass">
+            <div class="title-bar">
+                <div class="title-bar-text">关于工作室</div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize" onclick="toggleMinimize(this)"></button>
+                    <button aria-label="Maximize" onclick="toggleMaximize(this)"></button>
+                    <button aria-label="Close" onclick="closeWindow(this)"></button>
+                </div>
+            </div>
+            <div class="window-body">
+                <p style="margin-top: 0;">欢迎来到我们的主页！这里是专注于视频创作、愉快游玩和软件开发等的逗乐工作室！</p>
+                <p style="margin-bottom: 0;">我们追求快乐且团结的团队精神！</p>
+            </div>
+        </div>
+
+        <!-- 3. 多功能计时器 (大屏自适应版 + 含小时) -->
+        <div class="window glass timer-window">
+            <div class="title-bar">
+                <div class="title-bar-text">⏱️ 多功能计时器 (标准网络授时)</div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize" onclick="toggleMinimize(this)"></button>
+                    <button aria-label="Maximize" onclick="toggleMaximize(this)"></button>
+                    <button aria-label="Close" onclick="closeWindow(this)"></button>
+                </div>
+            </div>
+            <div class="window-body">
+                <div class="timer-tabs">
+                    <button class="active" onclick="switchTimerTab('clock', this)">当前时间</button>
+                    <button onclick="switchTimerTab('stopwatch', this)">秒表</button>
+                    <button onclick="switchTimerTab('countdown', this)">倒计时</button>
+                </div>
+
+                <!-- 选项一：当前时间 (稳定无跨域限制授时) -->
+                <div id="panel-clock" class="timer-panel active">
+                    <div class="time-display" id="ntp-time-box">正在校准授时...</div>
+                    <div class="ntp-status" id="ntp-status-box">状态: 正在连接授时中心...</div>
+                    <button onclick="syncNtpTime()" style="margin-top: 8px; font-size: 0.9em;">手动重新校准</button>
+                </div>
+
+                <!-- 选项二：秒表 -->
+                <div id="panel-stopwatch" class="timer-panel">
+                    <div class="time-display" id="stopwatch-box">00:00:00.00</div>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button id="sw-start-btn" onclick="toggleStopwatch()">开始</button>
+                        <button onclick="resetStopwatch()">重置</button>
+                    </div>
+                </div>
+
+                <!-- 选项三：倒计时 (支持小时) -->
+                <div id="panel-countdown" class="timer-panel">
+                    <div class="time-display" id="countdown-box">00:05:00</div>
+                    <div id="countdown-inputs" class="timer-inputs-group">
+                        时: <input type="number" id="cd-hr" value="0" min="0" max="23">
+                        分: <input type="number" id="cd-min" value="5" min="0" max="59">
+                        秒: <input type="number" id="cd-sec" value="0" min="0" max="59">
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button id="cd-start-btn" onclick="toggleCountdown()">开始倒计时</button>
+                        <button onclick="resetCountdown()">重置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. 试听作品 -->
+        <div class="window glass">
+            <div class="title-bar">
+                <div class="title-bar-text">🎵 音乐播放器</div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize" onclick="toggleMinimize(this)"></button>
+                    <button aria-label="Maximize" onclick="toggleMaximize(this)"></button>
+                    <button aria-label="Close" onclick="closeWindow(this)"></button>
+                </div>
+            </div>
+            <div class="window-body">
+                <div class="music-item">
+                    <strong style="font-size: 1.05em; color: #0b2545;">01. 渡口-蔡琴</strong>
+                    <p style="margin: 4px 0 0 0; font-size: 0.85em; opacity: 0.85;">经典音乐，测音必备！（侵删）</p>
+                    <audio controls>
+                        <source src="music1.mp3" type="audio/mpeg">
+                        你的浏览器不支持音频播放。
+                    </audio>
+                </div>
+
+                <div class="music-item">
+                    <strong style="font-size: 1.05em; color: #0b2545;">02. 小村之恋-邓丽君</strong>
+                    <p style="margin: 4px 0 0 0; font-size: 0.85em; opacity: 0.85;">经典音乐，享受村庄生活！（侵删）</p>
+                    <audio controls>
+                        <source src="music2.mp3" type="audio/mpeg">
+                        你的浏览器不支持音频播放。
+                    </audio>
+                </div>
+
+                <div class="music-item">
+                    <strong style="font-size: 1.05em; color: #0b2545;">03. frutiger aero - Inuyasha</strong>
+                    <p style="margin: 4px 0 0 0; font-size: 0.85em; opacity: 0.85;">清新氛围音乐，Frutiger Aero 风格（侵删）</p>
+                    <audio controls preload="metadata">
+                        <source src="music3.mp3" type="audio/mpeg">
+                        你的浏览器不支持音频播放。
+                    </audio>
+                </div>
+
+                <div class="music-item">
+                    <strong style="font-size: 1.05em; color: #0b2545;">04. One Man's Dream（一个男人的梦想） - Yanni</strong>
+                    <p style="margin: 4px 0 0 0; font-size: 0.85em; opacity: 0.85;">经典钢琴/新世纪音乐作品（侵删）</p>
+                    <audio controls preload="metadata">
+                        <source src="music4.mp3" type="audio/mpeg">
+                        你的浏览器不支持音频播放。
+                    </audio>
+                </div>
+
+                <div class="music-item netease-item">
+                    <strong style="font-size: 1.05em; color: #0b2545;">☁️ 网易云音乐</strong>
+                    <p style="margin: 4px 0 10px 0; font-size: 0.85em; opacity: 0.85;">
+                        歌曲 ID：3387613417（落泪+室内系的trackmaker DJ纯享版）这里的音乐不定期更新哦！可能是烂大街的也可能是抽象的或者好听的？
+                    </p>
+                    <button type="button" id="netease-play-btn" onclick="playNeteaseMusic()">▶ 播放网易云音乐</button>
+                    <div id="netease-player-wrap" class="netease-player-wrap" hidden>
+                        <iframe
+                            id="netease-player"
+                            title="网易云音乐播放器"
+                            src="about:blank"
+                            width="100%"
+                            height="86"
+                            frameborder="0"
+                            allow="autoplay; encrypted-media"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. 联系我们 -->
+        <div class="window glass">
+            <div class="title-bar">
+                <div class="title-bar-text">联系我们</div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize" onclick="toggleMinimize(this)"></button>
+                    <button aria-label="Maximize" onclick="toggleMaximize(this)"></button>
+                    <button aria-label="Close" onclick="closeWindow(this)"></button>
+                </div>
+            </div>
+            <div class="window-body">
+                <p style="margin-top: 0;">✉ 电子邮件：a1256063388@outlook.com</p>
+                <p style="margin-bottom: 0;">💬 哔哩哔哩账号：超级末影人</p>
+            </div>
+        </div>
+
+        <!-- 6. 自定义背景设置 -->
+        <div class="window glass">
+            <div class="title-bar">
+                <div class="title-bar-text">🎨 自定义背景设置</div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize" onclick="toggleMinimize(this)"></button>
+                    <button aria-label="Maximize" onclick="toggleMaximize(this)"></button>
+                    <button aria-label="Close" onclick="closeWindow(this)"></button>
+                </div>
+            </div>
+            <div class="window-body">
+                <p style="margin-top: 0;">默认使用 <code>Windows Vista</code> 默认壁纸。你也可以临时选择本地图片体验不同效果：</p>
+                <div class="bg-control">
+                    <button onclick="document.getElementById('bgInput').click()">选择本地壁纸</button>
+                    <button onclick="resetBackground()">恢复默认背景</button>
+                    <input type="file" id="bgInput" accept="image/*" onchange="changeBackground(event)">
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部还原按钮 -->
+        <footer>
+            <div class="restore-box">
+                <button onclick="restoreAllWindows()">🔄 还原所有已关闭/最小化/最大化的窗口</button>
+            </div>
+            <p>© 2026 逗乐工作室.</p>
+        </footer>
+    </div>
+
+    <script>
+        let highestZIndex = 100;
+
+        function bringToFront(win) {
+            if (win.classList.contains('minimized')) return;
+            highestZIndex++;
+            win.style.zIndex = highestZIndex;
+        }
+
+        // 初始化窗口
+        document.querySelectorAll('.window').forEach((win, index) => {
+            win.dataset.originalIndex = index;
+            makeDraggable(win);
+            makeResizable(win);
+
+            win.addEventListener('mousedown', () => {
+                bringToFront(win);
+            });
+        });
+
+        // ---------------- 计时器授时逻辑 (多路安全授时源) ----------------
+        let timeOffset = 0; 
+
+        function syncNtpTime() {
+            const statusBox = document.getElementById('ntp-status-box');
+            statusBox.innerText = "状态: 正在连接网络授时接口...";
+            
+            const startReq = Date.now();
+            fetch('https://timeapi.io/api/Time/current/zone?timeZone=Asia/Shanghai')
+                .then(res => res.json())
+                .then(data => {
+                    const serverEpochMs = new Date(data.dateTime).getTime();
+                    const latency = (Date.now() - startReq) / 2;
+                    const serverTime = serverEpochMs + latency;
+                    timeOffset = serverTime - Date.now();
+                    statusBox.innerText = "状态: 已通过网络授时中心成功同步";
+                })
+                .catch(() => {
+                    fetch('https://worldtimeapi.org/api/timezone/Asia/Shanghai')
+                        .then(res => res.json())
+                        .then(data => {
+                            const latency = (Date.now() - startReq) / 2;
+                            const serverTime = new Date(data.unixtime * 1000 + latency).getTime();
+                            timeOffset = serverTime - Date.now();
+                            statusBox.innerText = "状态: 已通过备用网络授时中心成功同步";
+                        })
+                        .catch(() => {
+                            timeOffset = 0;
+                            statusBox.innerText = "状态: 联网同步失败，使用本地系统时钟（可能存在时间误差）";
+                        });
+                });
+        }
+
+        syncNtpTime();
+        setInterval(() => {
+            const now = new Date(Date.now() + timeOffset);
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timeStr = `${hours}:${minutes}:${seconds}`;
+            const box = document.getElementById('ntp-time-box');
+            if (box) box.innerText = timeStr;
+        }, 1000);
+
+        function switchTimerTab(tabName, btn) {
+            document.querySelectorAll('.timer-tabs button').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.timer-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(`panel-${tabName}`).classList.add('active');
+        }
+
+        // 秒表逻辑
+        let swTimer = null;
+        let swTime = 0; 
+        let swRunning = false;
+
+        function toggleStopwatch() {
+            const btn = document.getElementById('sw-start-btn');
+            if (swRunning) {
+                clearInterval(swTimer);
+                swRunning = false;
+                btn.innerText = "开始";
+            } else {
+                const startTime = Date.now() - swTime;
+                swTimer = setInterval(() => {
+                    swTime = Date.now() - startTime;
+                    updateStopwatchDisplay();
+                }, 30);
+                swRunning = true;
+                btn.innerText = "暂停";
+            }
+        }
+
+        function resetStopwatch() {
+            clearInterval(swTimer);
+            swRunning = false;
+            swTime = 0;
+            document.getElementById('sw-start-btn').innerText = "开始";
+            updateStopwatchDisplay();
+        }
+
+        function updateStopwatchDisplay() {
+            const ms = Math.floor((swTime % 1000) / 10);
+            const totalSec = Math.floor(swTime / 1000);
+            const s = totalSec % 60;
+            const m = Math.floor(totalSec / 60) % 60;
+            const h = Math.floor(totalSec / 3600);
+            document.getElementById('stopwatch-box').innerText = 
+                `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${String(ms).padStart(2, '0')}`;
+        }
+
+        // 倒计时逻辑 (含小时)
+        let cdTimer = null;
+        let cdRemaining = 0; 
+        let cdRunning = false;
+        const dingAudio = new Audio('ding.mp3');
+
+        function toggleCountdown() {
+            const btn = document.getElementById('cd-start-btn');
+            if (cdRunning) {
+                clearInterval(cdTimer);
+                cdRunning = false;
+                btn.innerText = "继续";
+            } else {
+                if (cdRemaining <= 0) {
+                    const hr = parseInt(document.getElementById('cd-hr').value) || 0;
+                    const min = parseInt(document.getElementById('cd-min').value) || 0;
+                    const sec = parseInt(document.getElementById('cd-sec').value) || 0;
+                    cdRemaining = hr * 3600 + min * 60 + sec;
+                    if (cdRemaining <= 0) return;
+                }
+                document.getElementById('countdown-inputs').style.display = 'none';
+                cdRunning = true;
+                btn.innerText = "暂停";
+
+                cdTimer = setInterval(() => {
+                    if (cdRemaining > 0) {
+                        cdRemaining--;
+                        updateCountdownDisplay();
+                    }
+                    if (cdRemaining <= 0) {
+                        clearInterval(cdTimer);
+                        cdRunning = false;
+                        btn.innerText = "开始倒计时";
+                        document.getElementById('countdown-inputs').style.display = 'flex';
+                        dingAudio.currentTime = 0;
+                        dingAudio.play().catch(e => console.log("播放提示音失败(请确认同目录下有 ding.mp3)", e));
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetCountdown() {
+            clearInterval(cdTimer);
+            cdRunning = false;
+            cdRemaining = 0;
+            document.getElementById('cd-start-btn').innerText = "开始倒计时";
+            document.getElementById('countdown-inputs').style.display = 'flex';
+            const hr = parseInt(document.getElementById('cd-hr').value) || 0;
+            const min = parseInt(document.getElementById('cd-min').value) || 0;
+            const sec = parseInt(document.getElementById('cd-sec').value) || 0;
+            const total = hr * 3600 + min * 60 + sec;
+            const h = Math.floor(total / 3600);
+            const m = Math.floor((total % 3600) / 60);
+            const s = total % 60;
+            document.getElementById('countdown-box').innerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        function updateCountdownDisplay() {
+            const h = Math.floor(cdRemaining / 3600);
+            const m = Math.floor((cdRemaining % 3600) / 60);
+            const s = cdRemaining % 60;
+            document.getElementById('countdown-box').innerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        ['cd-hr', 'cd-min', 'cd-sec'].forEach(id => {
+            document.getElementById(id).addEventListener('input', resetCountdown);
+        });
+
+        // ---------------- 八向拉伸核心逻辑 ----------------
+        function makeResizable(win) {
+            const directions = ['top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right'];
+            
+            directions.forEach(dir => {
+                const resizer = document.createElement('div');
+                resizer.className = `resizer ${dir}`;
+                win.appendChild(resizer);
+
+                resizer.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (win.classList.contains('maximized') || win.classList.contains('minimized')) return;
+
+                    bringToFront(win);
+                    win.classList.add('resizing');
+
+                    const rect = win.getBoundingClientRect();
+                    const startX = e.clientX;
+                    const startY = e.clientY;
+                    const startWidth = rect.width;
+                    const startHeight = rect.height;
+                    const startLeft = rect.left;
+                    const startTop = rect.top;
+
+                    win.style.position = 'fixed';
+                    win.style.left = startLeft + 'px';
+                    win.style.top = startTop + 'px';
+                    win.style.margin = '0';
+
+                    const minWidth = 220;
+                    const minHeight = 80;
+
+                    function onMouseMove(e) {
+                        const dx = e.clientX - startX;
+                        const dy = e.clientY - startY;
+
+                        if (dir.includes('right')) {
+                            win.style.width = Math.max(minWidth, startWidth + dx) + 'px';
+                        }
+                        if (dir.includes('bottom')) {
+                            win.style.height = Math.max(minHeight, startHeight + dy) + 'px';
+                        }
+                        if (dir.includes('left')) {
+                            const possibleWidth = startWidth - dx;
+                            if (possibleWidth > minWidth) {
+                                win.style.width = possibleWidth + 'px';
+                                win.style.left = (startLeft + dx) + 'px';
+                            }
+                        }
+                        if (dir.includes('top')) {
+                            const possibleHeight = startHeight - dy;
+                            if (possibleHeight > minHeight) {
+                                win.style.height = possibleHeight + 'px';
+                                win.style.top = (startTop + dy) + 'px';
+                            }
+                        }
+                    }
+
+                    function onMouseUp() {
+                        win.classList.remove('resizing');
+                        document.removeEventListener('mousemove', onMouseMove);
+                        document.removeEventListener('mouseup', onMouseUp);
+                    }
+
+                    document.addEventListener('mousemove', onMouseMove);
+                    document.addEventListener('mouseup', onMouseUp);
+                });
+            });
+        }
+
+        // ---------------- 窗口布局平滑过渡（FLIP） ----------------
+        function getWindowElements() {
+            return Array.from(document.querySelectorAll('.window'))
+                .filter(win => !win.classList.contains('window-closed'));
+        }
+
+        function captureWindowRects(windows = getWindowElements()) {
+            const rects = new Map();
+            windows.forEach(win => rects.set(win, win.getBoundingClientRect()));
+            return rects;
+        }
+
+        function playWindowFLIP(firstRects, options = {}) {
+            const duration = options.duration || 400;
+            const easing = options.easing || 'cubic-bezier(0.16, 1, 0.3, 1)';
+            const windows = getWindowElements();
+
+            windows.forEach(win => {
+                const first = firstRects.get(win);
+                if (!first) return;
+
+                const last = win.getBoundingClientRect();
+                const deltaX = first.left - last.left;
+                const deltaY = first.top - last.top;
+                const scaleX = last.width ? first.width / last.width : 1;
+                const scaleY = last.height ? first.height / last.height : 1;
+
+                // 清除上一次动画残留，避免“还原所有窗口”后再次最大化/还原失效。
+                win.style.animation = 'none';
+                win.style.transition = 'none';
+                win.style.transformOrigin = 'top left';
+
+                if (Math.abs(deltaX) < 0.5 && Math.abs(deltaY) < 0.5 &&
+                    Math.abs(scaleX - 1) < 0.005 && Math.abs(scaleY - 1) < 0.005) {
+                    win.style.transform = '';
+                    return;
+                }
+
+                win.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`;
+
+                // 强制浏览器提交起始状态，再切换到最终状态，确保每次动画都存在。
+                void win.offsetWidth;
+                requestAnimationFrame(() => {
+                    win.style.transition = `transform ${duration}ms ${easing}`;
+                    win.style.transform = '';
+
+                    const cleanup = () => {
+                        win.style.transition = '';
+                        win.style.transform = '';
+                        win.style.animation = '';
+                        win.style.transformOrigin = '';
+                        win.removeEventListener('transitionend', cleanup);
+                    };
+                    win.addEventListener('transitionend', cleanup);
+                    setTimeout(cleanup, duration + 80);
+                });
+            });
+        }
+
+        function animateLayoutChange(action, options = {}) {
+            const firstRects = captureWindowRects();
+            action();
+            // DOM 重排与样式计算完成后，再执行一次 FLIP。
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => playWindowFLIP(firstRects, options));
+            });
+        }
+
+        // ---------------- 1. 窗口拖拽与双击最大化 ----------------
+        function makeDraggable(win) {
+            const titleBar = win.querySelector('.title-bar');
+            let isDragging = false;
+            let pendingDrag = false;
+            let mouseOffsetX = 0, mouseOffsetY = 0;
+            let dragStartX = 0, dragStartY = 0;
+            const DRAG_THRESHOLD = 4;
+
+            titleBar.addEventListener('dblclick', (e) => {
+                if (e.target.tagName.toLowerCase() === 'button') return;
+                const maxBtn = titleBar.querySelector('button[aria-label="Maximize"]');
+                if (maxBtn) toggleMaximize(maxBtn);
+            });
+
+            titleBar.addEventListener('mousedown', (e) => {
+                if (e.button !== 0) return;
+                if (e.target.tagName.toLowerCase() === 'button') return;
+                if (win.classList.contains('maximized')) return;
+
+                // 仅记录按下位置；单击本身不会改变窗口位置。
+                pendingDrag = true;
+                isDragging = false;
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+
+                const rect = win.getBoundingClientRect();
+                mouseOffsetX = e.clientX - rect.left;
+                mouseOffsetY = e.clientY - rect.top;
+
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+
+            function onMouseMove(e) {
+                if (!pendingDrag && !isDragging) return;
+
+                if (pendingDrag && Math.hypot(e.clientX - dragStartX, e.clientY - dragStartY) >= DRAG_THRESHOLD) {
+                    pendingDrag = false;
+                    isDragging = true;
+                    bringToFront(win);
+
+                    const rect = win.getBoundingClientRect();
+                    // 进入真正拖动前再切换 fixed，保持当前视觉位置不变。
+                    win.style.position = 'fixed';
+                    win.style.left = rect.left + 'px';
+                    win.style.top = rect.top + 'px';
+                    win.style.margin = '0';
+                    win.classList.add('dragging');
+                }
+
+                if (!isDragging) return;
+                win.style.left = (e.clientX - mouseOffsetX) + 'px';
+                win.style.top = (e.clientY - mouseOffsetY) + 'px';
+            }
+
+            function onMouseUp() {
+                pendingDrag = false;
+                isDragging = false;
+                win.classList.remove('dragging');
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            }
+        }
+
+        // ---------------- 2. 最小化/还原 ----------------
+        function toggleMinimize(button) {
+            const win = button.closest('.window');
+            const minContainer = document.getElementById('minimized-container');
+
+            if (win.classList.contains('minimized')) {
+                const firstRects = captureWindowRects();
+                win.classList.remove('minimized');
+                restoreWindowToBody(win);
+                bringToFront(win);
+                playWindowFLIP(firstRects);
+                return;
+            }
+
+            const firstRects = captureWindowRects();
+            win.classList.remove('maximized');
+            win.classList.remove('window-closing');
+            win.classList.add('minimized');
+            minContainer.appendChild(win);
+            playWindowFLIP(firstRects);
+        }
+
+        // ---------------- 3. 最大化/还原 ----------------
+        function toggleMaximize(button) {
+            const win = button.closest('.window');
+
+            if (win.classList.contains('minimized')) {
+                const firstRects = captureWindowRects();
+                win.classList.remove('minimized');
+                restoreWindowToBody(win);
+                bringToFront(win);
+
+                // 从最小化恢复后再最大化，分两步执行可以避免状态切换互相吞动画。
+                requestAnimationFrame(() => {
+                    const midRects = captureWindowRects();
+                    win.classList.add('maximized');
+                    bringToFront(win);
+                    playWindowFLIP(midRects);
+                });
+                playWindowFLIP(firstRects);
+                return;
+            }
+
+            const firstRects = captureWindowRects();
+            const wasMaximized = win.classList.contains('maximized');
+            win.classList.toggle('maximized');
+            if (wasMaximized) bringToFront(win);
+            playWindowFLIP(firstRects);
+        }
+
+        // ---------------- 4. 关闭 ----------------
+        function closeWindow(button) {
+            const win = button.closest('.window');
+            win.classList.remove('maximized', 'minimized');
+            win.classList.add('window-closing');
+            setTimeout(() => {
+                const firstRects = captureWindowRects();
+                win.classList.remove('window-closing');
+                win.classList.add('window-closed');
+                playWindowFLIP(firstRects, { duration: 400 });
+            }, 260);
+        }
+
+        // 还原 DOM 结构与用户拖拽时保存的内联几何样式。
+        function restoreWindowToBody(win) {
+            const container = document.getElementById('main-container');
+            const targetIndex = parseInt(win.dataset.originalIndex, 10);
+            const currentWindows = Array.from(container.querySelectorAll('.window'));
+
+            win.style.position = '';
+            win.style.left = '';
+            win.style.top = '';
+            win.style.margin = '';
+            win.style.width = '';
+            win.style.height = '';
+
+            let inserted = false;
+            for (const el of currentWindows) {
+                if (el !== win && parseInt(el.dataset.originalIndex, 10) > targetIndex) {
+                    container.insertBefore(win, el);
+                    inserted = true;
+                    break;
+                }
+            }
+            if (!inserted) {
+                const footer = container.querySelector('footer');
+                container.insertBefore(win, footer);
+            }
+        }
+
+        // ---------------- 5. 一键还原所有窗口 ----------------
+        function restoreAllWindows() {
+            // 关键：必须在移除 minimized/maximized 前捕获所有“当前可见”窗口的位置。
+            // 旧实现只捕获普通窗口，因此最大化/最小化窗口没有 first rect，恢复后不会播放动画。
+            const firstRects = captureWindowRects();
+            const windows = Array.from(document.querySelectorAll('.window'));
+
+            // 关闭过的窗口原本 display:none，没有可测量的起点；它们仍然需要恢复，
+            // 因此这里必须遍历全部窗口，而不能继续使用 getWindowElements()。
+            windows.forEach(win => {
+                win.classList.remove('window-closed', 'window-closing', 'minimized', 'maximized');
+                restoreWindowToBody(win);
+            });
+
+            // 恢复到原始 DOM 顺序后统一重新分配层级；保持原有功能不变。
+            windows.forEach(win => bringToFront(win));
+            playWindowFLIP(firstRects);
+        }
+
+        // 网易云音乐控件
+        function playNeteaseMusic() {
+            const playerWrap = document.getElementById('netease-player-wrap');
+            const player = document.getElementById('netease-player');
+            const button = document.getElementById('netease-play-btn');
+
+            if (!playerWrap || !player || !button) return;
+
+            const playerUrl =
+                'https://music.163.com/outchain/player?type=2&id=3387613417&auto=1&height=66';
+
+            playerWrap.hidden = false;
+            if (player.src !== playerUrl) {
+                player.src = playerUrl;
+            } else {
+                player.src = 'about:blank';
+                requestAnimationFrame(() => {
+                    player.src = playerUrl;
+                });
+            }
+
+            button.innerText = '🎵 网易云音乐已加载';
+        }
+
+        // 背景切换
+        function changeBackground(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.body.style.backgroundImage = `url('${e.target.result}')`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function resetBackground() {
+            document.body.style.backgroundImage = "url('background.webp'), linear-gradient(135deg, #0052d4, #4364f7, #6fb1fc)";
+            document.getElementById('bgInput').value = '';
+        }
+    </script>
+
+</body>
+</html>
