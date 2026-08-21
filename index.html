@@ -1821,6 +1821,9 @@
             button.innerText = '🎵 网易云音乐已加载';
         }
 
+        // 用户背景的 localStorage 键名。
+        const BACKGROUND_KEY = 'dotel_background_v1';
+
         // 背景切换：使用 localStorage 持久保存用户选择的背景。
         function changeBackground(event) {
             const file = event.target.files[0];
