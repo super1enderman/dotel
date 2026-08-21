@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>逗乐工作室 - 团队人员</title>
+    <link rel="stylesheet" href="https://unpkg.com/7.css">
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            background-image: url('background.webp'), linear-gradient(135deg, #0052d4, #4364f7, #6fb1fc);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #1a2a3a;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #page-scroll {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .window {
+            margin-bottom: 25px;
+            box-shadow: 0 12px 32px rgba(0,0,0,.45), 0 2px 6px rgba(0,0,0,.3) !important;
+            transition: transform .4s cubic-bezier(.16,1,.3,1), opacity .35s ease, top .4s cubic-bezier(.16,1,.3,1), left .4s cubic-bezier(.16,1,.3,1);
+            transform-origin: top left;
+            min-width: 220px;
+            min-height: 80px;
+            display: flex !important;
+            flex-direction: column !important;
+            border-radius: 6px !important;
+            overflow: hidden;
+        }
+
+        .window-body {
+            flex: 1 !important;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .title-bar {
+            cursor: default !important;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        /* 团队页窗口为静态展示：不可拖拽、不可缩放、不可最小化/最大化。 */
+        .window {
+            position: relative;
+        }
+
+        /* Win7/Aero 窗口按钮：只显示 X，不绑定任何交互。 */
+        .title-bar-controls {
+            pointer-events: none;
+        }
+
+        .title-bar-controls button {
+            pointer-events: auto;
+            cursor: default !important;
+            transition: all 0.15s ease-in-out;
+            border-radius: 0 0 3px 3px !important;
+        }
+
+        .title-bar-controls button[aria-label="Close"] {
+            background: linear-gradient(180deg, rgba(210, 100, 100, 0.6) 0%, rgba(180, 50, 50, 0.75) 48%, rgba(130, 20, 20, 0.85) 52%, rgba(200, 70, 70, 0.7) 100%) !important;
+            border-color: rgba(100, 20, 20, 0.6) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 0 6px rgba(210, 60, 60, 0.35) !important;
+        }
+
+        .title-bar-controls button[aria-label="Close"]:hover {
+            background: linear-gradient(180deg, #ff9ca3 0%, #e81123 48%, #bd000f 52%, #f14c59 100%) !important;
+            border-color: #80000a !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 10px rgba(232, 17, 35, 0.8) !important;
+        }
+
+        .title-bar-controls button[aria-label="Close"]:active {
+            background: linear-gradient(180deg, #e35b63 0%, #c40012 48%, #9d000d 52%, #d33f4b 100%) !important;
+            box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.2), 0 0 6px rgba(210, 40, 50, 0.45) !important;
+        }
+
+        .intro-card {
+            text-align: center;
+            background: linear-gradient(180deg, rgba(225,243,255,.85) 0%, rgba(240,248,255,.75) 100%);
+            border: 1px solid rgba(135,175,215,.45);
+            border-radius: 5px;
+            padding: 18px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 1px 3px rgba(0,0,0,.05);
+        }
+
+        .member-card {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            background: linear-gradient(180deg, rgba(225,243,255,.85) 0%, rgba(240,248,255,.75) 100%);
+            border: 1px solid rgba(135,175,215,.45);
+            border-radius: 6px;
+            padding: 14px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 1px 3px rgba(0,0,0,.05);
+        }
+
+        .member-avatar {
+            width: 112px;
+            height: 112px;
+            flex: 0 0 112px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid rgba(110,150,185,.65);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 2px 6px rgba(0,0,0,.2);
+            background: #dbeaf7;
+        }
+
+        .member-info { flex: 1; min-width: 0; }
+        .member-info h2 {
+            margin: 0 0 6px;
+            font-size: 1.25rem;
+            color: #0b2545;
+        }
+        .member-role {
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: .82rem;
+            color: #24415d;
+            background: rgba(220,237,250,.8);
+            border: 1px solid rgba(130,170,205,.45);
+        }
+        .member-info p {
+            margin: 0;
+            line-height: 1.65;
+            font-size: .95rem;
+        }
+
+        .page-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        footer {
+            text-align: center;
+            color: rgba(255,255,255,.95);
+            font-size: .9em;
+            text-shadow: 0 1px 3px rgba(0,0,0,.6);
+            margin-top: 30px;
+        }
+
+        @media (max-width: 600px) {
+            #page-scroll { padding: 18px 12px; }
+            .member-card { flex-direction: column; }
+            .member-avatar { width: 96px; height: 96px; flex-basis: 96px; }
+        }
+    </style>
+</head>
+<body>
+<div id="minimized-container"></div>
+
+<div id="page-scroll" class="has-scrollbar">
+    <div class="container" id="main-container">
+
+        <div class="window glass">
+            <div class="title-bar">
+                <div class="title-bar-text">👥 逗乐工作室 - 团队人员</div>
+                <div class="title-bar-controls">
+                        <button type="button" aria-label="Close"></button>
+                    </div>
+            </div>
+            <div class="window-body has-scrollbar" style="padding:10px;">
+                <div class="intro-card">
+                    <h1 style="margin:0 0 6px; color:#0b2545;">逗乐工作室 · 团队人员介绍</h1>
+                    <p style="margin:0;">这里还没有东西呢！正在制作中！请以后再来吧！</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-actions">
+            <a href="index.html">
+                <button type="button">🏠 返回主页</button>
+            </a>
+        </div>
+
+        <footer>© 2026 逗乐工作室 - 团队人员介绍</footer>
+    </div>
+</div>
+</body>
+</html>
