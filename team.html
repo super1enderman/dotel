@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>逗乐工作室 - 团队人员</title>
+    <link rel="icon" type="image/webp" href="logo.webp">
     <link rel="stylesheet" href="https://unpkg.com/7.css">
     <style>
         * { box-sizing: border-box; }
@@ -187,20 +188,73 @@
             </div>
             <div class="window-body has-scrollbar" style="padding:10px;">
                 <div class="intro-card">
-                    <h1 style="margin:0 0 6px; color:#0b2545;">逗乐工作室 · 团队人员介绍</h1>
-                    <p style="margin:0;">这里还没有东西呢！正在制作中！请以后再来吧！</p>
+                    <h1 style="margin:0 0 6px; color:#0b2545;">逗乐工作室团队</h1>
+                    <p style="margin:0;">这里可以介绍每位团队成员、负责内容以及个人简介，还暂时没有内容哦，正在制作！请以后再来吧！</p>
                 </div>
             </div>
         </div>
-
         <div class="page-actions">
             <a href="index.html">
                 <button type="button">🏠 返回主页</button>
             </a>
         </div>
 
-        <footer>© 2026 逗乐工作室 - 团队人员介绍</footer>
+        <footer>© 2026 逗乐工作室</footer>
     </div>
 </div>
+\n<script>
+(function () {
+    'use strict';
+
+    var BACKGROUND_KEY = 'dotel_background_v1';
+    var BACKGROUND_PRESET_KEY = 'dotel_background_preset_v1';
+    var presets = {
+        vista: "url('background.webp'), linear-gradient(135deg, #0052d4, #4364f7, #6fb1fc)",
+        night: 'linear-gradient(135deg, #0b1f3a 0%, #163d73 48%, #0a6aa8 100%)',
+        horizon5: "url('background2.webp')",
+        minecraft: "url('background3.webp')",
+        radio: "url('background4.webp')"
+    };
+
+    function getSavedBackground() {
+        try {
+            var preset = window.localStorage.getItem(BACKGROUND_PRESET_KEY);
+            if (preset && presets[preset]) {
+                return presets[preset];
+            }
+
+            var custom = window.localStorage.getItem(BACKGROUND_KEY);
+            if (custom) {
+                return "url('" + custom.replace(/'/g, "%27") + "')";
+            }
+        } catch (e) {
+            // localStorage 不可用时保持页面默认背景。
+        }
+        return presets.vista;
+    }
+
+    function applySharedBackground() {
+        document.body.style.backgroundImage = getSavedBackground();
+    }
+
+    applySharedBackground();
+
+    // 如果用户在另一个同源页面修改了背景，当前页面也同步更新。
+    if (window.addEventListener) {
+        window.addEventListener('storage', function (event) {
+            if (event.key === BACKGROUND_KEY || event.key === BACKGROUND_PRESET_KEY) {
+                applySharedBackground();
+            }
+        });
+    } else if (window.attachEvent) {
+        window.attachEvent('onstorage', function (event) {
+            event = event || window.event;
+            if (event.key === BACKGROUND_KEY || event.key === BACKGROUND_PRESET_KEY) {
+                applySharedBackground();
+            }
+        });
+    }
+})();
+</script>\n
 </body>
 </html>
