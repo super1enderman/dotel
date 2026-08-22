@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>逗乐工作室 - 下载中心</title>
+    <link rel="icon" type="image/webp" href="logo.webp">
     <link rel="stylesheet" href="https://unpkg.com/7.css">
     <style>
         * { box-sizing: border-box; }
@@ -197,5 +198,59 @@
             © 2026 逗乐工作室 · Download Center
         </footer>
     </div>
+\n<script>
+(function () {
+    'use strict';
+
+    var BACKGROUND_KEY = 'dotel_background_v1';
+    var BACKGROUND_PRESET_KEY = 'dotel_background_preset_v1';
+    var presets = {
+        vista: "url('background.webp'), linear-gradient(135deg, #0052d4, #4364f7, #6fb1fc)",
+        night: 'linear-gradient(135deg, #0b1f3a 0%, #163d73 48%, #0a6aa8 100%)',
+        horizon5: "url('background2.webp')",
+        minecraft: "url('background3.webp')",
+        radio: "url('background4.webp')"
+    };
+
+    function getSavedBackground() {
+        try {
+            var preset = window.localStorage.getItem(BACKGROUND_PRESET_KEY);
+            if (preset && presets[preset]) {
+                return presets[preset];
+            }
+
+            var custom = window.localStorage.getItem(BACKGROUND_KEY);
+            if (custom) {
+                return "url('" + custom.replace(/'/g, "%27") + "')";
+            }
+        } catch (e) {
+            // localStorage 不可用时保持页面默认背景。
+        }
+        return presets.vista;
+    }
+
+    function applySharedBackground() {
+        document.body.style.backgroundImage = getSavedBackground();
+    }
+
+    applySharedBackground();
+
+    // 如果用户在另一个同源页面修改了背景，当前页面也同步更新。
+    if (window.addEventListener) {
+        window.addEventListener('storage', function (event) {
+            if (event.key === BACKGROUND_KEY || event.key === BACKGROUND_PRESET_KEY) {
+                applySharedBackground();
+            }
+        });
+    } else if (window.attachEvent) {
+        window.attachEvent('onstorage', function (event) {
+            event = event || window.event;
+            if (event.key === BACKGROUND_KEY || event.key === BACKGROUND_PRESET_KEY) {
+                applySharedBackground();
+            }
+        });
+    }
+})();
+</script>\n
 </body>
 </html>
