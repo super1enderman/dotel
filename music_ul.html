@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>逗乐工作室 - 音乐解锁</title>
+    <link rel="icon" type="image/webp" href="logo.webp">
+    <link rel="stylesheet" href="https://unpkg.com/7.css">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; padding: 30px 20px;
+            background: #6fb1fc url('background.webp') center / cover no-repeat fixed;
+            color: #1a2a3a; min-height: 100vh;
+        }
+        .container { width: min(900px, 100%); margin: 0 auto; }
+        .window {
+            margin-bottom: 25px;
+            box-shadow: 0 12px 32px rgba(0,0,0,.45), 0 2px 6px rgba(0,0,0,.3) !important;
+            border-radius: 6px !important; overflow: hidden;
+        }
+        .window-body { padding: 16px; }
+        .title-bar-controls button {
+            cursor: default !important;
+            transition: all .15s ease-in-out;
+            border-radius: 0 0 3px 3px !important;
+        }
+        .title-bar-controls button[aria-label="Close"] {
+            background: linear-gradient(180deg, rgba(210,100,100,.6) 0%, rgba(180,50,50,.75) 48%, rgba(130,20,20,.85) 52%, rgba(200,70,70,.7) 100%) !important;
+            border-color: rgba(100,20,20,.6) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.4) !important;
+        }
+        .title-bar-controls button[aria-label="Close"]:hover {
+            background: linear-gradient(180deg, #ff9ca3 0%, #e81123 48%, #bd000f 52%, #f14c59 100%) !important;
+            border-color: #80000a !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 0 10px rgba(232,17,35,.8) !important;
+        }
+        .info-card {
+            background: linear-gradient(180deg, rgba(225,243,255,.88), rgba(240,248,255,.78));
+            border: 1px solid rgba(135,175,215,.45);
+            border-radius: 6px; padding: 14px; margin-bottom: 14px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 1px 3px rgba(0,0,0,.05);
+        }
+        .unlock-frame {
+            width: 100%; height: 720px; border: 1px solid #8fb0c8; border-radius: 6px;
+            background: #f7fbff; overflow: hidden;
+        }
+        .unlock-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+        .actions { margin-top: 12px; text-align: center; }
+        .actions a { text-decoration: none; margin: 0 6px; }
+        .small { font-size: .86em; color: #526b7d; line-height: 1.6; }
+        footer { text-align:center; color:rgba(255,255,255,.95); margin-top:24px; text-shadow:0 1px 3px rgba(0,0,0,.6); }
+        @media (max-width: 700px) {
+            body { padding: 16px 10px; }
+            .unlock-frame { height: 680px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="window glass">
+        <div class="title-bar">
+            <div class="title-bar-text">🎵 逗乐工作室 - 音乐解锁</div>
+            <div class="title-bar-controls" aria-hidden="true">
+                <button type="button" aria-label="Minimize"></button>
+                <button type="button" aria-label="Maximize"></button>
+                <button type="button" aria-label="Close"></button>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="info-card">
+                <h2 style="margin:0 0 8px;color:#0b2545;">音乐解锁</h2>
+                <p style="margin:0 0 8px;">在浏览器中尝试解锁受支持的加密音乐文件。处理通常在浏览器本地完成，不需要把音频上传到我们的服务器。</p>
+                <p class="small" style="margin:0;">该功能使用公开的 Unlock Music Web 项目/服务作为实现基础。不同浏览器、文件格式和版本的支持情况可能不同。</p>
+            </div>
+
+            <div class="unlock-frame">
+                <iframe src="https://unlockmusic.pages.dev/" title="Unlock Music 音乐解锁" allow="clipboard-write"></iframe>
+            </div>
+
+            <div class="actions">
+                <a href="https://unlockmusic.pages.dev/" target="_blank" rel="noopener noreferrer">
+                    <button type="button">🔗 在新窗口打开音乐解锁</button>
+                </a>
+                <a href="index.html"><button type="button">🏠 返回主页</button></a>
+            </div>
+
+            <p class="small" style="margin:14px 0 0;">提示：如果上方窗口因第三方网站的安全策略无法嵌入，请点击“在新窗口打开音乐解锁”。公开项目资料显示 Unlock Music 支持多种音乐平台的加密格式，并可部署到静态网站平台；项目说明同时提示不同构建版本存在浏览器兼容差异。</p>
+        </div>
+    </div>
+    <footer>© 2026 逗乐工作室 · Music Unlock</footer>
+</div>
+</body>
+</html>

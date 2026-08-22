@@ -914,6 +914,27 @@
         showCountdown();
     };
 
+    /* 修改时分秒后立即让倒计时显示使用新数值，无需再额外点击“重置”。
+       运行中的倒计时不会被强制重置；下次点击“开始/继续”前会继续使用当前剩余时间。 */
+    function updateCountdownFromInputs() {
+        if (countdownTimer) return;
+        countdownRemaining =
+            getCountdownInput('cd-hr') * 3600 +
+            getCountdownInput('cd-min') * 60 +
+            getCountdownInput('cd-sec');
+        showCountdown();
+    }
+
+    if (byId('cd-hr').addEventListener) {
+        byId('cd-hr').addEventListener('input', updateCountdownFromInputs);
+        byId('cd-min').addEventListener('input', updateCountdownFromInputs);
+        byId('cd-sec').addEventListener('input', updateCountdownFromInputs);
+    } else {
+        byId('cd-hr').attachEvent('onkeyup', updateCountdownFromInputs);
+        byId('cd-min').attachEvent('onkeyup', updateCountdownFromInputs);
+        byId('cd-sec').attachEvent('onkeyup', updateCountdownFromInputs);
+    }
+
     window.playNetease = function () {
         byId('netease-wrap').className = '';
         byId('netease-frame').src = 'https://music.163.com/outchain/player?type=2&id=3387613417&auto=1&height=66';

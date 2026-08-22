@@ -917,6 +917,9 @@
                         <a href="download.html" style="text-decoration: none;">
                             <button type="button">📦 下载中心</button>
                         </a>
+                        <a href="music_ul.html" style="text-decoration: none;">
+                            <button type="button">🎵 音乐解锁</button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -1922,7 +1925,7 @@
 
         async function reverseGeocode(latitude,longitude,useIpFallback=false){
             const base='https://api.bigdatacloud.net/data/reverse-geocode-client';
-            const params=new URLSearchParams({localityLanguage:'zh'});
+            const params=new URLSearchParams({localityLanguage:'zh-CN'});
             if(!useIpFallback){
                 params.set('latitude',latitude);
                 params.set('longitude',longitude);
