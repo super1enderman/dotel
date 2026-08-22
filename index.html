@@ -46,6 +46,15 @@
             opacity: 0;
         }
 
+        .aero-background-layer video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
         #page-scroll {
             position: relative;
             z-index: 2;
@@ -568,6 +577,230 @@
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
+
+
+        /* ==================== WMP / Vista 风格本地音乐播放器 ==================== */
+        .wmp-player {
+            position: relative;
+            margin-top: 10px;
+            padding: 0;
+            border-radius: 6px;
+            overflow: hidden;
+            background: linear-gradient(180deg, #0a5da8 0%, #073f78 42%, #042952 100%);
+            border: 1px solid rgba(4, 35, 70, 0.9);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.38),
+                inset 0 -1px 0 rgba(0,0,0,0.65),
+                0 2px 5px rgba(0,0,0,0.35);
+            color: #fff;
+            user-select: none;
+        }
+
+        .wmp-top-glow {
+            height: 3px;
+            background: linear-gradient(90deg,
+                rgba(165,230,255,0.15) 0%,
+                rgba(165,230,255,0.85) 50%,
+                rgba(165,230,255,0.15) 100%);
+            box-shadow: 0 0 8px rgba(88,205,255,0.65);
+        }
+
+        .wmp-main {
+            padding: 9px 10px 7px 10px;
+            background:
+                radial-gradient(circle at 50% -40%, rgba(111,214,255,0.38), transparent 48%),
+                linear-gradient(180deg, rgba(24,121,190,0.92) 0%, rgba(4,56,108,0.96) 100%);
+        }
+
+        .wmp-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .wmp-disc {
+            width: 34px;
+            height: 34px;
+            flex: 0 0 34px;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 50% 50%, #d7efff 0 4px, #497ca7 5px 7px, transparent 8px),
+                repeating-radial-gradient(circle at 50% 50%, #8fc4e6 0 1px, #3b6f9e 2px 3px);
+            border: 1px solid rgba(210,244,255,0.85);
+            box-shadow:
+                0 0 0 1px rgba(0,18,38,0.55),
+                0 0 7px rgba(101,212,255,0.35);
+        }
+
+        .wmp-title-wrap {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .wmp-track-title {
+            font-size: 0.9em;
+            font-weight: bold;
+            color: #f4fbff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.75);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .wmp-status {
+            margin-top: 2px;
+            font-size: 0.72em;
+            color: rgba(224,245,255,0.84);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .wmp-progress-wrap {
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wmp-time {
+            width: 40px;
+            flex: 0 0 40px;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 0.68em;
+            color: #e8f8ff;
+            text-align: center;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .wmp-seek {
+            position: relative;
+            flex: 1;
+            height: 11px;
+            cursor: pointer;
+            border-radius: 6px;
+            background: linear-gradient(180deg, #133352 0%, #061a2d 100%);
+            border: 1px solid rgba(0,0,0,0.8);
+            box-shadow:
+                inset 0 1px 2px rgba(0,0,0,0.75),
+                0 1px 0 rgba(255,255,255,0.14);
+            overflow: visible;
+        }
+
+        .wmp-buffer {
+            position: absolute;
+            left: 1px;
+            top: 1px;
+            bottom: 1px;
+            width: 0;
+            border-radius: 5px;
+            background: rgba(139,200,239,0.32);
+            pointer-events: none;
+        }
+
+        .wmp-progress {
+            position: absolute;
+            left: 1px;
+            top: 1px;
+            bottom: 1px;
+            width: 0;
+            border-radius: 5px;
+            background: linear-gradient(180deg, #d7f7ff 0%, #5cc9ff 45%, #0e83cf 100%);
+            box-shadow:
+                0 0 5px rgba(79,201,255,0.9),
+                inset 0 1px 0 rgba(255,255,255,0.8);
+            pointer-events: none;
+        }
+
+        .wmp-thumb {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 13px;
+            height: 13px;
+            margin: -7px 0 0 -6px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #ffffff 0%, #dff8ff 35%, #4fbbea 72%, #0c67a6 100%);
+            border: 1px solid #063b62;
+            box-shadow:
+                0 0 4px rgba(116,222,255,0.95),
+                0 1px 2px rgba(0,0,0,0.7);
+            pointer-events: none;
+        }
+
+        .wmp-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .wmp-btn {
+            width: 29px;
+            height: 24px;
+            padding: 0;
+            border: 1px solid rgba(0,20,42,0.9);
+            border-radius: 4px;
+            color: #fff;
+            background: linear-gradient(180deg, #3a8ec4 0%, #1a5f95 49%, #0b3c67 51%, #124e7d 100%);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.48),
+                0 1px 2px rgba(0,0,0,0.48);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+            cursor: pointer;
+            line-height: 21px;
+            font-size: 14px;
+        }
+
+        .wmp-btn:hover {
+            background: linear-gradient(180deg, #6ec7f2 0%, #2b84bd 49%, #0f5b95 51%, #1e6ba1 100%);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.72),
+                0 0 7px rgba(83,205,255,0.65);
+        }
+
+        .wmp-btn:active {
+            background: linear-gradient(180deg, #0c3f6b 0%, #164f7d 48%, #2c80b4 52%, #1a6a9f 100%);
+            box-shadow: inset 0 2px 3px rgba(0,0,0,0.45);
+        }
+
+        .wmp-play {
+            width: 36px;
+            height: 30px;
+            font-size: 17px;
+            border-radius: 5px;
+        }
+
+        .wmp-volume {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-left: auto;
+            min-width: 100px;
+        }
+
+        .wmp-volume-icon {
+            font-size: 14px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.85);
+        }
+
+        .wmp-volume-range {
+            width: 72px;
+            accent-color: #62cfff;
+            cursor: pointer;
+        }
+
+        .wmp-bottom {
+            height: 4px;
+            background: linear-gradient(180deg, rgba(102,178,222,0.45), rgba(0,32,61,0.8));
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .wmp-player audio {
+            display: none;
+        }
+
         .music-item {
             background: linear-gradient(180deg, rgba(225, 243, 255, 0.85) 0%, rgba(240, 248, 255, 0.75) 100%);
             border: 1px solid rgba(135, 175, 215, 0.45);
@@ -615,8 +848,12 @@
 </head>
 <body>
 
-    <div id="aero-bg-layer-a" class="aero-background-layer"></div>
-    <div id="aero-bg-layer-b" class="aero-background-layer"></div>
+    <div id="aero-bg-layer-a" class="aero-background-layer">
+        <video muted loop playsinline preload="auto"></video>
+    </div>
+    <div id="aero-bg-layer-b" class="aero-background-layer">
+        <video muted loop playsinline preload="auto"></video>
+    </div>
 
     <img
         id="studio-logo"
@@ -768,37 +1005,62 @@
                 <div class="music-item">
                     <strong style="font-size: 1.05em; color: #0b2545;">01. 渡口-蔡琴</strong>
                     <p style="margin: 4px 0 0 0; font-size: 0.85em; opacity: 0.85;">经典音乐，测音必备！（侵删）</p>
-                    <audio controls>
-                        <source src="music1.mp3" type="audio/mpeg">
-                        你的浏览器不支持音频播放。
-                    </audio>
+                    <div class="wmp-player" data-wmp-player data-title="01. 渡口 - 蔡琴">
+                        <div class="wmp-top-glow"></div>
+                        <div class="wmp-main">
+                            <div class="wmp-meta">
+                                <div class="wmp-disc"></div>
+                                <div class="wmp-title-wrap">
+                                    <div class="wmp-track-title">01. 渡口 - 蔡琴</div>
+                                    <div class="wmp-status">Windows Media Player 风格播放器</div>
+                                </div>
+                            </div>
+                            <div class="wmp-progress-wrap">
+                                <span class="wmp-time wmp-current">00:00</span>
+                                <div class="wmp-seek">
+                                    <div class="wmp-buffer"></div>
+                                    <div class="wmp-progress"></div>
+                                    <div class="wmp-thumb"></div>
+                                </div>
+                                <span class="wmp-time wmp-duration">00:00</span>
+                            </div>
+                            <div class="wmp-controls">
+                                <button type="button" class="wmp-btn" data-action="restart" title="重新开始">↶</button>
+                                <button type="button" class="wmp-btn wmp-play" data-action="play" title="播放">▶</button>
+                                <button type="button" class="wmp-btn" data-action="stop" title="停止">■</button>
+                                <div class="wmp-volume">
+                                    <span class="wmp-volume-icon">🔊</span>
+                                    <input class="wmp-volume-range" type="range" min="0" max="1" step="0.01" value="0.85" aria-label="音量">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wmp-bottom"></div>
+                        <audio preload="metadata">
+                            <source src="music1.mp3" type="audio/mpeg">
+                            你的浏览器不支持音频播放。
+                        </audio>
+                    </div>
                 </div>
 
                 <div class="music-item">
                     <strong style="font-size: 1.05em; color: #0b2545;">02. 小村之恋-邓丽君</strong>
                     <p style="margin: 4px 0 0 0; font-size: 0.85em; opacity: 0.85;">经典音乐，享受村庄生活！（侵删）</p>
-                    <audio controls>
-                        <source src="music2.mp3" type="audio/mpeg">
-                        你的浏览器不支持音频播放。
-                    </audio>
+                    <div class="wmp-player" data-wmp-player data-title="02. 小村之恋 - 邓丽君">
+                        <div class="wmp-top-glow"></div><div class="wmp-main"><div class="wmp-meta"><div class="wmp-disc"></div><div class="wmp-title-wrap"><div class="wmp-track-title">02. 小村之恋 - 邓丽君</div><div class="wmp-status">Windows Media Player 风格播放器</div></div></div><div class="wmp-progress-wrap"><span class="wmp-time wmp-current">00:00</span><div class="wmp-seek"><div class="wmp-buffer"></div><div class="wmp-progress"></div><div class="wmp-thumb"></div></div><span class="wmp-time wmp-duration">00:00</span></div><div class="wmp-controls"><button type="button" class="wmp-btn" data-action="restart" title="重新开始">↶</button><button type="button" class="wmp-btn wmp-play" data-action="play" title="播放">▶</button><button type="button" class="wmp-btn" data-action="stop" title="停止">■</button><div class="wmp-volume"><span class="wmp-volume-icon">🔊</span><input class="wmp-volume-range" type="range" min="0" max="1" step="0.01" value="0.85" aria-label="音量"></div></div></div><div class="wmp-bottom"></div><audio preload="metadata"><source src="music2.mp3" type="audio/mpeg">你的浏览器不支持音频播放。</audio></div>
                 </div>
 
                 <div class="music-item">
                     <strong style="font-size: 1.05em; color: #0b2545;">03. frutiger aero - Inuyasha</strong>
                     <p style="margin: 4px 0 0 0; font-size: 0.85em; opacity: 0.85;">清新氛围音乐，Frutiger Aero 风格（侵删）</p>
-                    <audio controls preload="metadata">
-                        <source src="music3.mp3" type="audio/mpeg">
-                        你的浏览器不支持音频播放。
-                    </audio>
+                    <div class="wmp-player" data-wmp-player data-title="03. frutiger aero - Inuyasha">
+                        <div class="wmp-top-glow"></div><div class="wmp-main"><div class="wmp-meta"><div class="wmp-disc"></div><div class="wmp-title-wrap"><div class="wmp-track-title">03. frutiger aero - Inuyasha</div><div class="wmp-status">Windows Media Player 风格播放器</div></div></div><div class="wmp-progress-wrap"><span class="wmp-time wmp-current">00:00</span><div class="wmp-seek"><div class="wmp-buffer"></div><div class="wmp-progress"></div><div class="wmp-thumb"></div></div><span class="wmp-time wmp-duration">00:00</span></div><div class="wmp-controls"><button type="button" class="wmp-btn" data-action="restart" title="重新开始">↶</button><button type="button" class="wmp-btn wmp-play" data-action="play" title="播放">▶</button><button type="button" class="wmp-btn" data-action="stop" title="停止">■</button><div class="wmp-volume"><span class="wmp-volume-icon">🔊</span><input class="wmp-volume-range" type="range" min="0" max="1" step="0.01" value="0.85" aria-label="音量"></div></div></div><div class="wmp-bottom"></div><audio preload="metadata"><source src="music3.mp3" type="audio/mpeg">你的浏览器不支持音频播放。</audio></div>
                 </div>
 
                 <div class="music-item">
                     <strong style="font-size: 1.05em; color: #0b2545;">04. One Man's Dream（一个男人的梦想） - Yanni</strong>
                     <p style="margin: 4px 0 0 0; font-size: 0.85em; opacity: 0.85;">经典钢琴/新世纪音乐作品（侵删）</p>
-                    <audio controls preload="metadata">
-                        <source src="music4.mp3" type="audio/mpeg">
-                        你的浏览器不支持音频播放。
-                    </audio>
+                    <div class="wmp-player" data-wmp-player data-title="04. One Man's Dream（一个男人的梦想） - Yanni">
+                        <div class="wmp-top-glow"></div><div class="wmp-main"><div class="wmp-meta"><div class="wmp-disc"></div><div class="wmp-title-wrap"><div class="wmp-track-title">04. One Man's Dream（一个男人的梦想） - Yanni</div><div class="wmp-status">Windows Media Player 风格播放器</div></div></div><div class="wmp-progress-wrap"><span class="wmp-time wmp-current">00:00</span><div class="wmp-seek"><div class="wmp-buffer"></div><div class="wmp-progress"></div><div class="wmp-thumb"></div></div><span class="wmp-time wmp-duration">00:00</span></div><div class="wmp-controls"><button type="button" class="wmp-btn" data-action="restart" title="重新开始">↶</button><button type="button" class="wmp-btn wmp-play" data-action="play" title="播放">▶</button><button type="button" class="wmp-btn" data-action="stop" title="停止">■</button><div class="wmp-volume"><span class="wmp-volume-icon">🔊</span><input class="wmp-volume-range" type="range" min="0" max="1" step="0.01" value="0.85" aria-label="音量"></div></div></div><div class="wmp-bottom"></div><audio preload="metadata"><source src="music4.mp3" type="audio/mpeg">你的浏览器不支持音频播放。</audio></div>
                 </div>
 
                 <div class="music-item netease-item">
@@ -850,11 +1112,11 @@
                 </div>
             </div>
             <div class="window-body has-scrollbar">
-                <p style="margin-top: 0;">默认使用 <code>Windows Vista</code> 默认壁纸。你也可以临时选择本地图片体验不同效果：</p>
+                <p style="margin-top: 0;">默认使用 <code>Windows Vista</code> 默认壁纸。你也可以选择本地图片或视频作为动态背景：</p>
                 <div class="bg-control">
                     <button onclick="document.getElementById('bgInput').click()">选择本地壁纸</button>
                     <button onclick="resetBackground()">恢复默认背景</button>
-                    <input type="file" id="bgInput" accept="image/*" onchange="changeBackground(event)">
+                    <input type="file" id="bgInput" accept="image/*,video/mp4,video/webm,video/ogg,video/*" onchange="changeBackground(event)">
                 </div>
                 <div class="bg-presets">
                     <strong style="font-size: 0.9em; opacity: 0.85;">预设：</strong>
@@ -863,6 +1125,8 @@
                     <button type="button" onclick="applyPresetBackground('horizon5')">地平线5</button>
                     <button type="button" onclick="applyPresetBackground('minecraft')">Minecraft</button>
                     <button type="button" onclick="applyPresetBackground('radio')">逗乐电台</button>
+                    <button type="button" onclick="applyPresetBackground('vistaDynamic')">Vista 经典动态</button>
+                    <button type="button" onclick="applyPresetBackground('vistaRain')">Vista 雨夜街头</button>
                 </div>
             </div>
         </div>
@@ -1848,6 +2112,165 @@
         refreshWeather();
         setInterval(refreshWeather,10*60*1000);
 
+
+        // ==================== WMP 风格本地播放器 ====================
+        (function initWmpPlayers() {
+            const players = Array.from(document.querySelectorAll('[data-wmp-player]'));
+            let activeAudio = null;
+
+            function formatMediaTime(seconds) {
+                if (!Number.isFinite(seconds) || seconds < 0) return '00:00';
+                const total = Math.floor(seconds);
+                const h = Math.floor(total / 3600);
+                const m = Math.floor((total % 3600) / 60);
+                const s = total % 60;
+                if (h > 0) {
+                    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+                }
+                return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            }
+
+            function setPlayerStatus(player, text) {
+                const status = player.querySelector('.wmp-status');
+                if (status) status.textContent = text;
+            }
+
+            function updatePlayer(player) {
+                const audio = player.querySelector('audio');
+                if (!audio) return;
+
+                const current = player.querySelector('.wmp-current');
+                const duration = player.querySelector('.wmp-duration');
+                const progress = player.querySelector('.wmp-progress');
+                const thumb = player.querySelector('.wmp-thumb');
+                const playButton = player.querySelector('[data-action="play"]');
+                const status = player.querySelector('.wmp-status');
+
+                const currentTime = Number.isFinite(audio.currentTime) ? audio.currentTime : 0;
+                const total = Number.isFinite(audio.duration) ? audio.duration : 0;
+                const ratio = total > 0 ? Math.min(1, Math.max(0, currentTime / total)) : 0;
+
+                if (current) current.textContent = formatMediaTime(currentTime);
+                if (duration) duration.textContent = formatMediaTime(total);
+                if (progress) progress.style.width = `${ratio * 100}%`;
+                if (thumb) thumb.style.left = `${ratio * 100}%`;
+                if (playButton) playButton.textContent = audio.paused ? '▶' : 'Ⅱ';
+
+                if (audio.error) {
+                    if (status) status.textContent = '无法读取音频文件';
+                } else if (audio.ended) {
+                    if (status) status.textContent = '播放结束';
+                } else if (!audio.paused) {
+                    if (status) status.textContent = '正在播放';
+                } else if (currentTime > 0) {
+                    if (status) status.textContent = '已暂停';
+                } else {
+                    if (status) status.textContent = 'Windows Media Player 风格播放器';
+                }
+            }
+
+            function stopOtherPlayers(exceptAudio) {
+                players.forEach(player => {
+                    const audio = player.querySelector('audio');
+                    if (audio && audio !== exceptAudio && !audio.paused) {
+                        audio.pause();
+                        updatePlayer(player);
+                    }
+                });
+            }
+
+            function seekFromPointer(player, event) {
+                const audio = player.querySelector('audio');
+                const seek = player.querySelector('.wmp-seek');
+                if (!audio || !seek || !Number.isFinite(audio.duration) || audio.duration <= 0) return;
+                const rect = seek.getBoundingClientRect();
+                const ratio = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+                audio.currentTime = ratio * audio.duration;
+                updatePlayer(player);
+            }
+
+            players.forEach(player => {
+                const audio = player.querySelector('audio');
+                if (!audio) return;
+
+                audio.volume = 0.85;
+
+                const playButton = player.querySelector('[data-action="play"]');
+                const stopButton = player.querySelector('[data-action="stop"]');
+                const restartButton = player.querySelector('[data-action="restart"]');
+                const seek = player.querySelector('.wmp-seek');
+                const volume = player.querySelector('.wmp-volume-range');
+
+                playButton.addEventListener('click', () => {
+                    if (audio.paused || audio.ended) {
+                        stopOtherPlayers(audio);
+                        const promise = audio.play();
+                        if (promise && typeof promise.catch === 'function') {
+                            promise.catch(() => setPlayerStatus(player, '浏览器阻止了自动播放，请再次点击播放'));
+                        }
+                    } else {
+                        audio.pause();
+                    }
+                    updatePlayer(player);
+                    activeAudio = audio;
+                });
+
+                stopButton.addEventListener('click', () => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                    updatePlayer(player);
+                    activeAudio = null;
+                });
+
+                restartButton.addEventListener('click', () => {
+                    audio.currentTime = 0;
+                    stopOtherPlayers(audio);
+                    const promise = audio.play();
+                    if (promise && typeof promise.catch === 'function') {
+                        promise.catch(() => {});
+                    }
+                    updatePlayer(player);
+                    activeAudio = audio;
+                });
+
+                seek.addEventListener('click', event => seekFromPointer(player, event));
+
+                volume.addEventListener('input', () => {
+                    audio.volume = Number(volume.value);
+                    updatePlayer(player);
+                });
+
+                audio.addEventListener('loadedmetadata', () => updatePlayer(player));
+                audio.addEventListener('timeupdate', () => updatePlayer(player));
+                audio.addEventListener('progress', () => {
+                    const buffered = player.querySelector('.wmp-buffer');
+                    if (!buffered || !Number.isFinite(audio.duration) || audio.duration <= 0 || !audio.buffered.length) return;
+                    try {
+                        const end = audio.buffered.end(audio.buffered.length - 1);
+                        buffered.style.width = `${Math.min(100, (end / audio.duration) * 100)}%`;
+                    } catch (_) {}
+                });
+                audio.addEventListener('play', () => {
+                    stopOtherPlayers(audio);
+                    activeAudio = audio;
+                    updatePlayer(player);
+                });
+                audio.addEventListener('pause', () => updatePlayer(player));
+                audio.addEventListener('ended', () => {
+                    audio.currentTime = 0;
+                    activeAudio = null;
+                    updatePlayer(player);
+                });
+
+                updatePlayer(player);
+            });
+
+            // 页面失去焦点时不强行暂停，保持与普通播放器一致。
+            window.addEventListener('beforeunload', () => {
+                if (activeAudio && !activeAudio.paused) activeAudio.pause();
+            });
+        })();
+
         // 网易云音乐控件
         function playNeteaseMusic() {
             const playerWrap = document.getElementById('netease-player-wrap');
@@ -1875,34 +2298,51 @@
         // 用户背景的 localStorage 键名。
         const BACKGROUND_KEY = 'dotel_background_v1';
         const BACKGROUND_PRESET_KEY = 'dotel_background_preset_v1';
+        const BACKGROUND_VIDEO_DB = 'dotelBackgroundDB';
+        const BACKGROUND_VIDEO_STORE = 'video';
+        let activeBackgroundLayer = null;
+        let backgroundSwitchTimer = null;
+        let activeVideoObjectUrl = null;
 
         const PRESET_BACKGROUNDS = {
             vista: {
                 name: 'Vista 经典',
+                type: 'image',
                 value: "url('background.webp'), linear-gradient(135deg, #0052d4, #4364f7, #6fb1fc)"
             },
             night: {
                 name: '深蓝夜景',
+                type: 'image',
                 value: 'linear-gradient(135deg, #0b1f3a 0%, #163d73 48%, #0a6aa8 100%)'
             },
             horizon5: {
                 name: '地平线5',
+                type: 'image',
                 value: "url('background2.webp')"
             },
             minecraft: {
                 name: 'Minecraft',
+                type: 'image',
                 value: "url('background3.webp')"
             },
             radio: {
                 name: '逗乐电台',
+                type: 'image',
                 value: "url('background4.webp')"
+            },
+            vistaDynamic: {
+                name: 'Vista 经典动态',
+                type: 'video',
+                value: 'background_m1.mp4'
+            },
+            vistaRain: {
+                name: 'Vista 雨夜街头',
+                type: 'video',
+                value: 'background_m2.mp4'
             }
         };
 
-        // ==================== Aero 背景切换系统 ====================
-        let activeBackgroundLayer = null;
-        let backgroundSwitchTimer = null;
-
+        // ==================== Aero 背景切换系统（图片 + 视频） ====================
         function getBackgroundLayers() {
             return [
                 document.getElementById('aero-bg-layer-a'),
@@ -1910,21 +2350,81 @@
             ];
         }
 
-        function setBodyBackground(backgroundImage, animate = true) {
+        function getLayerVideo(layer) {
+            return layer ? layer.querySelector('video') : null;
+        }
+
+        function clearBackgroundLayer(layer) {
+            if (!layer) return;
+            const video = getLayerVideo(layer);
+            if (video) {
+                try { video.pause(); } catch (e) {}
+                video.removeAttribute('src');
+                try { video.load(); } catch (e) {}
+                video.style.display = 'none';
+            }
+            layer.style.backgroundImage = 'none';
+            layer.style.opacity = '0';
+        }
+
+        function applyMediaToLayer(layer, media, autoPlayVideo) {
+            const video = getLayerVideo(layer);
+            if (!layer) return;
+
+            layer.style.backgroundImage = 'none';
+
+            if (media.type === 'video') {
+                if (video) {
+                    video.style.display = 'block';
+                    video.loop = true;
+                    video.muted = true;
+                    video.playsInline = true;
+                    video.src = media.value;
+                    try { video.load(); } catch (e) {}
+                    if (autoPlayVideo) {
+                        const playPromise = video.play();
+                        if (playPromise && typeof playPromise.catch === 'function') {
+                            playPromise.catch(function () {});
+                        }
+                    }
+                }
+            } else {
+                if (video) {
+                    try { video.pause(); } catch (e) {}
+                    video.removeAttribute('src');
+                    try { video.load(); } catch (e) {}
+                    video.style.display = 'none';
+                }
+                layer.style.backgroundImage = media.value;
+            }
+        }
+
+        function createImageMedia(value) {
+            return { type: 'image', value: value };
+        }
+
+        function createVideoMedia(url) {
+            return { type: 'video', value: url };
+        }
+
+        function setBodyBackgroundSource(media, animate = true) {
             const layers = getBackgroundLayers();
             if (!layers[0] || !layers[1]) {
-                document.body.style.backgroundImage = backgroundImage;
+                if (media.type === 'video') {
+                    document.body.style.backgroundImage = '';
+                } else {
+                    document.body.style.backgroundImage = media.value;
+                }
                 return;
             }
 
             if (!activeBackgroundLayer) {
                 const layer = layers[0];
                 layer.style.transition = 'none';
-                layer.style.backgroundImage = backgroundImage;
+                applyMediaToLayer(layer, media, true);
                 layer.style.opacity = '1';
                 activeBackgroundLayer = layer;
-                layers[1].style.opacity = '0';
-                layers[1].style.backgroundImage = 'none';
+                clearBackgroundLayer(layers[1]);
                 return;
             }
 
@@ -1934,10 +2434,9 @@
             if (!animate) {
                 current.style.transition = 'none';
                 next.style.transition = 'none';
-                next.style.backgroundImage = backgroundImage;
+                applyMediaToLayer(next, media, true);
                 next.style.opacity = '1';
-                current.style.opacity = '0';
-                current.style.backgroundImage = 'none';
+                clearBackgroundLayer(current);
                 activeBackgroundLayer = next;
                 return;
             }
@@ -1945,7 +2444,7 @@
             clearTimeout(backgroundSwitchTimer);
 
             next.style.transition = 'none';
-            next.style.backgroundImage = backgroundImage;
+            applyMediaToLayer(next, media, true);
             next.style.opacity = '0';
             void next.offsetWidth;
 
@@ -1953,26 +2452,157 @@
             next.style.transition = 'opacity 500ms ease-in-out';
             current.style.opacity = '0';
             next.style.opacity = '1';
-
             activeBackgroundLayer = next;
 
             backgroundSwitchTimer = setTimeout(() => {
                 current.style.transition = 'none';
-                current.style.backgroundImage = 'none';
-                current.style.opacity = '0';
+                clearBackgroundLayer(current);
                 next.style.transition = '';
             }, 540);
         }
 
-        // 保存自定义背景，并清除预设背景状态。
+        function setBodyBackground(backgroundImage, animate = true) {
+            setBodyBackgroundSource(createImageMedia(backgroundImage), animate);
+        }
+
+        function openVideoDb(onSuccess, onFailure) {
+            if (!window.indexedDB) {
+                if (onFailure) onFailure();
+                return;
+            }
+            let request;
+            try {
+                request = indexedDB.open(BACKGROUND_VIDEO_DB, 1);
+            } catch (e) {
+                if (onFailure) onFailure();
+                return;
+            }
+            request.onupgradeneeded = function (event) {
+                const db = event.target.result;
+                if (!db.objectStoreNames.contains(BACKGROUND_VIDEO_STORE)) {
+                    db.createObjectStore(BACKGROUND_VIDEO_STORE);
+                }
+            };
+            request.onsuccess = function (event) {
+                onSuccess(event.target.result);
+            };
+            request.onerror = function () {
+                if (onFailure) onFailure();
+            };
+        }
+
+        function saveVideoBackground(file, callback) {
+            openVideoDb(function (db) {
+                let tx;
+                try {
+                    tx = db.transaction([BACKGROUND_VIDEO_STORE], 'readwrite');
+                    tx.objectStore(BACKGROUND_VIDEO_STORE).put(file, 'current');
+                    tx.oncomplete = function () {
+                        db.close();
+                        if (callback) callback(true);
+                    };
+                    tx.onerror = function () {
+                        db.close();
+                        if (callback) callback(false);
+                    };
+                } catch (e) {
+                    db.close();
+                    if (callback) callback(false);
+                }
+            }, function () {
+                if (callback) callback(false);
+            });
+        }
+
+        function loadVideoBackground(callback) {
+            openVideoDb(function (db) {
+                let request;
+                try {
+                    request = db.transaction([BACKGROUND_VIDEO_STORE], 'readonly')
+                        .objectStore(BACKGROUND_VIDEO_STORE).get('current');
+                    request.onsuccess = function (event) {
+                        const file = event.target.result;
+                        db.close();
+                        callback(file || null);
+                    };
+                    request.onerror = function () {
+                        db.close();
+                        callback(null);
+                    };
+                } catch (e) {
+                    db.close();
+                    callback(null);
+                }
+            }, function () {
+                callback(null);
+            });
+        }
+
+        function clearVideoBackground(callback) {
+            if (!window.indexedDB) {
+                if (callback) callback();
+                return;
+            }
+            openVideoDb(function (db) {
+                try {
+                    const tx = db.transaction([BACKGROUND_VIDEO_STORE], 'readwrite');
+                    tx.objectStore(BACKGROUND_VIDEO_STORE).delete('current');
+                    tx.oncomplete = function () {
+                        db.close();
+                        if (callback) callback();
+                    };
+                    tx.onerror = function () {
+                        db.close();
+                        if (callback) callback();
+                    };
+                } catch (e) {
+                    db.close();
+                    if (callback) callback();
+                }
+            }, function () {
+                if (callback) callback();
+            });
+        }
+
+        function revokeActiveVideoUrl() {
+            if (activeVideoObjectUrl) {
+                try { URL.revokeObjectURL(activeVideoObjectUrl); } catch (e) {}
+                activeVideoObjectUrl = null;
+            }
+        }
+
+        // 保存自定义背景，并支持图片 / 视频。
         function changeBackground(event) {
             const file = event.target.files[0];
             if (!file) return;
 
+            const isVideo = file.type.indexOf('video/') === 0 || /\.(mp4|webm|ogg|mov)$/i.test(file.name);
+
+            if (isVideo) {
+                if (!window.URL || !window.URL.createObjectURL) {
+                    alert('当前浏览器不支持本地视频背景。');
+                    return;
+                }
+
+                revokeActiveVideoUrl();
+                activeVideoObjectUrl = URL.createObjectURL(file);
+                setBodyBackgroundSource(createVideoMedia(activeVideoObjectUrl));
+
+                try {
+                    localStorage.removeItem(BACKGROUND_KEY);
+                    localStorage.removeItem(BACKGROUND_PRESET_KEY);
+                } catch (error) {}
+
+                saveVideoBackground(file);
+                return;
+            }
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 const imageData = e.target.result;
-                setBodyBackground(`url('${imageData}')`);
+                revokeActiveVideoUrl();
+                clearVideoBackground();
+                setBodyBackground(imageData ? `url('${imageData}')` : '', true);
                 try {
                     localStorage.setItem(BACKGROUND_KEY, imageData);
                     localStorage.removeItem(BACKGROUND_PRESET_KEY);
@@ -1988,7 +2618,9 @@
             const preset = PRESET_BACKGROUNDS[presetKey];
             if (!preset) return;
 
-            setBodyBackground(preset.value);
+            revokeActiveVideoUrl();
+            clearVideoBackground();
+            setBodyBackgroundSource(preset.type === 'video' ? createVideoMedia(preset.value) : createImageMedia(preset.value));
 
             try {
                 localStorage.setItem(BACKGROUND_PRESET_KEY, presetKey);
@@ -2005,7 +2637,8 @@
             try {
                 const presetKey = localStorage.getItem(BACKGROUND_PRESET_KEY);
                 if (presetKey && PRESET_BACKGROUNDS[presetKey]) {
-                    setBodyBackground(PRESET_BACKGROUNDS[presetKey].value, false);
+                    const preset = PRESET_BACKGROUNDS[presetKey];
+                    setBodyBackgroundSource(preset.type === 'video' ? createVideoMedia(preset.value) : createImageMedia(preset.value), false);
                     return;
                 }
 
@@ -2017,9 +2650,20 @@
             } catch (error) {
                 console.warn('读取保存的背景失败：', error);
             }
+
+            // 没有图片/预设时，尝试恢复上次保存的本地视频。
+            loadVideoBackground(function (file) {
+                if (!file) return;
+                if (!window.URL || !window.URL.createObjectURL) return;
+                revokeActiveVideoUrl();
+                activeVideoObjectUrl = URL.createObjectURL(file);
+                setBodyBackgroundSource(createVideoMedia(activeVideoObjectUrl), false);
+            });
         }
 
         function resetBackground() {
+            revokeActiveVideoUrl();
+            clearVideoBackground();
             setBodyBackground(PRESET_BACKGROUNDS.vista.value);
             try {
                 localStorage.removeItem(BACKGROUND_KEY);
