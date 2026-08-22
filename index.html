@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>逗乐工作室 - 官网</title>
+    <!-- Internet Explorer 兼容跳转：检测到 IE 后切换到专用页面。 -->
+    <script>
+        (function () {
+            if (document.documentMode) {
+                var target = 'index-ie.html';
+                var currentFile = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
+                if (currentFile !== target) {
+                    window.location.replace(target + window.location.search + window.location.hash);
+                }
+            }
+        })();
+    </script>
+
     <!-- 引入 7.css 核心样式库 -->
     <link rel="stylesheet" href="https://unpkg.com/7.css">
     <style>
@@ -12,14 +25,29 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 30px 20px;
-            background-image: url('background.webp'), linear-gradient(135deg, #0052d4, #4364f7, #6fb1fc);
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
+            background: #6fb1fc;
             color: #1a2a3a;
             min-height: 100vh;
-            transition: background-image 0.5s ease-in-out;
+        }
+
+        /* ==================== Aero 背景淡入淡出层 ==================== */
+        .aero-background-layer {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+        }
+
+        #page-scroll {
+            position: relative;
+            z-index: 2;
         }
 
         .container {
@@ -519,6 +547,16 @@
         }
 
         .bg-control { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+        .bg-presets {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .bg-presets button {
+            white-space: nowrap;
+        }
         #bgInput { display: none; }
         
         .glass-card {
@@ -575,6 +613,9 @@
     </style>
 </head>
 <body>
+
+    <div id="aero-bg-layer-a" class="aero-background-layer"></div>
+    <div id="aero-bg-layer-b" class="aero-background-layer"></div>
 
     <img
         id="studio-logo"
@@ -814,13 +855,22 @@
                     <button onclick="resetBackground()">恢复默认背景</button>
                     <input type="file" id="bgInput" accept="image/*" onchange="changeBackground(event)">
                 </div>
+                <div class="bg-presets">
+                    <strong style="font-size: 0.9em; opacity: 0.85;">预设：</strong>
+                    <button type="button" onclick="applyPresetBackground('vista')">Vista 经典</button>
+                    <button type="button" onclick="applyPresetBackground('night')">深蓝夜景</button>
+                    <button type="button" onclick="applyPresetBackground('horizon5')">地平线5</button>
+                    <button type="button" onclick="applyPresetBackground('minecraft')">Minecraft</button>
+                    <button type="button" onclick="applyPresetBackground('radio')">逗乐电台</button>
+                </div>
             </div>
         </div>
 
         <!-- 底部还原按钮 -->
         <footer>
-            <div class="restore-box">
+            <div class="restore-box" style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
                 <button onclick="restoreAllWindows()">🔄 还原所有已关闭/最小化/最大化的窗口</button>
+                <button type="button" onclick="location.href='index-ie.html'">🖥️ 切换至兼容模式</button>
             </div>
             <p>© 2026 逗乐工作室</p>
         </footer>
@@ -1823,8 +1873,97 @@
 
         // 用户背景的 localStorage 键名。
         const BACKGROUND_KEY = 'dotel_background_v1';
+        const BACKGROUND_PRESET_KEY = 'dotel_background_preset_v1';
 
-        // 背景切换：使用 localStorage 持久保存用户选择的背景。
+        const PRESET_BACKGROUNDS = {
+            vista: {
+                name: 'Vista 经典',
+                value: "url('background.webp'), linear-gradient(135deg, #0052d4, #4364f7, #6fb1fc)"
+            },
+            night: {
+                name: '深蓝夜景',
+                value: 'linear-gradient(135deg, #0b1f3a 0%, #163d73 48%, #0a6aa8 100%)'
+            },
+            horizon5: {
+                name: '地平线5',
+                value: "url('background2.webp')"
+            },
+            minecraft: {
+                name: 'Minecraft',
+                value: "url('background3.webp')"
+            },
+            radio: {
+                name: '逗乐电台',
+                value: "url('background4.webp')"
+            }
+        };
+
+        // ==================== Aero 背景切换系统 ====================
+        let activeBackgroundLayer = null;
+        let backgroundSwitchTimer = null;
+
+        function getBackgroundLayers() {
+            return [
+                document.getElementById('aero-bg-layer-a'),
+                document.getElementById('aero-bg-layer-b')
+            ];
+        }
+
+        function setBodyBackground(backgroundImage, animate = true) {
+            const layers = getBackgroundLayers();
+            if (!layers[0] || !layers[1]) {
+                document.body.style.backgroundImage = backgroundImage;
+                return;
+            }
+
+            if (!activeBackgroundLayer) {
+                const layer = layers[0];
+                layer.style.transition = 'none';
+                layer.style.backgroundImage = backgroundImage;
+                layer.style.opacity = '1';
+                activeBackgroundLayer = layer;
+                layers[1].style.opacity = '0';
+                layers[1].style.backgroundImage = 'none';
+                return;
+            }
+
+            const current = activeBackgroundLayer;
+            const next = current === layers[0] ? layers[1] : layers[0];
+
+            if (!animate) {
+                current.style.transition = 'none';
+                next.style.transition = 'none';
+                next.style.backgroundImage = backgroundImage;
+                next.style.opacity = '1';
+                current.style.opacity = '0';
+                current.style.backgroundImage = 'none';
+                activeBackgroundLayer = next;
+                return;
+            }
+
+            clearTimeout(backgroundSwitchTimer);
+
+            next.style.transition = 'none';
+            next.style.backgroundImage = backgroundImage;
+            next.style.opacity = '0';
+            void next.offsetWidth;
+
+            current.style.transition = 'opacity 500ms ease-in-out';
+            next.style.transition = 'opacity 500ms ease-in-out';
+            current.style.opacity = '0';
+            next.style.opacity = '1';
+
+            activeBackgroundLayer = next;
+
+            backgroundSwitchTimer = setTimeout(() => {
+                current.style.transition = 'none';
+                current.style.backgroundImage = 'none';
+                current.style.opacity = '0';
+                next.style.transition = '';
+            }, 540);
+        }
+
+        // 保存自定义背景，并清除预设背景状态。
         function changeBackground(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1832,9 +1971,10 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 const imageData = e.target.result;
-                document.body.style.backgroundImage = `url('${imageData}')`;
+                setBodyBackground(`url('${imageData}')`);
                 try {
                     localStorage.setItem(BACKGROUND_KEY, imageData);
+                    localStorage.removeItem(BACKGROUND_PRESET_KEY);
                 } catch (error) {
                     console.warn('背景图片过大，无法保存到 localStorage：', error);
                 }
@@ -1842,11 +1982,36 @@
             reader.readAsDataURL(file);
         }
 
+        // 应用预设背景并持久保存。
+        function applyPresetBackground(presetKey) {
+            const preset = PRESET_BACKGROUNDS[presetKey];
+            if (!preset) return;
+
+            setBodyBackground(preset.value);
+
+            try {
+                localStorage.setItem(BACKGROUND_PRESET_KEY, presetKey);
+                localStorage.removeItem(BACKGROUND_KEY);
+            } catch (error) {
+                console.warn('保存预设背景失败：', error);
+            }
+
+            const input = document.getElementById('bgInput');
+            if (input) input.value = '';
+        }
+
         function loadSavedBackground() {
             try {
+                const presetKey = localStorage.getItem(BACKGROUND_PRESET_KEY);
+                if (presetKey && PRESET_BACKGROUNDS[presetKey]) {
+                    setBodyBackground(PRESET_BACKGROUNDS[presetKey].value, false);
+                    return;
+                }
+
                 const saved = localStorage.getItem(BACKGROUND_KEY);
                 if (saved) {
-                    document.body.style.backgroundImage = `url('${saved}')`;
+                    setBodyBackground(`url('${saved}')`, false);
+                    return;
                 }
             } catch (error) {
                 console.warn('读取保存的背景失败：', error);
@@ -1854,9 +2019,10 @@
         }
 
         function resetBackground() {
-            document.body.style.backgroundImage = "url('background.webp'), linear-gradient(135deg, #0052d4, #4364f7, #6fb1fc)";
+            setBodyBackground(PRESET_BACKGROUNDS.vista.value);
             try {
                 localStorage.removeItem(BACKGROUND_KEY);
+                localStorage.removeItem(BACKGROUND_PRESET_KEY);
             } catch (error) {
                 console.warn('清除背景设置失败：', error);
             }
