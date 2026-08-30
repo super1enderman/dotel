@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>逗乐工作室 - 计时器</title>
+<link rel="icon" type="image/webp" href="logo.webp">
+<style>
+    * { box-sizing: border-box; }
+    html, body { width:100%; height:100%; margin:0; }
+    body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background:#fff;
+        color:#0b2545;
+        overflow:hidden;
+        transition: background .25s ease, color .25s ease;
+    }
+    body.dark {
+        background:#000;
+        color:#fff;
+    }
+    .app {
+        width:100vw;
+        height:100vh;
+        display:flex;
+        flex-direction:column;
+        padding:24px;
+    }
+    .toolbar {
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        gap:10px;
+        flex-wrap:wrap;
+        flex:0 0 auto;
+    }
+    button {
+        appearance:none;
+        border:1px solid rgba(20,70,120,.35);
+        border-radius:7px;
+        padding:8px 14px;
+        font-size:15px;
+        background:linear-gradient(#f7fbff,#d8eaff);
+        color:#12324f;
+        cursor:pointer;
+        box-shadow:0 1px 3px rgba(0,0,0,.18);
+    }
+    button:hover { filter:brightness(1.03); }
+    button:active { transform:translateY(1px); }
+    body.dark button {
+        background:#000;
+        color:#fff;
+        border-color:#555;
+        box-shadow:0 0 0 1px #111 inset;
+    }
+    .display-area {
+        flex:1 1 auto;
+        min-height:0;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        overflow:hidden;
+        text-align:center;
+        padding:10px 0;
+    }
+    .panel {
+        width:100%;
+        max-width:1400px;
+        display:none;
+    }
+    .panel.active { display:block; }
+    .time-display {
+        margin:0 auto;
+        display:block;
+        width:100%;
+        font-family:Consolas, "Courier New", monospace;
+        font-weight:700;
+        line-height:1;
+        letter-spacing:.02em;
+        white-space:nowrap;
+        user-select:none;
+        color:inherit;
+    }
+    .status {
+        margin-top:22px;
+        font-size:clamp(14px, 1.5vw, 22px);
+        opacity:.8;
+    }
+    .controls {
+        margin-top:24px;
+        display:flex;
+        justify-content:center;
+        gap:12px;
+        flex-wrap:wrap;
+    }
+    .tabs {
+        display:flex;
+        justify-content:center;
+        gap:8px;
+        margin-bottom:12px;
+    }
+    .tabs button.active {
+        font-weight:700;
+        border-color:#2f7ee8;
+        box-shadow:0 0 0 1px rgba(47,126,232,.15) inset, 0 2px 7px rgba(0,80,180,.18);
+    }
+    body.dark .tabs button.active {
+        background:#111;
+        border-color:#fff;
+    }
+    .countdown-inputs {
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        gap:8px;
+        margin-top:22px;
+        font-size:clamp(14px,1.7vw,22px);
+    }
+    .countdown-inputs input {
+        width:82px;
+        padding:8px;
+        text-align:center;
+        font:inherit;
+        border:1px solid rgba(20,70,120,.35);
+        border-radius:6px;
+        background:rgba(255,255,255,.8);
+        color:inherit;
+    }
+    body.dark .countdown-inputs input {
+        background:#000;
+        color:#fff;
+        border-color:#555;
+    }
+    .hint {
+        position:fixed;
+        left:16px;
+        bottom:12px;
+        font-size:12px;
+        opacity:.55;
+    }
+    /* 右下角水印样式 */
+    .watermark {
+        position:fixed;
+        right:16px;
+        bottom:12px;
+        font-size:11px;
+        opacity:.25;
+        user-select:none;
+        pointer-events:none;
+    }
+    /* 5 秒无操作后淡化辅助界面；时间数字始终保持 100% 不透明。不透明度改为 20% */
+    .ui-idle-fade {
+        opacity: .2;
+        transition: opacity .35s ease;
+    }
+    .toolbar,
+    .status,
+    .controls,
+    .countdown-inputs,
+    .hint,
+    .watermark {
+        transition: opacity .35s ease;
+    }
+    .hint.ui-idle-fade {
+        opacity: .2;
+    }
+    .watermark.ui-idle-fade {
+        opacity: .1;
+    }
+    body:fullscreen .hint { display:none; }
+    @media (max-width: 700px) {
+        .app { padding:14px; }
+        .countdown-inputs input { width:68px; }
+    }
+</style>
+</head>
+<body>
+<div class="app" id="timer-app">
+    <div class="toolbar">
+        <div class="tabs">
+            <button class="active" data-tab="clock">当前时间</button>
+            <button data-tab="stopwatch">秒表</button>
+            <button data-tab="countdown">倒计时</button>
+        </div>
+    </div>
+
+    <div class="display-area">
+        <section class="panel active" id="panel-clock">
+            <div class="time-display" id="clock-display">00:00:00</div>
+            <div class="status" id="clock-status">正在显示本地系统时间</div>
+            <div class="controls">
+                <button id="sync-btn" type="button">重新校准时间</button>
+            </div>
+            <div class="controls" style="margin-top:12px;">
+                <button id="theme-btn" type="button">🌙 深色模式</button>
+                <button id="fullscreen-btn" type="button">⛶ 全屏</button>
+            </div>
+        </section>
+
+        <section class="panel" id="panel-stopwatch">
+            <div class="time-display" id="stopwatch-display">00:00:00.00</div>
+            <div class="controls">
+                <button id="sw-start" type="button">开始</button>
+                <button id="sw-reset" type="button">重置</button>
+            </div>
+        </section>
+
+        <section class="panel" id="panel-countdown">
+            <div class="time-display" id="countdown-display">00:05:00</div>
+            <div class="countdown-inputs" id="countdown-inputs">
+                时 <input id="cd-hr" type="number" min="0" max="999" value="0">
+                分 <input id="cd-min" type="number" min="0" max="59" value="5">
+                秒 <input id="cd-sec" type="number" min="0" max="59" value="0">
+            </div>
+            <div class="controls">
+                <button id="cd-start" type="button">开始倒计时</button>
+                <button id="cd-reset" type="button">重置</button>
+            </div>
+        </section>
+    </div>
+</div>
+<div class="hint">F11/浏览器全屏可获得更沉浸的计时体验</div>
+<div class="watermark">制作by 逗乐工作室</div>
+
+<script>
+(function () {
+    var body = document.body;
+    var panels = {
+        clock: document.getElementById('panel-clock'),
+        stopwatch: document.getElementById('panel-stopwatch'),
+        countdown: document.getElementById('panel-countdown')
+    };
+    var tabs = document.querySelectorAll('.tabs button');
+
+    function switchTab(name) {
+        for (var key in panels) panels[key].className = 'panel' + (key === name ? ' active' : '');
+        for (var i = 0; i < tabs.length; i++) tabs[i].className = tabs[i].getAttribute('data-tab') === name ? 'active' : '';
+        fitAllDisplays();
+    }
+    for (var i = 0; i < tabs.length; i++) {
+        tabs[i].addEventListener('click', function () { switchTab(this.getAttribute('data-tab')); });
+    }
+
+    function fitDisplay(el) {
+        if (!el || !el.offsetParent) return;
+        var availableW = el.parentNode.clientWidth || window.innerWidth;
+        var availableH = document.querySelector('.display-area').clientHeight || window.innerHeight;
+        var text = el.textContent || '';
+        var count = Math.max(text.length, 1);
+        var byWidth = availableW / (count * 0.62);
+        var byHeight = availableH * 0.48;
+        var size = Math.floor(Math.min(byWidth, byHeight));
+        size = Math.max(28, Math.min(size, 420));
+        el.style.fontSize = size + 'px';
+    }
+    function fitAllDisplays() {
+        fitDisplay(document.getElementById('clock-display'));
+        fitDisplay(document.getElementById('stopwatch-display'));
+        fitDisplay(document.getElementById('countdown-display'));
+    }
+    window.addEventListener('resize', fitAllDisplays);
+
+    var offset = 0;
+    var clockStatus = document.getElementById('clock-status');
+    function setClockStatus(text) { clockStatus.textContent = text; }
+    function renderClock() {
+        var now = new Date(Date.now() + offset);
+        var h = String(now.getHours()).padStart(2, '0');
+        var m = String(now.getMinutes()).padStart(2, '0');
+        var s = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('clock-display').textContent = h + ':' + m + ':' + s;
+        fitDisplay(document.getElementById('clock-display'));
+    }
+
+    function syncClock() {
+        setClockStatus('正在校准时间…');
+        var start = Date.now();
+        fetch('https://timeapi.io/api/Time/current/zone?timeZone=Asia/Shanghai')
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                var server = new Date(data.dateTime).getTime();
+                var latency = (Date.now() - start) / 2;
+                offset = server + latency - Date.now();
+                setClockStatus('已通过网络时间服务校准');
+            })
+            .catch(function () {
+                offset = 0;
+                setClockStatus('网络校准失败，使用本地系统时间');
+            });
+    }
+    document.getElementById('sync-btn').addEventListener('click', syncClock);
+    syncClock();
+    setInterval(renderClock, 200);
+
+    var swRunning = false;
+    var swElapsed = 0;
+    var swStartTime = 0;
+    var swInterval = null;
+    function formatStopwatch(ms) {
+        var cs = Math.floor((ms % 1000) / 10);
+        var total = Math.floor(ms / 1000);
+        var s = total % 60;
+        var m = Math.floor(total / 60) % 60;
+        var h = Math.floor(total / 3600);
+        return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0') + '.' + String(cs).padStart(2,'0');
+    }
+    function renderStopwatch() {
+        swElapsed = swRunning ? Date.now() - swStartTime : swElapsed;
+        var el = document.getElementById('stopwatch-display');
+        el.textContent = formatStopwatch(swElapsed);
+        fitDisplay(el);
+    }
+    document.getElementById('sw-start').addEventListener('click', function () {
+        var btn = this;
+        if (swRunning) {
+            swElapsed = Date.now() - swStartTime;
+            swRunning = false;
+            clearInterval(swInterval);
+            btn.textContent = '继续';
+        } else {
+            swStartTime = Date.now() - swElapsed;
+            swRunning = true;
+            clearInterval(swInterval);
+            swInterval = setInterval(renderStopwatch, 30);
+            btn.textContent = '暂停';
+        }
+        renderStopwatch();
+    });
+    document.getElementById('sw-reset').addEventListener('click', function () {
+        clearInterval(swInterval);
+        swRunning = false;
+        swElapsed = 0;
+        document.getElementById('sw-start').textContent = '开始';
+        renderStopwatch();
+    });
+
+    var cdRunning = false;
+    var cdRemaining = 300;
+    var cdInterval = null;
+    function readCountdownInputs() {
+        var h = parseInt(document.getElementById('cd-hr').value, 10) || 0;
+        var m = parseInt(document.getElementById('cd-min').value, 10) || 0;
+        var s = parseInt(document.getElementById('cd-sec').value, 10) || 0;
+        h = Math.max(0, h); m = Math.min(59, Math.max(0, m)); s = Math.min(59, Math.max(0, s));
+        return h * 3600 + m * 60 + s;
+    }
+    function renderCountdown() {
+        var h = Math.floor(cdRemaining / 3600);
+        var m = Math.floor((cdRemaining % 3600) / 60);
+        var s = cdRemaining % 60;
+        var el = document.getElementById('countdown-display');
+        el.textContent = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+        fitDisplay(el);
+    }
+    function setCountdownFromInputs() {
+        if (cdRunning) return;
+        cdRemaining = readCountdownInputs();
+        renderCountdown();
+    }
+    document.getElementById('cd-hr').addEventListener('input', setCountdownFromInputs);
+    document.getElementById('cd-min').addEventListener('input', setCountdownFromInputs);
+    document.getElementById('cd-sec').addEventListener('input', setCountdownFromInputs);
+    document.getElementById('cd-start').addEventListener('click', function () {
+        var btn = this;
+        if (cdRunning) {
+            clearInterval(cdInterval);
+            cdRunning = false;
+            btn.textContent = '继续';
+            return;
+        }
+        if (cdRemaining <= 0) cdRemaining = readCountdownInputs();
+        if (cdRemaining <= 0) return;
+        cdRunning = true;
+        btn.textContent = '暂停';
+        clearInterval(cdInterval);
+        cdInterval = setInterval(function () {
+            cdRemaining--;
+            renderCountdown();
+            if (cdRemaining <= 0) {
+                clearInterval(cdInterval);
+                cdRunning = false;
+                btn.textContent = '开始倒计时';
+                try { new Audio('ding.mp3').play(); } catch (e) {}
+            }
+        }, 1000);
+    });
+    document.getElementById('cd-reset').addEventListener('click', function () {
+        clearInterval(cdInterval);
+        cdRunning = false;
+        cdRemaining = readCountdownInputs();
+        document.getElementById('cd-start').textContent = '开始倒计时';
+        renderCountdown();
+    });
+
+    var dark = false;
+    document.getElementById('theme-btn').addEventListener('click', function () {
+        dark = !dark;
+        body.classList.toggle('dark', dark);
+        this.textContent = dark ? '☀️ 浅色模式' : '🌙 深色模式';
+    });
+
+    var fullscreenBtn = document.getElementById('fullscreen-btn');
+    function isFullscreen() {
+        return !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+    }
+    function requestFullscreen() {
+        var el = document.documentElement;
+        var fn = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+        if (fn) {
+            var result = fn.call(el);
+            if (result && result.catch) result.catch(function () {});
+        }
+    }
+    function exitFullscreen() {
+        var fn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+        if (fn) {
+            var result = fn.call(document);
+            if (result && result.catch) result.catch(function () {});
+        }
+    }
+    fullscreenBtn.addEventListener('click', function () {
+        if (isFullscreen()) exitFullscreen(); else requestFullscreen();
+    });
+    function fullscreenChanged() {
+        fullscreenBtn.textContent = isFullscreen() ? '⛶ 退出全屏' : '⛶ 全屏';
+    }
+    document.addEventListener('fullscreenchange', fullscreenChanged);
+    document.addEventListener('webkitfullscreenchange', fullscreenChanged);
+    document.addEventListener('MSFullscreenChange', fullscreenChanged);
+
+    /* ==================== 空闲自动淡化 ==================== */
+    var idleTimer = null;
+    var idleFaded = false;
+    var IDLE_DELAY = 5000;
+
+    function getIdleTargets() {
+        return document.querySelectorAll('.toolbar, .status, .controls, .countdown-inputs, .hint, .watermark');
+    }
+
+    function setIdleFade(enabled) {
+        var targets = getIdleTargets();
+        for (var i = 0; i < targets.length; i++) {
+            if (enabled) {
+                targets[i].classList.add('ui-idle-fade');
+            } else {
+                targets[i].classList.remove('ui-idle-fade');
+            }
+        }
+        idleFaded = enabled;
+    }
+
+    function scheduleIdleFade() {
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(function () {
+            var hoveredButton = document.querySelector('button:hover');
+            if (!hoveredButton) {
+                setIdleFade(true);
+            } else {
+                scheduleIdleFade();
+            }
+        }, IDLE_DELAY);
+    }
+
+    /* 有任何交互时重新计时，但已经淡化后不会自行恢复。 */
+    document.addEventListener('mousedown', function () {
+        if (!idleFaded) scheduleIdleFade();
+    }, false);
+
+    document.addEventListener('keydown', function () {
+        if (!idleFaded) scheduleIdleFade();
+    }, false);
+
+    /* 移动鼠标并进入按钮时，恢复所有辅助内容到 100%。 */
+    var allButtons = document.querySelectorAll('button');
+    for (var bi = 0; bi < allButtons.length; bi++) {
+        allButtons[bi].addEventListener('mousemove', function () {
+            if (idleFaded) {
+                setIdleFade(false);
+            }
+            scheduleIdleFade();
+        }, false);
+    }
+
+    scheduleIdleFade();
+
+    renderClock();
+    renderStopwatch();
+    renderCountdown();
+    fitAllDisplays();
+})();
+</script>
+</body>
+</html>
