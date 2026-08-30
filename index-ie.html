@@ -2,1005 +2,2686 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>逗乐工作室 - 兼容模式</title>
-    <!--
-        兼容模式：专门为 Internet Explorer 编写。
-        不使用 7.css、Flex/Grid、Fetch、Promise、箭头函数、const/let 等现代语法。
-        目标：IE11；IE8 仅提供尽可能基础的降级显示。
-    -->
-    <style type="text/css">
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            min-height: 100%;
-            font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
-            color: #183247;
-            background: #6fb1fc;
-        }
+    <title>逗乐工作室 - 官网</title>
+    <link rel="icon" type="image/webp" href="logo.webp">
+    <!-- Internet Explorer 兼容跳转：检测到 IE 后切换到专用页面。 -->
+    <script>
+        (function () {
+            if (document.documentMode) {
+                var target = 'index-ie.html';
+                var currentFile = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
+                if (currentFile !== target) {
+                    window.location.replace(target + window.location.search + window.location.hash);
+                }
+            }
+        })();
+    </script>
 
+    <!-- 引入 7.css 核心样式库 -->
+    <link rel="stylesheet" href="https://unpkg.com/7.css">
+    <style>
+        /* 全局背景设置 */
         body {
-            background-repeat: no-repeat;
-            background-position: center top;
-            background-attachment: fixed;
-            background-size: cover;
-        }
-
-        a { color: #125a9c; }
-        button, input { font-family: inherit; }
-
-        .page {
-            width: 900px;
-            max-width: 94%;
-            margin: 24px auto 40px auto;
-        }
-
-        .header {
-            padding: 18px 22px;
-            background: #eaf6ff;
-            border: 1px solid #8db4d2;
-            box-shadow: 0 3px 12px rgba(0,0,0,.25);
-        }
-
-        .header h1 {
-            margin: 0 0 6px 0;
-            font-size: 28px;
-            color: #0b2545;
-        }
-
-        .header p {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
+            padding: 30px 20px;
+            background: #6fb1fc url('background.webp') center / cover no-repeat fixed;
+            color: #1a2a3a;
+            min-height: 100vh;
         }
 
-        .toolbar {
-            margin-top: 14px;
+        /* ==================== Aero 背景淡入淡出层 ==================== */
+        .aero-background-layer {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
         }
 
-        .toolbar a,
-        .toolbar button {
-            display: inline-block;
-            margin-right: 8px;
-            margin-bottom: 6px;
-            padding: 6px 12px;
-            color: #163c5c;
-            text-decoration: none;
-            background: #e7f4ff;
-            border: 1px solid #7fa6c4;
-            border-radius: 3px;
-            box-shadow: inset 0 1px #fff;
-            cursor: pointer;
-        }
-
-        .toolbar a:hover,
-        .toolbar button:hover {
-            background: #d4ecff;
-            border-color: #4e8bb7;
-        }
-
-        .panel {
-            margin-top: 18px;
-            padding: 18px 20px;
-            background: rgba(245, 251, 255, .95);
-            border: 1px solid #8db4d2;
-            box-shadow: 0 3px 12px rgba(0,0,0,.24);
-        }
-
-        .panel h2 {
-            margin: 0 0 12px 0;
-            padding-bottom: 7px;
-            border-bottom: 1px solid #b5cfe2;
-            color: #123b5b;
-            font-size: 21px;
-        }
-
-        .notice {
-            margin-bottom: 14px;
-            padding: 10px 12px;
-            background: #fff7d6;
-            border: 1px solid #d6c37c;
-            color: #5d501d;
-        }
-
-        .weather-box {
-            position: relative;
-            min-height: 150px;
-            padding: 14px;
-            background: #eef8ff;
-            border: 1px solid #9bbbd4;
-        }
-
-        .weather-close {
+        .aero-background-layer video {
             position: absolute;
-            top: 4px;
-            right: 4px;
-            width: 28px;
-            height: 22px;
-            padding: 0;
-            color: #fff;
-            font-weight: bold;
-            background: #b64a4a;
-            border: 1px solid #813333;
-            cursor: pointer;
-        }
-
-        .weather-close:hover {
-            background: #d95f66;
-        }
-
-        .weather-main {
-            padding-right: 42px;
-        }
-
-        .weather-city {
-            font-size: 20px;
-            font-weight: bold;
-            color: #0b2545;
-        }
-
-        .weather-condition {
-            margin-top: 4px;
-            font-size: 15px;
-        }
-
-        .weather-temp {
-            margin-top: 4px;
-            font-size: 38px;
-            font-weight: bold;
-            color: #0b2545;
-        }
-
-        .weather-details {
-            margin-top: 12px;
-            line-height: 1.7;
-            color: #486274;
-            font-size: 13px;
-        }
-
-        .status {
-            margin-top: 10px;
-            font-size: 12px;
-            color: #5f7485;
-        }
-
-        .timer-tabs button,
-        .timer-actions button,
-        .bg-buttons button,
-        .music-item button {
-            display: inline-block;
-            margin: 0 6px 6px 0;
-            padding: 6px 11px;
-            background: #e7f4ff;
-            color: #143b59;
-            border: 1px solid #7fa6c4;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-
-        .timer-tabs button.active {
-            font-weight: bold;
-            background: #cfe8ff;
-            border-color: #4f8bc0;
-        }
-
-        .timer-panel {
-            margin-top: 12px;
-        }
-
-        .timer-panel.hidden {
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             display: none;
         }
 
-        .time-display {
-            margin: 8px 0 12px 0;
-            padding: 14px;
-            text-align: center;
-            font-family: Consolas, "Courier New", monospace;
-            font-size: 42px;
-            font-weight: bold;
-            color: #092544;
-            background: #f7fbff;
-            border: 1px solid #a8c2d8;
+        #page-scroll {
+            position: relative;
+            z-index: 2;
         }
 
-        .timer-dark {
-            background: #1d2630;
-            color: #e8eef4;
-            border-color: #4c6273;
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
         }
 
-        .timer-dark .time-display {
-            background: #101820;
-            color: #f3f7fa;
-            border-color: #50697d;
+        /* 使用 7.css 自带的 Win7 风格滚动条承载整个页面，避免浏览器原生滚动条干扰最大化窗口。 */
+        html, body {
+            height: 100%;
+            overflow: hidden;
         }
 
-        .timer-dark .timer-tabs button,
-        .timer-dark .timer-actions button {
-            background: #2b3946;
-            color: #edf4fa;
-            border-color: #5c7181;
+        body {
+            padding: 0;
         }
 
-        .timer-dark input {
-            background: #111820;
-            color: #fff;
-            border-color: #5b6e7d;
-        }
-
-        .countdown-inputs input {
-            width: 50px;
-            padding: 4px;
-            text-align: center;
-        }
-
-        /* IE11 计时器最大化：使用固定定位模拟独立全屏窗口。 */
-        #timer-panel.timer-maximized {
-            position: fixed !important;
-            left: 0;
-            top: 0;
-            right: 0;
-            bottom: 0;
+        #page-scroll {
             width: 100%;
             height: 100%;
-            margin: 0 !important;
-            padding: 24px !important;
             overflow: auto;
-            z-index: 9999;
-            background: #f5fbff;
             box-sizing: border-box;
+            padding: 30px 20px;
         }
 
-        #timer-panel.timer-maximized .time-display {
-            font-size: 96px;
-            line-height: 1.15;
-            margin-top: 45px;
-            padding: 20px;
+        /* ==================== 左上角工作室 LOGO ==================== */
+        #studio-logo {
+            position: fixed;
+            top: 18px;
+            left: 18px;
+            width: 120px;
+            height: auto;
+            z-index: 1;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-drag: none;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
         }
 
-        #timer-panel.timer-maximized .timer-tabs button,
-        #timer-panel.timer-maximized .timer-actions button,
-        #timer-panel.timer-maximized .countdown-inputs,
-        #timer-panel.timer-maximized .countdown-inputs input,
-        #timer-panel.timer-maximized .status {
-            font-size: 20px;
+        /* ==================== 右上角 Win7 风格天气小工具 ==================== */
+        .weather-widget {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            width: 280px;
+            z-index: 50;
+            margin: 0 !important;
         }
 
-        #timer-panel.timer-maximized .timer-tabs button,
-        #timer-panel.timer-maximized .timer-actions button {
-            padding: 9px 16px;
+        .weather-widget .title-bar {
+            cursor: default !important;
+            user-select: none;
         }
 
-        #timer-panel.timer-maximized .countdown-inputs input {
-            width: 64px;
-            padding: 6px;
+        .weather-widget.weather-closing {
+            transform-origin: center center !important;
+            animation: winClose 0.28s forwards cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
 
-        #timer-panel.timer-maximized.timer-dark {
-            background: #1d2630;
+        .weather-widget.weather-closed {
+            display: none !important;
         }
 
-        #timer-panel.timer-maximized .timer-maximize-row {
+        .weather-body {
+            min-height: 142px;
+            padding: 12px !important;
+            background: linear-gradient(180deg, rgba(238, 249, 255, 0.94) 0%, rgba(218, 238, 250, 0.88) 100%);
+            color: #17324a;
+        }
+
+        .weather-main {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .weather-icon {
+            width: 74px;
+            height: 74px;
+            flex: 0 0 74px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.35rem;
+            line-height: 1;
+            border-radius: 50%;
+            background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.55) 24%, rgba(174,220,246,0.35) 62%, rgba(103,168,207,0.22) 100%);
+            border: 1px solid rgba(105, 157, 193, 0.32);
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.9), 0 2px 6px rgba(77, 123, 154, 0.22);
+        }
+
+        .weather-info {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .weather-location {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #0b2545;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .weather-condition {
+            margin-top: 2px;
+            font-size: 0.88rem;
+            color: #49657b;
+        }
+
+        .weather-temp {
+            margin-top: 2px;
+            font-size: 2.05rem;
+            line-height: 1.05;
+            font-weight: 700;
+            color: #0b2545;
+            white-space: nowrap;
+        }
+
+        .weather-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 12px;
+            margin-top: 10px;
+            padding-top: 9px;
+            border-top: 1px solid rgba(110, 155, 185, 0.3);
+            font-size: 0.78rem;
+            color: #476176;
+        }
+
+        .weather-status-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .weather-status {
+            flex: 1;
+            min-width: 0;
+            font-size: 0.72rem;
+            color: #688196;
+            text-align: right;
+            min-height: 18px;
+        }
+
+        .weather-status button {
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            margin-left: 6px;
+            cursor: pointer;
+        }
+
+        .weather-refresh-btn {
+            flex-shrink: 0;
+            padding: 4px 8px !important;
+            font-size: 0.76rem !important;
+            white-space: nowrap;
+        }
+
+        .weather-attribution {
+            margin-top: 4px;
+            font-size: 0.62rem;
+            color: #7890a2;
             text-align: right;
         }
 
-        .music-item {
+        @media (max-width: 900px) {
+            #studio-logo { width: 92px; top: 12px; left: 12px; }
+            .weather-widget { width: 235px; top: 12px; right: 12px; }
+            .weather-body { min-height: 126px; padding: 10px !important; }
+            .weather-icon { width: 60px; height: 60px; flex-basis: 60px; font-size: 2.65rem; }
+            .weather-temp { font-size: 1.7rem; }
+        }
+
+        /* ---------------- 1. 窗口基础样式与 Flex 布局 ---------------- */
+        .window {
+            margin-bottom: 25px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                        opacity 0.35s ease, 
+                        top 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-origin: top left;
+            min-width: 220px;
+            min-height: 80px;
+            
+            display: flex !important;
+            flex-direction: column !important;
+            box-sizing: border-box;
+            border-radius: 6px !important;
+            overflow: hidden; 
+        }
+
+        .window-body {
+            flex: 1 !important;
+            overflow: auto;
+            box-sizing: border-box;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+            
+            /* 让最大化时的 body 充满内部并支持完美居中 */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .title-bar {
+            cursor: default !important;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .window.dragging, .window.resizing {
+            transition: none !important;
+            transform: none !important;
+        }
+
+        /* ---------------- 2. 八向拉伸触控边框 ---------------- */
+        .resizer {
+            position: absolute;
+            z-index: 10;
+        }
+        .resizer.top    { top: -4px; left: 6px; right: 6px; height: 8px; cursor: ns-resize; }
+        .resizer.bottom { bottom: -4px; left: 6px; right: 6px; height: 8px; cursor: ns-resize; }
+        .resizer.left   { left: -4px; top: 6px; bottom: 6px; width: 8px; cursor: ew-resize; }
+        .resizer.right  { right: -4px; top: 6px; bottom: 6px; width: 8px; cursor: ew-resize; }
+        
+        .resizer.top-left     { top: -4px; left: -4px; width: 10px; height: 10px; cursor: nwse-resize; }
+        .resizer.top-right    { top: -4px; right: -4px; width: 10px; height: 10px; cursor: nesw-resize; }
+        .resizer.bottom-left  { bottom: -4px; left: -4px; width: 10px; height: 10px; cursor: nesw-resize; }
+        .resizer.bottom-right { bottom: -4px; right: -4px; width: 10px; height: 10px; cursor: nwse-resize; }
+
+        .window.minimized .resizer,
+        .window.maximized .resizer {
+            display: none !important;
+        }
+
+        /* ---------------- 3. 关闭动画修正 ---------------- */
+        .window.window-closing {
+            transform-origin: center center !important;
+            animation: winClose 0.28s forwards cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        @keyframes winClose {
+            0% { opacity: 1; transform: scale(1) translateY(0); }
+            100% { opacity: 0; transform: scale(0.88) translateY(20px); }
+        }
+        .window.window-closed {
+            display: none !important;
+        }
+
+        /* 最大化 */
+        .window.maximized {
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+            z-index: 99998 !important;
+            box-shadow: none !important;
+        }
+
+        .window.maximized .window-body {
+            height: auto !important;
+            max-height: none !important;
+            overflow-y: auto;
+            border-radius: 0 !important;
+        }
+
+        /* 最小化容器 */
+        #minimized-container {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            display: flex;
+            flex-wrap: wrap-reverse;
+            align-content: flex-start;
+            gap: 10px;
+            max-width: calc(100vw - 30px);
+            z-index: 99990;
+            pointer-events: none;
+        }
+
+        .window.minimized {
+            position: fixed !important;
+            pointer-events: auto !important;
+            width: 240px !important;
+            height: auto !important;
+            min-height: 0 !important;
+            margin: 0 !important;
+            border-radius: 6px !important;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        .window.minimized .window-body {
+            display: none !important;
+            max-height: 0 !important;
+            opacity: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            border: none !important;
+        }
+
+        /* ---------------- 4. 计时器自适应与最大化占满网页样式 ---------------- */
+        .timer-dark-toggle {
+            margin-top: 10px;
+        }
+
+        /* 仅影响计时器窗口内部，不改变页面和其他窗口。 */
+        .timer-window.dark-mode .window-body {
+            background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+            color: #e5e7eb;
+        }
+
+        .timer-window.dark-mode .timer-tabs button {
+            color: #e5e7eb;
+            background: linear-gradient(180deg, #374151 0%, #1f2937 100%);
+            border-color: #4b5563;
+        }
+
+        .timer-window.dark-mode .timer-tabs button:hover {
+            background: linear-gradient(180deg, #4b5563 0%, #374151 100%);
+            border-color: #60a5fa;
+        }
+
+        .timer-window.dark-mode .timer-tabs button.active {
+            color: #f9fafb;
+            background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+            border-color: #60a5fa;
+        }
+
+        .timer-window.dark-mode .time-display {
+            color: #f8fafc;
+            background: rgba(17, 24, 39, 0.92);
+            border-color: rgba(96, 165, 250, 0.45);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 2px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        .timer-window.dark-mode .ntp-status,
+        .timer-window.dark-mode .timer-inputs-group {
+            color: #cbd5e1;
+        }
+
+        .timer-window.dark-mode .timer-inputs-group input {
+            color: #f8fafc;
+            background: #111827;
+            border-color: #4b5563;
+        }
+
+        .timer-window.dark-mode .timer-panel button {
+            color: #f8fafc;
+            background: linear-gradient(180deg, #374151 0%, #1f2937 100%);
+            border-color: #4b5563;
+        }
+
+        .timer-window.dark-mode .timer-panel button:hover {
+            background: linear-gradient(180deg, #4b5563 0%, #374151 100%);
+            border-color: #60a5fa;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 8px rgba(59, 130, 246, 0.35);
+        }
+
+.timer-window {
+            font-size: clamp(0.9rem, 1.2vw + 0.5rem, 1.3rem);
+        }
+        
+        .window.maximized.timer-window .window-body {
+            justify-content: center;
+            align-items: center;
+            padding: 40px !important;
+        }
+        .window.maximized.timer-window .timer-panel {
+            width: min(100%, 1200px);
+            max-width: 1200px;
+            min-width: 0;
+        }
+        .window.maximized.timer-window .time-display {
+            font-size: clamp(4rem, 11vw, 11rem) !important;
+            padding: 30px;
+            white-space: nowrap;
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        .window.maximized.timer-window .ntp-status,
+        .window.maximized.timer-window button {
+            font-size: 1.4rem !important;
+        }
+
+        .timer-tabs {
+            display: flex;
+            gap: 8px;
             margin-bottom: 12px;
-            padding: 12px;
-            background: #eef8ff;
-            border: 1px solid #a3bfd5;
+            justify-content: center;
+            align-items: stretch;
+            flex-wrap: nowrap;
+            min-width: 0;
+            width: 100%;
         }
-
-        .music-item strong {
+        .timer-tabs button {
+            flex: 1 1 0;
+            min-width: 0;
+            max-width: 180px;
+            padding: 8px 10px;
+            cursor: pointer;
+            font-size: 1em;
+            white-space: nowrap;
+            word-break: keep-all;
+            overflow: hidden;
+            text-overflow: clip;
+        }
+        .window.maximized.timer-window .timer-tabs {
+            transform: none;
+            margin-bottom: 30px;
+            gap: 14px;
+        }
+        .window.maximized.timer-window .timer-tabs button {
+            flex: 0 1 220px;
+            max-width: 220px;
+            font-size: clamp(1rem, 1.2vw, 1.4rem) !important;
+            padding-inline: 16px;
+        }
+        .timer-tabs button.active {
+            background: linear-gradient(180deg, #e1f3ff 0%, #cce5ff 100%);
+            border-color: #3b82f6;
+            font-weight: bold;
+        }
+        .timer-panel {
+            display: none;
+            text-align: center;
+        }
+        .timer-panel.active {
+            display: block;
+        }
+        .time-display {
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: clamp(1.6em, 3.5vw, 2.8em);
+            font-weight: bold;
             color: #0b2545;
+            margin: 12px 0;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(135, 175, 215, 0.4);
+            letter-spacing: 1px;
+            transition: font-size 0.2s ease;
+        }
+        .ntp-status {
+            font-size: 0.85em;
+            color: #333;
+            margin-top: 6px;
+        }
+        .timer-inputs-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 1em;
+        }
+        .timer-inputs-group input {
+            width: 60px;
+            text-align: center;
+            font-size: 1em;
+            padding: 4px;
         }
 
-        audio {
+        /* ---------------- 5. Win7 Aero 按钮细节 ---------------- */
+        .title-bar-controls button {
+            cursor: pointer !important;
+            transition: all 0.15s ease-in-out;
+            border-radius: 0 0 3px 3px !important;
+        }
+
+        .title-bar-controls button[aria-label="Close"] {
+            background: linear-gradient(180deg, rgba(210, 100, 100, 0.6) 0%, rgba(180, 50, 50, 0.75) 48%, rgba(130, 20, 20, 0.85) 52%, rgba(200, 70, 70, 0.7) 100%) !important;
+            border-color: rgba(100, 20, 20, 0.6) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+        }
+
+        .title-bar-controls button[aria-label="Close"]:hover {
+            background: linear-gradient(180deg, #ff9ca3 0%, #e81123 48%, #bd000f 52%, #f14c59 100%) !important;
+            border-color: #80000a !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 10px rgba(232, 17, 35, 0.8) !important;
+        }
+
+        .title-bar-controls button[aria-label="Minimize"]:hover,
+        .title-bar-controls button[aria-label="Maximize"]:hover {
+            background: linear-gradient(180deg, rgba(235, 245, 255, 0.8) 0%, rgba(160, 210, 255, 0.6) 48%, rgba(0, 140, 240, 0.85) 52%, rgba(0, 210, 255, 0.95) 100%) !important;
+            border-color: #3b82f6 !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 0 8px rgba(0, 180, 255, 0.9) !important;
+        }
+
+        .bg-control { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+        .bg-presets {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .bg-presets button {
+            white-space: nowrap;
+        }
+        #bgInput { display: none; }
+        
+        .glass-card {
+            background: linear-gradient(180deg, rgba(225, 243, 255, 0.85) 0%, rgba(240, 248, 255, 0.75) 100%);
+            border: 1px solid rgba(135, 175, 215, 0.45);
+            border-radius: 5px;
+            padding: 16px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+
+
+        /* ==================== WMP / Vista 风格本地音乐播放器 ==================== */
+        .wmp-player {
+            position: relative;
+            margin-top: 10px;
+            padding: 0;
+            border-radius: 6px;
+            overflow: hidden;
+            background: linear-gradient(180deg, #0a5da8 0%, #073f78 42%, #042952 100%);
+            border: 1px solid rgba(4, 35, 70, 0.9);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.38),
+                inset 0 -1px 0 rgba(0,0,0,0.65),
+                0 2px 5px rgba(0,0,0,0.35);
+            color: #fff;
+            user-select: none;
+        }
+
+        .wmp-top-glow {
+            height: 3px;
+            background: linear-gradient(90deg,
+                rgba(165,230,255,0.15) 0%,
+                rgba(165,230,255,0.85) 50%,
+                rgba(165,230,255,0.15) 100%);
+            box-shadow: 0 0 8px rgba(88,205,255,0.65);
+        }
+
+        .wmp-main {
+            padding: 9px 10px 7px 10px;
+            background:
+                radial-gradient(circle at 50% -40%, rgba(111,214,255,0.38), transparent 48%),
+                linear-gradient(180deg, rgba(24,121,190,0.92) 0%, rgba(4,56,108,0.96) 100%);
+        }
+
+        .wmp-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .wmp-disc {
+            width: 34px;
+            height: 34px;
+            flex: 0 0 34px;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 50% 50%, #d7efff 0 4px, #497ca7 5px 7px, transparent 8px),
+                repeating-radial-gradient(circle at 50% 50%, #8fc4e6 0 1px, #3b6f9e 2px 3px);
+            border: 1px solid rgba(210,244,255,0.85);
+            box-shadow:
+                0 0 0 1px rgba(0,18,38,0.55),
+                0 0 7px rgba(101,212,255,0.35);
+        }
+
+        .wmp-title-wrap {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .wmp-track-title {
+            font-size: 0.9em;
+            font-weight: bold;
+            color: #f4fbff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.75);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .wmp-status {
+            margin-top: 2px;
+            font-size: 0.72em;
+            color: rgba(224,245,255,0.84);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .wmp-progress-wrap {
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wmp-time {
+            width: 40px;
+            flex: 0 0 40px;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 0.68em;
+            color: #e8f8ff;
+            text-align: center;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .wmp-seek {
+            position: relative;
+            flex: 1;
+            height: 11px;
+            cursor: pointer;
+            border-radius: 6px;
+            background: linear-gradient(180deg, #133352 0%, #061a2d 100%);
+            border: 1px solid rgba(0,0,0,0.8);
+            box-shadow:
+                inset 0 1px 2px rgba(0,0,0,0.75),
+                0 1px 0 rgba(255,255,255,0.14);
+            overflow: visible;
+        }
+
+        .wmp-buffer {
+            position: absolute;
+            left: 1px;
+            top: 1px;
+            bottom: 1px;
+            width: 0;
+            border-radius: 5px;
+            background: rgba(139,200,239,0.32);
+            pointer-events: none;
+        }
+
+        .wmp-progress {
+            position: absolute;
+            left: 1px;
+            top: 1px;
+            bottom: 1px;
+            width: 0;
+            border-radius: 5px;
+            background: linear-gradient(180deg, #d7f7ff 0%, #5cc9ff 45%, #0e83cf 100%);
+            box-shadow:
+                0 0 5px rgba(79,201,255,0.9),
+                inset 0 1px 0 rgba(255,255,255,0.8);
+            pointer-events: none;
+        }
+
+        .wmp-thumb {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 13px;
+            height: 13px;
+            margin: -7px 0 0 -6px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #ffffff 0%, #dff8ff 35%, #4fbbea 72%, #0c67a6 100%);
+            border: 1px solid #063b62;
+            box-shadow:
+                0 0 4px rgba(116,222,255,0.95),
+                0 1px 2px rgba(0,0,0,0.7);
+            pointer-events: none;
+        }
+
+        .wmp-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .wmp-btn {
+            width: 29px;
+            height: 24px;
+            padding: 0;
+            border: 1px solid rgba(0,20,42,0.9);
+            border-radius: 4px;
+            color: #fff;
+            background: linear-gradient(180deg, #3a8ec4 0%, #1a5f95 49%, #0b3c67 51%, #124e7d 100%);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.48),
+                0 1px 2px rgba(0,0,0,0.48);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+            cursor: pointer;
+            line-height: 21px;
+            font-size: 14px;
+        }
+
+        .wmp-btn:hover {
+            background: linear-gradient(180deg, #6ec7f2 0%, #2b84bd 49%, #0f5b95 51%, #1e6ba1 100%);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.72),
+                0 0 7px rgba(83,205,255,0.65);
+        }
+
+        .wmp-btn:active {
+            background: linear-gradient(180deg, #0c3f6b 0%, #164f7d 48%, #2c80b4 52%, #1a6a9f 100%);
+            box-shadow: inset 0 2px 3px rgba(0,0,0,0.45);
+        }
+
+        .wmp-play {
+            width: 36px;
+            height: 30px;
+            font-size: 17px;
+            border-radius: 5px;
+        }
+
+        .wmp-volume {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-left: auto;
+            min-width: 100px;
+        }
+
+        .wmp-volume-icon {
+            font-size: 14px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.85);
+        }
+
+        .wmp-volume-range {
+            width: 72px;
+            accent-color: #62cfff;
+            cursor: pointer;
+        }
+
+        .wmp-bottom {
+            height: 4px;
+            background: linear-gradient(180deg, rgba(102,178,222,0.45), rgba(0,32,61,0.8));
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .wmp-player audio {
+            display: none;
+        }
+
+        .music-item {
+            background: linear-gradient(180deg, rgba(225, 243, 255, 0.85) 0%, rgba(240, 248, 255, 0.75) 100%);
+            border: 1px solid rgba(135, 175, 215, 0.45);
+            border-radius: 5px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        audio { width: 100%; margin-top: 8px; }
+        .netease-item button {
+            margin-top: 2px;
+        }
+        .netease-player-wrap {
+            width: 100%;
+            margin-top: 10px;
+            overflow: hidden;
+            border-radius: 6px;
+        }
+        .netease-player-wrap iframe {
             display: block;
             width: 100%;
-            margin-top: 8px;
+            min-height: 86px;
+            border: 0;
+            background: rgba(255, 255, 255, 0.55);
         }
-
-        .bg-buttons {
-            margin-top: 8px;
-        }
-
-        .small {
-            font-size: 12px;
-            color: #60778a;
-        }
-
-        .footer {
-            margin-top: 20px;
-            color: #fff;
+        footer {
             text-align: center;
-            text-shadow: 0 1px 3px rgba(0,0,0,.7);
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 0.9em;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
         }
-
-        .footer a {
-            color: #fff;
-        }
-
-        .hidden { display: none; }
-
-        @media screen and (max-width: 920px) {
-            .page { max-width: 96%; }
+        .restore-box {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
     </style>
-
-    <!-- IE8 基础兼容提示；不依赖现代脚本。 -->
-    <!--[if lte IE 8]>
-    <style type="text/css">
-        .page { width: 92%; }
-        .panel, .header { background: #eef7ff; }
-        .weather-box { background: #eef7ff; }
-        .notice { display: block; }
-    </style>
-    <![endif]-->
 </head>
 <body>
 
-<div class="page">
-
-    <div class="header">
-        <h1>逗乐工作室</h1>
-        <p>注重快乐、愉悦、高效的线上工作室</p>
-
-        <div class="toolbar">
-            <span id="modern-links">
-                <a href="team.html">人员介绍</a>
-                <a href="download.html">下载中心</a>
-                <a href="time.html">沉浸时钟</a>
-            </span>
-            <a href="index.html">返回新版主页</a>
-        </div>
+    <div id="aero-bg-layer-a" class="aero-background-layer">
+        <video muted loop playsinline preload="auto"></video>
+    </div>
+    <div id="aero-bg-layer-b" class="aero-background-layer">
+        <video muted loop playsinline preload="auto"></video>
     </div>
 
-    <div class="panel">
-        <h2>关于工作室</h2>
-        <p>欢迎来到我们的主页！这里是专注于视频创作、愉快游玩和软件开发等的逗乐工作室！</p>
-        <p>我们追求快乐且团结的团队精神！</p>
-        <div class="notice" id="ie-warning" style="display:none;">
-            由于您的浏览器过旧，请您考虑升级浏览器后再访问人员介绍和下载中心。
-        </div>
-        <div class="notice">
-            当前页面为兼容模式。为了兼容旧版浏览器，这里采用更简洁的界面，并关闭新版主页中的窗口拖拽、缩放、最小化和最大化效果。
-        </div>
-        <!--[if lte IE 8]>
-        <div class="notice">你正在使用 IE8 或更早版本。部分现代网页功能（定位、HTML5 音频等）可能无法使用。</div>
-        <![endif]-->
-    </div>
+    <img
+        id="studio-logo"
+        src="logo.webp"
+        alt="逗乐工作室 Logo"
+        draggable="false">
 
-    <div class="panel" id="weather-panel">
-        <h2>天气</h2>
-        <div class="weather-box" id="weather-box">
-            <button class="weather-close" type="button" onclick="closeWeather();">X</button>
+    <div class="window glass weather-widget" id="weather-widget">
+        <div class="title-bar">
+            <div class="title-bar-text">🌤️ 本地天气</div>
+            <div class="title-bar-controls" aria-hidden="true">
+                <button type="button" aria-label="Close" onclick="closeWeatherWidget()"></button>
+            </div>
+        </div>
+        <div class="window-body weather-body">
             <div class="weather-main">
-                <div class="weather-city" id="weather-city">正在获取位置...</div>
-                <div class="weather-condition" id="weather-condition">正在读取天气</div>
-                <div class="weather-temp" id="weather-temp">--°C</div>
+                <div class="weather-icon" id="weather-icon">🌤️</div>
+                <div class="weather-info">
+                    <div class="weather-location" id="weather-location">正在获取位置...</div>
+                    <div class="weather-condition" id="weather-condition">正在读取天气</div>
+                    <div class="weather-temp" id="weather-temp">--°C</div>
+                </div>
             </div>
-            <div class="weather-details" id="weather-details">
-                体感：--°C　湿度：--%　风速：-- km/h<br>
-                更新时间：--
+            <div class="weather-details">
+                <div id="weather-feels">体感：--°C</div>
+                <div id="weather-humidity">湿度：--%</div>
+                <div id="weather-wind">风速：-- km/h</div>
+                <div id="weather-updated">更新：--:--</div>
             </div>
-            <button type="button" onclick="refreshWeather();">更新天气</button>
-            <div class="status" id="weather-status">首次使用会请求浏览器位置权限；点击“更新天气”会重新获取当前位置。</div>
+            <div class="weather-status-row">
+                <div class="weather-status" id="weather-status">正在获取当前位置…</div>
+                <button type="button" class="weather-refresh-btn" onclick="refreshWeatherAndLocation()">🔄 更新天气</button>
+            </div>
+            <div class="weather-attribution">天气数据：Open-Meteo</div>
         </div>
     </div>
 
-    <div class="panel" id="timer-panel">
-        <h2>多功能计时器</h2>
+    <div id="minimized-container"></div>
 
-        <div class="timer-tabs">
-            <button id="tab-clock" class="active" type="button" onclick="switchTimer('clock');">当前时间</button>
-            <button id="tab-stopwatch" type="button" onclick="switchTimer('stopwatch');">秒表</button>
-            <button id="tab-countdown" type="button" onclick="switchTimer('countdown');">倒计时</button>
-        </div>
+    <div id="page-scroll" class="has-scrollbar">
+        <div class="container" id="main-container">
 
-        <div id="timer-clock" class="timer-panel">
-            <div class="time-display" id="clock-display">--:--:--</div>
-            <div id="clock-status" class="status">正在同步网络时间...</div>
-            <div class="timer-actions">
-                <button type="button" onclick="syncClock();">手动重新校准</button>
-                <button type="button" onclick="toggleTimerDark();" id="timer-dark-btn">深色模式</button>
-                <button type="button" onclick="toggleTimerMaximize();" id="timer-max-btn">最大化计时器</button>
+        <!-- 1. 顶部 Header 窗口 -->
+        <div class="window glass">
+            <div class="title-bar">
+                <div class="title-bar-text">逗乐工作室</div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize" onclick="toggleMinimize(this)"></button>
+                    <button aria-label="Maximize" onclick="toggleMaximize(this)"></button>
+                    <button aria-label="Close" onclick="closeWindow(this)"></button>
+                </div>
+            </div>
+            <div class="window-body has-scrollbar" style="padding: 10px;">
+                <div class="glass-card" style="text-align: center;">
+                    <h1 style="margin: 0 0 6px 0; color: #0b2545;">逗乐工作室</h1>
+                    <p style="margin: 0 0 12px 0; opacity: 0.85;">注重快乐、愉悦、高效的线上工作室</p>
+                    <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                        <a href="team.html" style="text-decoration: none;">
+                            <button type="button">👥 人员介绍</button>
+                        </a>
+                        <a href="download.html" style="text-decoration: none;">
+                            <button type="button">📦 下载中心</button>
+                        </a>
+                        <a href="music_ul.html" style="text-decoration: none;">
+                            <button type="button">🎵 音乐解锁</button>
+                        </a>
+                        <a href="time.html" style="text-decoration: none;">
+                            <button type="button">⏰ 沉浸时钟</button>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div id="timer-stopwatch" class="timer-panel hidden">
-            <div class="time-display" id="stopwatch-display">00:00:00.00</div>
-            <div class="timer-actions">
-                <button type="button" onclick="toggleStopwatch();" id="stopwatch-btn">开始</button>
-                <button type="button" onclick="resetStopwatch();">重置</button>
+        <!-- 2. 关于工作室 -->
+        <div class="window glass">
+            <div class="title-bar">
+                <div class="title-bar-text">关于工作室</div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize" onclick="toggleMinimize(this)"></button>
+                    <button aria-label="Maximize" onclick="toggleMaximize(this)"></button>
+                    <button aria-label="Close" onclick="closeWindow(this)"></button>
+                </div>
+            </div>
+            <div class="window-body has-scrollbar">
+                <p style="margin-top: 0;">欢迎来到我们的主页！这里是专注于视频创作、愉快游玩和软件开发等的逗乐工作室！</p>
+                <p style="margin-bottom: 0;">我们追求快乐且团结的团队精神！</p>
+                <p style="margin-bottom: 0; margin-top: 10px;">你知道吗？这个网页的窗口是可以交互拖拽的哦！像真的Windows一样！</p>
             </div>
         </div>
 
-        <div id="timer-countdown" class="timer-panel hidden">
-            <div class="time-display" id="countdown-display">00:05:00</div>
-            <div class="countdown-inputs">
-                时：<input type="text" id="cd-hr" value="0">
-                分：<input type="text" id="cd-min" value="5">
-                秒：<input type="text" id="cd-sec" value="0">
+        <!-- 3. 多功能计时器 (大屏自适应版 + 含小时) -->
+        <div class="window glass timer-window">
+            <div class="title-bar">
+                <div class="title-bar-text">⏱️ 多功能计时器</div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize" onclick="toggleMinimize(this)"></button>
+                    <button aria-label="Maximize" onclick="toggleMaximize(this)"></button>
+                    <button aria-label="Close" onclick="closeWindow(this)"></button>
+                </div>
             </div>
-            <div class="timer-actions" style="margin-top:10px;">
-                <button type="button" onclick="toggleCountdown();" id="countdown-btn">开始倒计时</button>
-                <button type="button" onclick="resetCountdown();">重置</button>
-            </div>
-        </div>
-    </div>
+            <div class="window-body has-scrollbar">
+                <div class="timer-tabs">
+                    <button class="active" onclick="switchTimerTab('clock', this)">当前时间</button>
+                    <button onclick="switchTimerTab('stopwatch', this)">秒表</button>
+                    <button onclick="switchTimerTab('countdown', this)">倒计时</button>
+                </div>
 
-    <div class="panel">
-        <h2>音乐播放器</h2>
+                <!-- 选项一：当前时间 (稳定无跨域限制授时) -->
+                <div id="panel-clock" class="timer-panel active">
+                    <div class="time-display" id="ntp-time-box">正在校准授时...</div>
+                    <div class="ntp-status" id="ntp-status-box">状态: 正在连接授时中心...</div>
+                    <button onclick="syncNtpTime()" style="margin-top: 8px; font-size: 0.9em;">手动重新校准</button>
+                    <div class="timer-dark-toggle">
+                        <button type="button" id="timer-theme-btn" onclick="toggleTimerDarkMode()">🌙 深色模式</button>
+                    </div>
+                </div>
 
-        <div class="music-item">
-            <strong>01. 渡口 - 蔡琴</strong>
-            <p>经典音乐，测音必备！（侵删）</p>
-            <audio controls>
-                <source src="music1.mp3" type="audio/mpeg">
-                你的浏览器不支持 HTML5 音频播放。
-            </audio>
-        </div>
+                <!-- 选项二：秒表 -->
+                <div id="panel-stopwatch" class="timer-panel">
+                    <div class="time-display" id="stopwatch-box">00:00:00.00</div>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button id="sw-start-btn" onclick="toggleStopwatch()">开始</button>
+                        <button onclick="resetStopwatch()">重置</button>
+                    </div>
+                </div>
 
-        <div class="music-item">
-            <strong>02. 小村之恋 - 邓丽君</strong>
-            <p>经典音乐，享受村庄生活！（侵删）</p>
-            <audio controls>
-                <source src="music2.mp3" type="audio/mpeg">
-                你的浏览器不支持 HTML5 音频播放。
-            </audio>
-        </div>
-
-        <div class="music-item">
-            <strong>03. frutiger aero - Inuyasha</strong>
-            <p>清新氛围音乐，Frutiger Aero 风格（侵删）</p>
-            <audio controls>
-                <source src="music3.mp3" type="audio/mpeg">
-                你的浏览器不支持 HTML5 音频播放。
-            </audio>
-        </div>
-
-        <div class="music-item">
-            <strong>04. One Man's Dream（一个男人的梦想） - Yanni</strong>
-            <p>经典钢琴/新世纪音乐作品（侵删）</p>
-            <audio controls>
-                <source src="music4.mp3" type="audio/mpeg">
-                你的浏览器不支持 HTML5 音频播放。
-            </audio>
-        </div>
-
-        <div class="music-item">
-            <strong>☁️ 网易云音乐</strong>
-            <p>歌曲 ID：3387613417（落泪+室内系的trackmaker DJ纯享版）</p>
-            <button type="button" onclick="playNetease();">播放网易云音乐</button>
-            <div id="netease-wrap" class="hidden" style="margin-top:10px;">
-                <iframe id="netease-frame" title="网易云音乐播放器" width="100%" height="86" frameborder="0" scrolling="no"></iframe>
+                <!-- 选项三：倒计时 (支持小时) -->
+                <div id="panel-countdown" class="timer-panel">
+                    <div class="time-display" id="countdown-box">00:05:00</div>
+                    <div id="countdown-inputs" class="timer-inputs-group">
+                        时: <input type="number" id="cd-hr" value="0" min="0" max="23">
+                        分: <input type="number" id="cd-min" value="5" min="0" max="59">
+                        秒: <input type="number" id="cd-sec" value="0" min="0" max="59">
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button id="cd-start-btn" onclick="toggleCountdown()">开始倒计时</button>
+                        <button onclick="resetCountdown()">重置</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="panel">
-        <h2>联系我们</h2>
-        <p>📧 电子邮件：contact@dotel.top</p>
-        <p>💬 哔哩哔哩账号：超级末影人</p>
-    </div>
+        <!-- 4. 试听作品 -->
+        <div class="window glass">
+            <div class="title-bar">
+                <div class="title-bar-text">🎵 音乐播放器</div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize" onclick="toggleMinimize(this)"></button>
+                    <button aria-label="Maximize" onclick="toggleMaximize(this)"></button>
+                    <button aria-label="Close" onclick="closeWindow(this)"></button>
+                </div>
+            </div>
+            <div class="window-body has-scrollbar">
+                <div class="music-item">
+                    <strong style="font-size: 1.05em; color: #0b2545;">01. 渡口-蔡琴</strong>
+                    <p style="margin: 4px 0 0 0; font-size: 0.85em; opacity: 0.85;">经典音乐，测音必备！（侵删）</p>
+                    <div class="wmp-player" data-wmp-player data-title="01. 渡口 - 蔡琴">
+                        <div class="wmp-top-glow"></div>
+                        <div class="wmp-main">
+                            <div class="wmp-meta">
+                                <div class="wmp-disc"></div>
+                                <div class="wmp-title-wrap">
+                                    <div class="wmp-track-title">01. 渡口 - 蔡琴</div>
+                                    <div class="wmp-status">Windows Media Player 风格播放器</div>
+                                </div>
+                            </div>
+                            <div class="wmp-progress-wrap">
+                                <span class="wmp-time wmp-current">00:00</span>
+                                <div class="wmp-seek">
+                                    <div class="wmp-buffer"></div>
+                                    <div class="wmp-progress"></div>
+                                    <div class="wmp-thumb"></div>
+                                </div>
+                                <span class="wmp-time wmp-duration">00:00</span>
+                            </div>
+                            <div class="wmp-controls">
+                                <button type="button" class="wmp-btn" data-action="restart" title="重新开始">↶</button>
+                                <button type="button" class="wmp-btn wmp-play" data-action="play" title="播放">▶</button>
+                                <button type="button" class="wmp-btn" data-action="stop" title="停止">■</button>
+                                <div class="wmp-volume">
+                                    <span class="wmp-volume-icon">🔊</span>
+                                    <input class="wmp-volume-range" type="range" min="0" max="1" step="0.01" value="0.85" aria-label="音量">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wmp-bottom"></div>
+                        <audio preload="metadata">
+                            <source src="music1.mp3" type="audio/mpeg">
+                            你的浏览器不支持音频播放。
+                        </audio>
+                    </div>
+                </div>
 
-    <div class="panel">
-        <h2>背景设置</h2>
-        <p>兼容模式提供两个预设背景。新版主页中的本地文件导入不在 IE 兼容模式中强制启用。</p>
-        <div class="bg-buttons">
-            <button type="button" onclick="applyBackground('aero');">Aero 蓝</button>
-            <button type="button" onclick="applyBackground('night');">深蓝夜景</button>
+                <div class="music-item">
+                    <strong style="font-size: 1.05em; color: #0b2545;">02. 小村之恋-邓丽君</strong>
+                    <p style="margin: 4px 0 0 0; font-size: 0.85em; opacity: 0.85;">经典音乐，享受村庄生活！（侵删）</p>
+                    <div class="wmp-player" data-wmp-player data-title="02. 小村之恋 - 邓丽君">
+                        <div class="wmp-top-glow"></div><div class="wmp-main"><div class="wmp-meta"><div class="wmp-disc"></div><div class="wmp-title-wrap"><div class="wmp-track-title">02. 小村之恋 - 邓丽君</div><div class="wmp-status">Windows Media Player 风格播放器</div></div></div><div class="wmp-progress-wrap"><span class="wmp-time wmp-current">00:00</span><div class="wmp-seek"><div class="wmp-buffer"></div><div class="wmp-progress"></div><div class="wmp-thumb"></div></div><span class="wmp-time wmp-duration">00:00</span></div><div class="wmp-controls"><button type="button" class="wmp-btn" data-action="restart" title="重新开始">↶</button><button type="button" class="wmp-btn wmp-play" data-action="play" title="播放">▶</button><button type="button" class="wmp-btn" data-action="stop" title="停止">■</button><div class="wmp-volume"><span class="wmp-volume-icon">🔊</span><input class="wmp-volume-range" type="range" min="0" max="1" step="0.01" value="0.85" aria-label="音量"></div></div></div><div class="wmp-bottom"></div><audio preload="metadata"><source src="music2.mp3" type="audio/mpeg">你的浏览器不支持音频播放。</audio></div>
+                </div>
+
+                <div class="music-item">
+                    <strong style="font-size: 1.05em; color: #0b2545;">03. frutiger aero - Inuyasha</strong>
+                    <p style="margin: 4px 0 0 0; font-size: 0.85em; opacity: 0.85;">清新氛围音乐，Frutiger Aero 风格（侵删）</p>
+                    <div class="wmp-player" data-wmp-player data-title="03. frutiger aero - Inuyasha">
+                        <div class="wmp-top-glow"></div><div class="wmp-main"><div class="wmp-meta"><div class="wmp-disc"></div><div class="wmp-title-wrap"><div class="wmp-track-title">03. frutiger aero - Inuyasha</div><div class="wmp-status">Windows Media Player 风格播放器</div></div></div><div class="wmp-progress-wrap"><span class="wmp-time wmp-current">00:00</span><div class="wmp-seek"><div class="wmp-buffer"></div><div class="wmp-progress"></div><div class="wmp-thumb"></div></div><span class="wmp-time wmp-duration">00:00</span></div><div class="wmp-controls"><button type="button" class="wmp-btn" data-action="restart" title="重新开始">↶</button><button type="button" class="wmp-btn wmp-play" data-action="play" title="播放">▶</button><button type="button" class="wmp-btn" data-action="stop" title="停止">■</button><div class="wmp-volume"><span class="wmp-volume-icon">🔊</span><input class="wmp-volume-range" type="range" min="0" max="1" step="0.01" value="0.85" aria-label="音量"></div></div></div><div class="wmp-bottom"></div><audio preload="metadata"><source src="music3.mp3" type="audio/mpeg">你的浏览器不支持音频播放。</audio></div>
+                </div>
+
+                <div class="music-item">
+                    <strong style="font-size: 1.05em; color: #0b2545;">04. One Man's Dream（一个男人的梦想） - Yanni</strong>
+                    <p style="margin: 4px 0 0 0; font-size: 0.85em; opacity: 0.85;">经典钢琴/新世纪音乐作品（侵删）</p>
+                    <div class="wmp-player" data-wmp-player data-title="04. One Man's Dream（一个男人的梦想） - Yanni">
+                        <div class="wmp-top-glow"></div><div class="wmp-main"><div class="wmp-meta"><div class="wmp-disc"></div><div class="wmp-title-wrap"><div class="wmp-track-title">04. One Man's Dream（一个男人的梦想） - Yanni</div><div class="wmp-status">Windows Media Player 风格播放器</div></div></div><div class="wmp-progress-wrap"><span class="wmp-time wmp-current">00:00</span><div class="wmp-seek"><div class="wmp-buffer"></div><div class="wmp-progress"></div><div class="wmp-thumb"></div></div><span class="wmp-time wmp-duration">00:00</span></div><div class="wmp-controls"><button type="button" class="wmp-btn" data-action="restart" title="重新开始">↶</button><button type="button" class="wmp-btn wmp-play" data-action="play" title="播放">▶</button><button type="button" class="wmp-btn" data-action="stop" title="停止">■</button><div class="wmp-volume"><span class="wmp-volume-icon">🔊</span><input class="wmp-volume-range" type="range" min="0" max="1" step="0.01" value="0.85" aria-label="音量"></div></div></div><div class="wmp-bottom"></div><audio preload="metadata"><source src="music4.mp3" type="audio/mpeg">你的浏览器不支持音频播放。</audio></div>
+                </div>
+
+                <div class="music-item netease-item">
+                    <strong style="font-size: 1.05em; color: #0b2545;">☁️ 网易云音乐</strong>
+                    <p style="margin: 4px 0 10px 0; font-size: 0.85em; opacity: 0.85;">
+                        歌曲 ID：2086154795 Tek It (sped up)这里的音乐不定期更新哦！可能是烂大街的也可能是抽象的或者好听的？
+                    </p>
+                    <button type="button" id="netease-play-btn" onclick="playNeteaseMusic()">▶ 播放网易云音乐</button>
+                    <div id="netease-player-wrap" class="netease-player-wrap" hidden>
+                        <iframe
+                            id="netease-player"
+                            title="网易云音乐播放器"
+                            src="about:blank"
+                            width="100%"
+                            height="86"
+                            frameborder="0"
+                            allow="autoplay; encrypted-media"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
         </div>
-        <p class="small">背景选择会保存在当前浏览器中，刷新页面后仍然保留。</p>
+
+        <!-- 5. 联系我们 -->
+        <div class="window glass">
+            <div class="title-bar">
+                <div class="title-bar-text">联系我们</div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize" onclick="toggleMinimize(this)"></button>
+                    <button aria-label="Maximize" onclick="toggleMaximize(this)"></button>
+                    <button aria-label="Close" onclick="closeWindow(this)"></button>
+                </div>
+            </div>
+            <div class="window-body has-scrollbar">
+                <p style="margin-top: 0;">📧 电子邮件：contact@dotel.top</p>
+                <p style="margin-bottom: 0;">💬 哔哩哔哩账号：超级末影人</p>
+            </div>
+        </div>
+
+        <!-- 6. 自定义背景设置 -->
+        <div class="window glass">
+            <div class="title-bar">
+                <div class="title-bar-text">🎨 自定义背景设置</div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize" onclick="toggleMinimize(this)"></button>
+                    <button aria-label="Maximize" onclick="toggleMaximize(this)"></button>
+                    <button aria-label="Close" onclick="closeWindow(this)"></button>
+                </div>
+            </div>
+            <div class="window-body has-scrollbar">
+                <p style="margin-top: 0;">默认使用 <code>Windows Vista</code> 默认壁纸。你也可以选择本地图片或视频作为动态背景：</p>
+                <div class="bg-control">
+                    <button onclick="document.getElementById('bgInput').click()">选择本地壁纸</button>
+                    <button onclick="resetBackground()">恢复默认背景</button>
+                    <input type="file" id="bgInput" accept="image/*,video/mp4,video/webm,video/ogg,video/*" onchange="changeBackground(event)">
+                </div>
+                <div class="bg-presets">
+                    <strong style="font-size: 0.9em; opacity: 0.85;">预设：</strong>
+                    <button type="button" onclick="applyPresetBackground('vista')">Vista 经典</button>
+                    <button type="button" onclick="applyPresetBackground('night')">深蓝夜景</button>
+                    <button type="button" onclick="applyPresetBackground('horizon5')">地平线5</button>
+                    <button type="button" onclick="applyPresetBackground('minecraft')">Minecraft</button>
+                    <button type="button" onclick="applyPresetBackground('radio')">逗乐电台</button>
+                    <button type="button" onclick="applyPresetBackground('vistaDynamic')">Vista 经典动态</button>
+                    <button type="button" onclick="applyPresetBackground('vistaRain')">Vista 雨夜街头</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部还原按钮 -->
+        <footer>
+            <div class="restore-box" style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+                <button onclick="restoreAllWindows()">🔄 还原所有已关闭/最小化/最大化的窗口</button>
+                <button type="button" onclick="location.href='index-ie.html'">🖥️ 切换至兼容模式</button>
+            </div>
+            <p>© 2026 逗乐工作室</p>
+        </footer>
+        </div>
     </div>
 
-    <div class="footer">
-        <p>© 2026 逗乐工作室</p>
-        <p><a href="index.html">返回新版主页</a></p>
-    </div>
+    <script>
+        let highestZIndex = 100;
 
-</div>
-
-<script type="text/javascript">
-/* <![CDATA[ */
-
-(function () {
-    /* F12 彩蛋：IE 只有打开开发者工具后才会提供 console，因此延迟检测。 */
-    (function () {
-        var printed = false;
-        var message = '都6202年了，真的还有人在用IE吗？';
-
-        function tryPrint() {
-            if (printed) return true;
-            try {
-                if (window.console && typeof window.console.log === 'function') {
-                    if (typeof window.console.log.apply === 'function') {
-                        window.console.log('%c' + message, 'color:#e81123; background:#fff1f1; font-size:20px; font-weight:bold; padding:8px 12px; border:2px solid #e81123;');
-                    } else {
-                        window.console.log(message);
-                    }
-                    printed = true;
-                    return true;
-                }
-            } catch (e) {}
-            return false;
+        function bringToFront(win) {
+            if (win.classList.contains('minimized')) return;
+            highestZIndex++;
+            win.style.zIndex = highestZIndex;
         }
 
-        if (!tryPrint()) {
-            var easterEggTimer = window.setInterval(function () {
-                if (tryPrint()) {
-                    window.clearInterval(easterEggTimer);
-                }
-            }, 500);
-        }
-    })();
-
-    var body = document.body;
-
-    var WEATHER_LOCATION_KEY = 'dotel_weather_location_v1';
-    var WEATHER_CACHE_KEY = 'dotel_weather_cache_v1';
-    var BACKGROUND_KEY = 'dotel_background_v1';
-    var BACKGROUND_PRESET_KEY = 'dotel_background_preset_v1';
-
-    var weatherCodes = {
-        0: { day: '☀️', night: '🌙', text: '晴' },
-        1: { day: '🌤️', night: '🌙', text: '大致晴朗' },
-        2: { day: '⛅', night: '☁️', text: '局部多云' },
-        3: { day: '☁️', night: '☁️', text: '阴天' },
-        45: { day: '🌫️', night: '🌫️', text: '雾' },
-        48: { day: '🌫️', night: '🌫️', text: '霜雾' },
-        51: { day: '🌦️', night: '🌧️', text: '毛毛雨' },
-        53: { day: '🌦️', night: '🌧️', text: '中等毛毛雨' },
-        55: { day: '🌧️', night: '🌧️', text: '较强毛毛雨' },
-        61: { day: '🌧️', night: '🌧️', text: '小雨' },
-        63: { day: '🌧️', night: '🌧️', text: '中雨' },
-        65: { day: '🌧️', night: '🌧️', text: '大雨' },
-        71: { day: '🌨️', night: '🌨️', text: '小雪' },
-        73: { day: '🌨️', night: '🌨️', text: '中雪' },
-        75: { day: '❄️', night: '❄️', text: '大雪' },
-        80: { day: '🌦️', night: '🌧️', text: '阵雨' },
-        81: { day: '🌦️', night: '🌧️', text: '中等阵雨' },
-        82: { day: '⛈️', night: '⛈️', text: '强阵雨' },
-        95: { day: '⛈️', night: '⛈️', text: '雷雨' }
-    };
-
-    var timerDark = false;
-    var clockOffset = 0;
-    var stopwatchTimer = null;
-    var stopwatchStart = 0;
-    var stopwatchElapsed = 0;
-    var countdownTimer = null;
-    var countdownRemaining = 0;
-
-    function byId(id) {
-        return document.getElementById(id);
-    }
-
-    function xhrGet(url, success, failure) {
-        var xhr = new XMLHttpRequest();
-        var finished = false;
-
-        function ok(dataText) {
-            if (finished) return;
-            finished = true;
-            try {
-                success(JSON.parse(dataText));
-            } catch (e) {
-                if (failure) failure(e);
+        // 初始化窗口
+        document.querySelectorAll('.window').forEach((win, index) => {
+            if (win.classList.contains('weather-widget')) {
+                makeWeatherDraggable(win);
+                win.addEventListener('mousedown', () => {
+                    bringToFront(win);
+                });
+                return;
             }
-        }
 
-        try {
-            xhr.open('GET', url, true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState !== 4) return;
-                if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 0) {
-                    ok(xhr.responseText);
-                } else if (failure) {
-                    failure(new Error('HTTP ' + xhr.status));
-                }
-            };
-            xhr.onerror = function () {
-                if (!finished && failure) failure(new Error('CORS/XHR error'));
-            };
-            xhr.send(null);
-        } catch (e2) {
-            if (failure) failure(e2);
-        }
-    }
+            win.dataset.originalIndex = index;
+            makeDraggable(win);
+            makeResizable(win);
 
-    function saveJson(key, value) {
-        try {
-            window.localStorage.setItem(key, JSON.stringify(value));
-        } catch (e) {}
-    }
-
-    function loadJson(key) {
-        try {
-            var value = window.localStorage.getItem(key);
-            return value ? JSON.parse(value) : null;
-        } catch (e) {
-            return null;
-        }
-    }
-
-    function formatTime(date) {
-        var h = String(date.getHours());
-        var m = String(date.getMinutes());
-        var s = String(date.getSeconds());
-        if (h.length < 2) h = '0' + h;
-        if (m.length < 2) m = '0' + m;
-        if (s.length < 2) s = '0' + s;
-        return h + ':' + m + ':' + s;
-    }
-
-    function formatDateTime(ts) {
-        return formatTime(new Date(ts));
-    }
-
-    function setWeatherStatus(text) {
-        byId('weather-status').innerHTML = text;
-    }
-
-    function renderWeather(locationName, current, sourceLabel) {
-        var meta = weatherCodes[current.weather_code] || { day: '🌡️', night: '🌡️', text: '未知天气' };
-        byId('weather-city').innerHTML = locationName || '当前位置';
-        byId('weather-condition').innerHTML = meta.text;
-        byId('weather-temp').innerHTML = Math.round(current.temperature_2m) + '°C';
-        byId('weather-details').innerHTML =
-            '体感：' + Math.round(current.apparent_temperature) + '°C　' +
-            '湿度：' + Math.round(current.relative_humidity_2m) + '%　' +
-            '风速：' + Math.round(current.wind_speed_10m) + ' km/h<br>' +
-            '更新时间：' + formatDateTime(new Date().getTime());
-        setWeatherStatus(sourceLabel || '天气已更新');
-        saveJson(WEATHER_CACHE_KEY, {
-            locationName: locationName,
-            current: current,
-            updatedAt: new Date().getTime()
-        });
-    }
-
-    function reverseGeocode(lat, lon, success, failure) {
-        var url = 'https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=' +
-            encodeURIComponent(lat) + '&longitude=' + encodeURIComponent(lon) + '&localityLanguage=zh';
-        xhrGet(url, function (data) {
-            var city = data.city || data.locality || data.principalSubdivision || '当前位置';
-            success(city);
-        }, failure);
-    }
-
-    function loadWeather(lat, lon, sourceLabel) {
-        var url = 'https://api.open-meteo.com/v1/forecast?latitude=' +
-            encodeURIComponent(lat) + '&longitude=' + encodeURIComponent(lon) +
-            '&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,is_day' +
-            '&timezone=auto&temperature_unit=celsius&wind_speed_unit=kmh';
-
-        setWeatherStatus('正在读取天气…');
-
-        xhrGet(url, function (data) {
-            var current = data.current;
-            reverseGeocode(lat, lon, function (city) {
-                renderWeather(city, current, sourceLabel || '天气已更新');
-            }, function () {
-                renderWeather('当前位置', current, sourceLabel || '天气已更新');
+            win.addEventListener('mousedown', () => {
+                bringToFront(win);
             });
-        }, function () {
-            var cached = loadJson(WEATHER_CACHE_KEY);
-            if (cached && cached.current) {
-                renderWeather(cached.locationName, cached.current, '天气服务暂时不可用，显示上次数据');
-            } else {
-                setWeatherStatus('天气获取失败，请检查 IE11 是否允许跨域请求。');
-            }
         });
-    }
 
-    function saveLocation(lat, lon) {
-        saveJson(WEATHER_LOCATION_KEY, {
-            latitude: Number(lat),
-            longitude: Number(lon),
-            savedAt: new Date().getTime()
-        });
-    }
+        // ---------------- 计时器授时逻辑 (多路安全授时源) ----------------
+        let timeOffset = 0; 
 
-    function getSavedLocation() {
-        var saved = loadJson(WEATHER_LOCATION_KEY);
-        if (!saved) return null;
-        if (isNaN(Number(saved.latitude)) || isNaN(Number(saved.longitude))) return null;
-        return saved;
-    }
-
-    function requestWeatherLocation() {
-        if (!navigator.geolocation) {
-            setWeatherStatus('当前浏览器不支持定位，请使用 IE11 或更高版本。');
-            return;
+        function syncNtpTime() {
+            const statusBox = document.getElementById('ntp-status-box');
+            statusBox.innerText = "状态: 正在连接网络授时接口...";
+            
+            const startReq = Date.now();
+            fetch('https://timeapi.io/api/Time/current/zone?timeZone=Asia/Shanghai')
+                .then(res => res.json())
+                .then(data => {
+                    const serverEpochMs = new Date(data.dateTime).getTime();
+                    const latency = (Date.now() - startReq) / 2;
+                    const serverTime = serverEpochMs + latency;
+                    timeOffset = serverTime - Date.now();
+                    statusBox.innerText = "状态: 已通过网络授时中心成功同步";
+                })
+                .catch(() => {
+                    fetch('https://worldtimeapi.org/api/timezone/Asia/Shanghai')
+                        .then(res => res.json())
+                        .then(data => {
+                            const latency = (Date.now() - startReq) / 2;
+                            const serverTime = new Date(data.unixtime * 1000 + latency).getTime();
+                            timeOffset = serverTime - Date.now();
+                            statusBox.innerText = "状态: 已通过备用网络授时中心成功同步";
+                        })
+                        .catch(() => {
+                            timeOffset = 0;
+                            statusBox.innerText = "状态: 联网同步失败，使用本地系统时钟（可能存在时间误差）";
+                        });
+                });
         }
 
-        setWeatherStatus('正在请求位置权限…');
-        navigator.geolocation.getCurrentPosition(function (pos) {
-            saveLocation(pos.coords.latitude, pos.coords.longitude);
-            loadWeather(pos.coords.latitude, pos.coords.longitude, '已更新当前位置与天气');
-        }, function () {
-            setWeatherStatus('无法获取当前位置，请检查浏览器的位置权限。');
-        }, {
-            enableHighAccuracy: false,
-            timeout: 10000,
-            maximumAge: 300000
-        });
-    }
-
-    window.refreshWeather = function () {
-        /* 统一按钮：同时重新获取当前位置并刷新天气。 */
-        requestWeatherLocation();
-    };
-
-    window.closeWeather = function () {
-        byId('weather-panel').style.display = 'none';
-    };
-
-    function loadCachedWeather() {
-        var cached = loadJson(WEATHER_CACHE_KEY);
-        if (!cached || !cached.current) return;
-        var current = cached.current;
-        var meta = weatherCodes[current.weather_code] || { day: '🌡️', night: '🌡️', text: '未知天气' };
-        byId('weather-city').innerHTML = cached.locationName || '当前位置';
-        byId('weather-condition').innerHTML = meta.text;
-        byId('weather-temp').innerHTML = Math.round(current.temperature_2m) + '°C';
-        byId('weather-details').innerHTML =
-            '体感：' + Math.round(current.apparent_temperature) + '°C　' +
-            '湿度：' + Math.round(current.relative_humidity_2m) + '%　' +
-            '风速：' + Math.round(current.wind_speed_10m) + ' km/h<br>' +
-            '上次更新：' + formatDateTime(cached.updatedAt || new Date().getTime());
-        setWeatherStatus('显示上次天气，正在更新…');
-    }
-
-    function initWeather() {
-        loadCachedWeather();
-        var saved = getSavedLocation();
-        if (saved) {
-            loadWeather(saved.latitude, saved.longitude, '使用已保存的位置更新天气');
-        } else {
-            requestWeatherLocation();
-        }
-    }
-
-    window.toggleTimerMaximize = function () {
-        var panel = byId('timer-panel');
-        var button = byId('timer-max-btn');
-        if (!panel || !button) return;
-
-        if (panel.className.indexOf('timer-maximized') === -1) {
-            panel.className += ' timer-maximized';
-            button.innerHTML = '还原计时器';
-            if (document.documentElement) document.documentElement.style.overflow = 'hidden';
-            if (document.body) document.body.style.overflow = 'hidden';
-        } else {
-            panel.className = panel.className.replace(/\s*timer-maximized/g, '');
-            button.innerHTML = '最大化计时器';
-            if (document.documentElement) document.documentElement.style.overflow = '';
-            if (document.body) document.body.style.overflow = '';
-        }
-    };
-
-    window.switchTimer = function (name) {
-        var ids = ['clock', 'stopwatch', 'countdown'];
-        var i;
-        for (i = 0; i < ids.length; i++) {
-            byId('timer-' + ids[i]).className = 'timer-panel' + (ids[i] === name ? '' : ' hidden');
-            byId('tab-' + ids[i]).className = ids[i] === name ? 'active' : '';
-        }
-    };
-
-    window.toggleTimerDark = function () {
-        timerDark = !timerDark;
-        var panel = byId('timer-panel');
-        panel.className = timerDark ? 'panel timer-dark' : 'panel';
-        byId('timer-dark-btn').innerHTML = timerDark ? '浅色模式' : '深色模式';
-    };
-
-    window.syncClock = function () {
-        var url = 'https://timeapi.io/api/Time/current/zone?timeZone=Asia/Shanghai';
-        byId('clock-status').innerHTML = '正在同步网络时间…';
-        xhrGet(url, function (data) {
-            var server = new Date(data.dateTime).getTime();
-            clockOffset = server - new Date().getTime();
-            byId('clock-status').innerHTML = '已通过网络时间服务同步';
-        }, function () {
-            byId('clock-status').innerHTML = '网络时间服务不可用，使用本地时间';
-            clockOffset = 0;
-        });
-    };
-
-    function updateClock() {
-        var now = new Date(new Date().getTime() + clockOffset);
-        byId('clock-display').innerHTML = formatTime(now);
-    }
-
-    window.toggleStopwatch = function () {
-        if (stopwatchTimer) {
-            window.clearInterval(stopwatchTimer);
-            stopwatchTimer = null;
-            byId('stopwatch-btn').innerHTML = '继续';
-            return;
-        }
-
-        stopwatchStart = new Date().getTime() - stopwatchElapsed;
-        stopwatchTimer = window.setInterval(function () {
-            stopwatchElapsed = new Date().getTime() - stopwatchStart;
-            updateStopwatch();
-        }, 40);
-        byId('stopwatch-btn').innerHTML = '暂停';
-    };
-
-    window.resetStopwatch = function () {
-        if (stopwatchTimer) {
-            window.clearInterval(stopwatchTimer);
-            stopwatchTimer = null;
-        }
-        stopwatchElapsed = 0;
-        byId('stopwatch-btn').innerHTML = '开始';
-        updateStopwatch();
-    };
-
-    function updateStopwatch() {
-        var total = Math.floor(stopwatchElapsed / 1000);
-        var ms = Math.floor((stopwatchElapsed % 1000) / 10);
-        var s = total % 60;
-        var m = Math.floor(total / 60) % 60;
-        var h = Math.floor(total / 3600);
-        if (h < 10) h = '0' + h;
-        if (m < 10) m = '0' + m;
-        if (s < 10) s = '0' + s;
-        if (ms < 10) ms = '0' + ms;
-        byId('stopwatch-display').innerHTML = h + ':' + m + ':' + s + '.' + ms;
-    }
-
-    function getCountdownInput(id) {
-        var value = parseInt(byId(id).value, 10);
-        return isNaN(value) ? 0 : value;
-    }
-
-    function showCountdown() {
-        var total = countdownRemaining;
-        var h = Math.floor(total / 3600);
-        var m = Math.floor((total % 3600) / 60);
-        var s = total % 60;
-        if (h < 10) h = '0' + h;
-        if (m < 10) m = '0' + m;
-        if (s < 10) s = '0' + s;
-        byId('countdown-display').innerHTML = h + ':' + m + ':' + s;
-    }
-
-    window.toggleCountdown = function () {
-        if (countdownTimer) {
-            window.clearInterval(countdownTimer);
-            countdownTimer = null;
-            byId('countdown-btn').innerHTML = '继续';
-            return;
-        }
-
-        if (countdownRemaining <= 0) {
-            countdownRemaining =
-                getCountdownInput('cd-hr') * 3600 +
-                getCountdownInput('cd-min') * 60 +
-                getCountdownInput('cd-sec');
-            if (countdownRemaining <= 0) return;
-        }
-
-        countdownTimer = window.setInterval(function () {
-            if (countdownRemaining > 0) countdownRemaining--;
-            showCountdown();
-            if (countdownRemaining <= 0) {
-                window.clearInterval(countdownTimer);
-                countdownTimer = null;
-                byId('countdown-btn').innerHTML = '开始倒计时';
-                try { new Audio('ding.mp3').play(); } catch (e) {}
-            }
+        syncNtpTime();
+        setInterval(() => {
+            const now = new Date(Date.now() + timeOffset);
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timeStr = `${hours}:${minutes}:${seconds}`;
+            const box = document.getElementById('ntp-time-box');
+            if (box) box.innerText = timeStr;
         }, 1000);
 
-        byId('countdown-btn').innerHTML = '暂停';
-    };
+        // 仅切换计时器窗口内部的深色模式，不影响其他窗口和页面背景。
+        function toggleTimerDarkMode() {
+            const timerWindow = document.querySelector('.timer-window');
+            const themeButton = document.getElementById('timer-theme-btn');
+            if (!timerWindow || !themeButton) return;
 
-    window.resetCountdown = function () {
-        if (countdownTimer) {
-            window.clearInterval(countdownTimer);
-            countdownTimer = null;
+            const enabled = timerWindow.classList.toggle('dark-mode');
+            themeButton.innerText = enabled ? '☀️ 浅色模式' : '🌙 深色模式';
         }
-        countdownRemaining =
-            getCountdownInput('cd-hr') * 3600 +
-            getCountdownInput('cd-min') * 60 +
-            getCountdownInput('cd-sec');
-        byId('countdown-btn').innerHTML = '开始倒计时';
-        showCountdown();
-    };
 
-    /* 修改时分秒后立即让倒计时显示使用新数值，无需再额外点击“重置”。
-       运行中的倒计时不会被强制重置；下次点击“开始/继续”前会继续使用当前剩余时间。 */
-    function updateCountdownFromInputs() {
-        if (countdownTimer) return;
-        countdownRemaining =
-            getCountdownInput('cd-hr') * 3600 +
-            getCountdownInput('cd-min') * 60 +
-            getCountdownInput('cd-sec');
-        showCountdown();
-    }
-
-    if (byId('cd-hr').addEventListener) {
-        byId('cd-hr').addEventListener('input', updateCountdownFromInputs);
-        byId('cd-min').addEventListener('input', updateCountdownFromInputs);
-        byId('cd-sec').addEventListener('input', updateCountdownFromInputs);
-    } else {
-        byId('cd-hr').attachEvent('onkeyup', updateCountdownFromInputs);
-        byId('cd-min').attachEvent('onkeyup', updateCountdownFromInputs);
-        byId('cd-sec').attachEvent('onkeyup', updateCountdownFromInputs);
-    }
-
-    window.playNetease = function () {
-        byId('netease-wrap').className = '';
-        byId('netease-frame').src = 'https://music.163.com/outchain/player?type=2&id=3387613417&auto=1&height=66';
-    };
-
-    var presets = {
-        aero: "linear-gradient(135deg,#6fb1fc 0%,#4f9ee8 42%,#1f6fbd 100%)",
-        night: "linear-gradient(135deg,#0b1f3a 0%,#163d73 48%,#0a6aa8 100%)"
-    };
-
-    window.applyBackground = function (name) {
-        if (!presets[name]) return;
-        body.style.backgroundImage = presets[name];
-        try {
-            window.localStorage.setItem(BACKGROUND_PRESET_KEY, name);
-            window.localStorage.removeItem(BACKGROUND_KEY);
-        } catch (e) {}
-    };
-
-    function loadBackground() {
-        var custom = null;
-        var preset = null;
-        try {
-            custom = window.localStorage.getItem(BACKGROUND_KEY);
-            preset = window.localStorage.getItem(BACKGROUND_PRESET_KEY);
-        } catch (e) {}
-
-        if (custom) {
-            body.style.backgroundImage = "url('" + custom + "')";
-            return;
+        function switchTimerTab(tabName, btn) {
+            document.querySelectorAll('.timer-tabs button').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.timer-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(`panel-${tabName}`).classList.add('active');
         }
-        if (preset && presets[preset]) {
-            body.style.backgroundImage = presets[preset];
-            return;
+
+        // 秒表逻辑
+        let swTimer = null;
+        let swTime = 0; 
+        let swRunning = false;
+
+        function toggleStopwatch() {
+            const btn = document.getElementById('sw-start-btn');
+            if (swRunning) {
+                clearInterval(swTimer);
+                swRunning = false;
+                btn.innerText = "开始";
+            } else {
+                const startTime = Date.now() - swTime;
+                swTimer = setInterval(() => {
+                    swTime = Date.now() - startTime;
+                    updateStopwatchDisplay();
+                }, 30);
+                swRunning = true;
+                btn.innerText = "暂停";
+            }
         }
-        body.style.backgroundImage = presets.aero;
-    }
 
-    /* 仅在真正的 Internet Explorer 中显示旧浏览器提示。
-       document.documentMode 是 IE 专有特征，IE8-IE11 均可检测。
-       非 IE 浏览器在这里不会显示提示，人员介绍和下载中心正常可用。 */
-    if (document.documentMode) {
-        var warning = byId('ie-warning');
-        if (warning) warning.style.display = 'block';
-    }
+        function resetStopwatch() {
+            clearInterval(swTimer);
+            swRunning = false;
+            swTime = 0;
+            document.getElementById('sw-start-btn').innerText = "开始";
+            updateStopwatchDisplay();
+        }
 
-    loadBackground();
-    initWeather();
-    syncClock();
-    updateClock();
-    updateStopwatch();
-    countdownRemaining = 300;
-    showCountdown();
+        function updateStopwatchDisplay() {
+            const ms = Math.floor((swTime % 1000) / 10);
+            const totalSec = Math.floor(swTime / 1000);
+            const s = totalSec % 60;
+            const m = Math.floor(totalSec / 60) % 60;
+            const h = Math.floor(totalSec / 3600);
+            document.getElementById('stopwatch-box').innerText = 
+                `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${String(ms).padStart(2, '0')}`;
+        }
 
-    window.setInterval(updateClock, 1000);
-    window.setInterval(function () {
-        var saved = getSavedLocation();
-        if (saved) loadWeather(saved.latitude, saved.longitude, '自动刷新天气');
-    }, 10 * 60 * 1000);
+        // 倒计时逻辑 (含小时)
+        let cdTimer = null;
+        let cdRemaining = 0; 
+        let cdRunning = false;
+        const dingAudio = new Audio('ding.mp3');
 
-    /* IE8 缺少部分 HTML5 能力时，页面其他基础功能仍保持可用。 */
-})();
+        function toggleCountdown() {
+            const btn = document.getElementById('cd-start-btn');
+            if (cdRunning) {
+                clearInterval(cdTimer);
+                cdRunning = false;
+                btn.innerText = "继续";
+            } else {
+                if (cdRemaining <= 0) {
+                    const hr = parseInt(document.getElementById('cd-hr').value) || 0;
+                    const min = parseInt(document.getElementById('cd-min').value) || 0;
+                    const sec = parseInt(document.getElementById('cd-sec').value) || 0;
+                    cdRemaining = hr * 3600 + min * 60 + sec;
+                    if (cdRemaining <= 0) return;
+                }
+                document.getElementById('countdown-inputs').style.display = 'none';
+                cdRunning = true;
+                btn.innerText = "暂停";
 
-/* ]]> */
-</script>
+                cdTimer = setInterval(() => {
+                    if (cdRemaining > 0) {
+                        cdRemaining--;
+                        updateCountdownDisplay();
+                    }
+                    if (cdRemaining <= 0) {
+                        clearInterval(cdTimer);
+                        cdRunning = false;
+                        btn.innerText = "开始倒计时";
+                        document.getElementById('countdown-inputs').style.display = 'flex';
+                        dingAudio.currentTime = 0;
+                        dingAudio.play().catch(e => console.log("播放提示音失败(请确认同目录下有 ding.mp3)", e));
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetCountdown() {
+            clearInterval(cdTimer);
+            cdRunning = false;
+            cdRemaining = 0;
+            document.getElementById('cd-start-btn').innerText = "开始倒计时";
+            document.getElementById('countdown-inputs').style.display = 'flex';
+            const hr = parseInt(document.getElementById('cd-hr').value) || 0;
+            const min = parseInt(document.getElementById('cd-min').value) || 0;
+            const sec = parseInt(document.getElementById('cd-sec').value) || 0;
+            const total = hr * 3600 + min * 60 + sec;
+            const h = Math.floor(total / 3600);
+            const m = Math.floor((total % 3600) / 60);
+            const s = total % 60;
+            document.getElementById('countdown-box').innerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        function updateCountdownDisplay() {
+            const h = Math.floor(cdRemaining / 3600);
+            const m = Math.floor((cdRemaining % 3600) / 60);
+            const s = cdRemaining % 60;
+            document.getElementById('countdown-box').innerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        ['cd-hr', 'cd-min', 'cd-sec'].forEach(id => {
+            document.getElementById(id).addEventListener('input', resetCountdown);
+        });
+
+        // ---------------- 八向拉伸核心逻辑 ----------------
+        function makeResizable(win) {
+            const directions = ['top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right'];
+            
+            directions.forEach(dir => {
+                const resizer = document.createElement('div');
+                resizer.className = `resizer ${dir}`;
+                win.appendChild(resizer);
+
+                resizer.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (win.classList.contains('maximized') || win.classList.contains('minimized')) return;
+
+                    bringToFront(win);
+                    win.classList.add('resizing');
+
+                    const rect = win.getBoundingClientRect();
+                    const startX = e.clientX;
+                    const startY = e.clientY;
+                    const startWidth = rect.width;
+                    const startHeight = rect.height;
+                    const startLeft = rect.left;
+                    const startTop = rect.top;
+
+                    win.style.position = 'fixed';
+                    win.style.left = startLeft + 'px';
+                    win.style.top = startTop + 'px';
+                    win.style.margin = '0';
+
+                    const minWidth = 220;
+                    const minHeight = 80;
+
+                    function onMouseMove(e) {
+                        const dx = e.clientX - startX;
+                        const dy = e.clientY - startY;
+
+                        if (dir.includes('right')) {
+                            win.style.width = Math.max(minWidth, startWidth + dx) + 'px';
+                        }
+                        if (dir.includes('bottom')) {
+                            win.style.height = Math.max(minHeight, startHeight + dy) + 'px';
+                        }
+                        if (dir.includes('left')) {
+                            const possibleWidth = startWidth - dx;
+                            if (possibleWidth > minWidth) {
+                                win.style.width = possibleWidth + 'px';
+                                win.style.left = (startLeft + dx) + 'px';
+                            }
+                        }
+                        if (dir.includes('top')) {
+                            const possibleHeight = startHeight - dy;
+                            if (possibleHeight > minHeight) {
+                                win.style.height = possibleHeight + 'px';
+                                win.style.top = (startTop + dy) + 'px';
+                            }
+                        }
+                    }
+
+                    function onMouseUp() {
+                        win.classList.remove('resizing');
+                        document.removeEventListener('mousemove', onMouseMove);
+                        document.removeEventListener('mouseup', onMouseUp);
+                    }
+
+                    document.addEventListener('mousemove', onMouseMove);
+                    document.addEventListener('mouseup', onMouseUp);
+                });
+            });
+        }
+
+        // ---------------- 窗口布局平滑过渡（FLIP） ----------------
+        function getWindowElements() {
+            return Array.from(document.querySelectorAll('.window'))
+                .filter(win =>
+                    !win.classList.contains('window-closed') &&
+                    !win.classList.contains('weather-widget')
+                );
+        }
+
+        function captureWindowRects(windows = getWindowElements()) {
+            const rects = new Map();
+            windows.forEach(win => rects.set(win, win.getBoundingClientRect()));
+            return rects;
+        }
+
+        function playWindowFLIP(firstRects, options = {}) {
+            const duration = options.duration || 400;
+            const easing = options.easing || 'cubic-bezier(0.16, 1, 0.3, 1)';
+            const windows = getWindowElements();
+
+            windows.forEach(win => {
+                const first = firstRects.get(win);
+                if (!first) return;
+
+                const last = win.getBoundingClientRect();
+                const deltaX = first.left - last.left;
+                const deltaY = first.top - last.top;
+                const scaleX = last.width ? first.width / last.width : 1;
+                const scaleY = last.height ? first.height / last.height : 1;
+
+                // 清除上一次动画残留，避免“还原所有窗口”后再次最大化/还原失效。
+                win.style.animation = 'none';
+                win.style.transition = 'none';
+                win.style.transformOrigin = 'top left';
+
+                if (Math.abs(deltaX) < 0.5 && Math.abs(deltaY) < 0.5 &&
+                    Math.abs(scaleX - 1) < 0.005 && Math.abs(scaleY - 1) < 0.005) {
+                    win.style.transform = '';
+                    return;
+                }
+
+                win.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`;
+
+                // 强制浏览器提交起始状态，再切换到最终状态，确保每次动画都存在。
+                void win.offsetWidth;
+                requestAnimationFrame(() => {
+                    win.style.transition = `transform ${duration}ms ${easing}`;
+                    win.style.transform = '';
+
+                    const cleanup = () => {
+                        win.style.transition = '';
+                        win.style.transform = '';
+                        win.style.animation = '';
+                        win.style.transformOrigin = '';
+                        win.removeEventListener('transitionend', cleanup);
+                    };
+                    win.addEventListener('transitionend', cleanup);
+                    setTimeout(cleanup, duration + 80);
+                });
+            });
+        }
+
+        function animateLayoutChange(action, options = {}) {
+            const firstRects = captureWindowRects();
+            action();
+            // DOM 重排与样式计算完成后，再执行一次 FLIP。
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => playWindowFLIP(firstRects, options));
+            });
+        }
+
+        // ---------------- 1. 窗口拖拽与双击最大化 ----------------
+        function makeDraggable(win) {
+            const titleBar = win.querySelector('.title-bar');
+            let isDragging = false;
+            let pendingDrag = false;
+            let mouseOffsetX = 0, mouseOffsetY = 0;
+            let dragStartX = 0, dragStartY = 0;
+            const DRAG_THRESHOLD = 4;
+
+            titleBar.addEventListener('dblclick', (e) => {
+                if (e.target.tagName.toLowerCase() === 'button') return;
+                const maxBtn = titleBar.querySelector('button[aria-label="Maximize"]');
+                if (maxBtn) toggleMaximize(maxBtn);
+            });
+
+            titleBar.addEventListener('mousedown', (e) => {
+                if (e.button !== 0) return;
+                if (e.target.tagName.toLowerCase() === 'button') return;
+                if (win.classList.contains('maximized')) return;
+
+                // 仅记录按下位置；单击本身不会改变窗口位置。
+                pendingDrag = true;
+                isDragging = false;
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+
+                const rect = win.getBoundingClientRect();
+                mouseOffsetX = e.clientX - rect.left;
+                mouseOffsetY = e.clientY - rect.top;
+
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+
+            function onMouseMove(e) {
+                if (!pendingDrag && !isDragging) return;
+
+                if (pendingDrag && Math.hypot(e.clientX - dragStartX, e.clientY - dragStartY) >= DRAG_THRESHOLD) {
+                    pendingDrag = false;
+                    isDragging = true;
+                    bringToFront(win);
+
+                    const rect = win.getBoundingClientRect();
+                    // 进入真正拖动前再切换 fixed，保持当前视觉位置不变。
+                    win.style.position = 'fixed';
+                    win.style.left = rect.left + 'px';
+                    win.style.top = rect.top + 'px';
+                    win.style.margin = '0';
+                    win.classList.add('dragging');
+                }
+
+                if (!isDragging) return;
+                win.style.left = (e.clientX - mouseOffsetX) + 'px';
+                win.style.top = (e.clientY - mouseOffsetY) + 'px';
+            }
+
+            function onMouseUp() {
+                pendingDrag = false;
+                isDragging = false;
+                win.classList.remove('dragging');
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            }
+        }
+
+        // ---------------- 2. 最小化/还原 ----------------
+        function toggleMinimize(button) {
+            const win = button.closest('.window');
+            const minContainer = document.getElementById('minimized-container');
+
+            if (win.classList.contains('minimized')) {
+                const firstRects = captureWindowRects();
+                win.classList.remove('minimized');
+                restoreWindowToBody(win);
+                bringToFront(win);
+                playWindowFLIP(firstRects);
+                return;
+            }
+
+            const firstRects = captureWindowRects();
+            win.classList.remove('maximized');
+            win.classList.remove('window-closing');
+            win.classList.add('minimized');
+            minContainer.appendChild(win);
+            playWindowFLIP(firstRects);
+        }
+
+        // ---------------- 3. 最大化/还原 ----------------
+        function toggleMaximize(button) {
+            const win = button.closest('.window');
+
+            if (win.classList.contains('minimized')) {
+                const firstRects = captureWindowRects();
+                win.classList.remove('minimized');
+                restoreWindowToBody(win);
+                bringToFront(win);
+
+                // 从最小化恢复后再最大化，分两步执行可以避免状态切换互相吞动画。
+                requestAnimationFrame(() => {
+                    const midRects = captureWindowRects();
+                    win.classList.add('maximized');
+                    bringToFront(win);
+                    playWindowFLIP(midRects);
+                });
+                playWindowFLIP(firstRects);
+                return;
+            }
+
+            const firstRects = captureWindowRects();
+            const wasMaximized = win.classList.contains('maximized');
+            win.classList.toggle('maximized');
+            if (wasMaximized) bringToFront(win);
+            playWindowFLIP(firstRects);
+        }
+
+        // ---------------- 4. 关闭 ----------------
+        function closeWindow(button) {
+            const win = button.closest('.window');
+            win.classList.remove('maximized', 'minimized');
+            win.classList.add('window-closing');
+            setTimeout(() => {
+                const firstRects = captureWindowRects();
+                win.classList.remove('window-closing');
+                win.classList.add('window-closed');
+                playWindowFLIP(firstRects, { duration: 400 });
+            }, 260);
+        }
+
+        // 还原 DOM 结构与用户拖拽时保存的内联几何样式。
+        function restoreWindowToBody(win) {
+            const container = document.getElementById('main-container');
+            const targetIndex = parseInt(win.dataset.originalIndex, 10);
+            const currentWindows = Array.from(container.querySelectorAll('.window'));
+
+            win.style.position = '';
+            win.style.left = '';
+            win.style.top = '';
+            win.style.margin = '';
+            win.style.width = '';
+            win.style.height = '';
+
+            let inserted = false;
+            for (const el of currentWindows) {
+                if (el !== win && parseInt(el.dataset.originalIndex, 10) > targetIndex) {
+                    container.insertBefore(win, el);
+                    inserted = true;
+                    break;
+                }
+            }
+            if (!inserted) {
+                const footer = container.querySelector('footer');
+                container.insertBefore(win, footer);
+            }
+        }
+
+        // ---------------- 5. 一键还原所有窗口 ----------------
+        function restoreAllWindows() {
+            // 普通窗口仍按原有 FLIP 逻辑恢复。
+            const firstRects = captureWindowRects();
+            const windows = Array.from(document.querySelectorAll('.window'))
+                .filter(win => !win.classList.contains('weather-widget'));
+
+            windows.forEach(win => {
+                win.classList.remove('window-closed', 'window-closing', 'minimized', 'maximized');
+                restoreWindowToBody(win);
+            });
+
+            windows.forEach(win => bringToFront(win));
+            playWindowFLIP(firstRects);
+
+            // 天气窗口是独立的“受限窗口”：允许关闭/拖动，但不能最小化、
+            // 最大化或缩放。现在“一键还原所有窗口”也会把它恢复到右上角默认位置。
+            const weather = document.getElementById('weather-widget');
+            if (weather) {
+                const wasClosed = weather.classList.contains('weather-closed');
+                const wasClosing = weather.classList.contains('weather-closing');
+                const weatherRect = !wasClosed && !wasClosing
+                    ? weather.getBoundingClientRect()
+                    : null;
+
+                clearTimeout(weather._closeTimer);
+                weather.classList.remove('weather-closing', 'weather-closed');
+
+                // 恢复默认的右上角位置。
+                weather.style.left = '';
+                weather.style.top = '';
+                weather.style.right = '';
+                weather.style.margin = '';
+
+                bringToFront(weather);
+
+                // 如果天气窗口原本可见且被拖走，则播放与普通窗口一致的移动动画。
+                if (weatherRect) {
+                    const last = weather.getBoundingClientRect();
+                    const dx = weatherRect.left - last.left;
+                    const dy = weatherRect.top - last.top;
+
+                    if (Math.abs(dx) >= 0.5 || Math.abs(dy) >= 0.5) {
+                        weather.style.animation = 'none';
+                        weather.style.transition = 'none';
+                        weather.style.transform = `translate(${dx}px, ${dy}px)`;
+                        void weather.offsetWidth;
+                        requestAnimationFrame(() => {
+                            weather.style.transition = 'transform 400ms cubic-bezier(0.16, 1, 0.3, 1)';
+                            weather.style.transform = '';
+
+                            const cleanupWeather = () => {
+                                weather.style.transition = '';
+                                weather.style.transform = '';
+                                weather.style.animation = '';
+                                weather.removeEventListener('transitionend', cleanupWeather);
+                            };
+
+                            weather.addEventListener('transitionend', cleanupWeather);
+                            setTimeout(cleanupWeather, 480);
+                        });
+                    }
+                } else {
+                    // 已关闭的天气窗口：用与关闭方向相反的淡入缩放效果重新出现。
+                    weather.style.animation = 'none';
+                    weather.style.opacity = '0';
+                    weather.style.transform = 'scale(0.88) translateY(20px)';
+                    void weather.offsetWidth;
+                    requestAnimationFrame(() => {
+                        weather.style.transition = 'opacity 280ms ease, transform 280ms cubic-bezier(0.16, 1, 0.3, 1)';
+                        weather.style.opacity = '1';
+                        weather.style.transform = '';
+
+                        const cleanupWeatherAppear = () => {
+                            weather.style.transition = '';
+                            weather.style.opacity = '';
+                            weather.style.transform = '';
+                            weather.style.animation = '';
+                            weather.removeEventListener('transitionend', cleanupWeatherAppear);
+                        };
+
+                        weather.addEventListener('transitionend', cleanupWeatherAppear);
+                        setTimeout(cleanupWeatherAppear, 360);
+                    });
+                }
+            }
+        }
+
+        // 天气窗口：允许移动，但不提供最小化、最大化或边框缩放。
+        function makeWeatherDraggable(win) {
+            const titleBar = win.querySelector('.title-bar');
+            let pendingDrag = false;
+            let isDragging = false;
+            let dragStartX = 0;
+            let dragStartY = 0;
+            let offsetX = 0;
+            let offsetY = 0;
+            const DRAG_THRESHOLD = 4;
+
+            titleBar.addEventListener('mousedown', e => {
+                if (e.button !== 0) return;
+                if (e.target.tagName.toLowerCase() === 'button') return;
+                if (win.classList.contains('weather-closed') || win.classList.contains('weather-closing')) return;
+
+                pendingDrag = true;
+                isDragging = false;
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+
+                const rect = win.getBoundingClientRect();
+                offsetX = e.clientX - rect.left;
+                offsetY = e.clientY - rect.top;
+
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+
+            function onMouseMove(e) {
+                if (!pendingDrag && !isDragging) return;
+
+                if (pendingDrag && Math.hypot(e.clientX - dragStartX, e.clientY - dragStartY) >= DRAG_THRESHOLD) {
+                    pendingDrag = false;
+                    isDragging = true;
+                    bringToFront(win);
+
+                    const rect = win.getBoundingClientRect();
+                    win.style.left = rect.left + 'px';
+                    win.style.top = rect.top + 'px';
+                    win.style.right = 'auto';
+                    win.style.margin = '0';
+                    win.classList.add('dragging');
+                }
+
+                if (!isDragging) return;
+
+                win.style.left = (e.clientX - offsetX) + 'px';
+                win.style.top = (e.clientY - offsetY) + 'px';
+            }
+
+            function onMouseUp() {
+                pendingDrag = false;
+                isDragging = false;
+                win.classList.remove('dragging');
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            }
+        }
+
+        function closeWeatherWidget() {
+            const widget = document.getElementById('weather-widget');
+            if (!widget || widget.classList.contains('weather-closed') || widget.classList.contains('weather-closing')) return;
+
+            widget.classList.remove('dragging');
+            widget.classList.add('weather-closing');
+
+            setTimeout(() => {
+                widget.classList.remove('weather-closing');
+                widget.classList.add('weather-closed');
+            }, 280);
+        }
+
+        /* ==================== 本地天气小工具 ==================== */
+        const WEATHER_CODES = {
+            0:{day:'☀️',night:'🌙',text:'晴'},1:{day:'🌤️',night:'🌙',text:'大致晴朗'},2:{day:'⛅',night:'☁️',text:'局部多云'},3:{day:'☁️',night:'☁️',text:'阴天'},
+            45:{day:'🌫️',night:'🌫️',text:'雾'},48:{day:'🌫️',night:'🌫️',text:'霜雾'},51:{day:'🌦️',night:'🌧️',text:'毛毛雨'},53:{day:'🌦️',night:'🌧️',text:'中等毛毛雨'},55:{day:'🌧️',night:'🌧️',text:'较强毛毛雨'},
+            56:{day:'🌧️',night:'🌧️',text:'冻毛毛雨'},57:{day:'🌧️',night:'🌧️',text:'较强冻毛毛雨'},61:{day:'🌧️',night:'🌧️',text:'小雨'},63:{day:'🌧️',night:'🌧️',text:'中雨'},65:{day:'🌧️',night:'🌧️',text:'大雨'},
+            66:{day:'🌧️',night:'🌧️',text:'冻雨'},67:{day:'🌧️',night:'🌧️',text:'强冻雨'},71:{day:'🌨️',night:'🌨️',text:'小雪'},73:{day:'🌨️',night:'🌨️',text:'中雪'},75:{day:'❄️',night:'❄️',text:'大雪'},77:{day:'🌨️',night:'🌨️',text:'雪粒'},
+            80:{day:'🌦️',night:'🌧️',text:'阵雨'},81:{day:'🌦️',night:'🌧️',text:'中等阵雨'},82:{day:'⛈️',night:'⛈️',text:'强阵雨'},85:{day:'🌨️',night:'🌨️',text:'阵雪'},86:{day:'❄️',night:'❄️',text:'强阵雪'},
+            95:{day:'⛈️',night:'⛈️',text:'雷雨'},96:{day:'⛈️',night:'⛈️',text:'雷雨伴小冰雹'},99:{day:'⛈️',night:'⛈️',text:'雷雨伴强冰雹'}
+        };
+
+        /* ==================== 天气本地缓存 ==================== */
+        const WEATHER_LOCATION_KEY = 'dotel_weather_location_v1';
+        const WEATHER_CACHE_KEY = 'dotel_weather_cache_v1';
+
+        function saveWeatherLocation(latitude, longitude) {
+            try {
+                localStorage.setItem(
+                    WEATHER_LOCATION_KEY,
+                    JSON.stringify({
+                        latitude: Number(latitude),
+                        longitude: Number(longitude),
+                        savedAt: Date.now()
+                    })
+                );
+            } catch (error) {
+                console.warn('保存天气位置失败：', error);
+            }
+        }
+
+        function getSavedWeatherLocation() {
+            try {
+                const raw = localStorage.getItem(WEATHER_LOCATION_KEY);
+                if (!raw) return null;
+
+                const saved = JSON.parse(raw);
+                const latitude = Number(saved.latitude);
+                const longitude = Number(saved.longitude);
+
+                if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+                    return null;
+                }
+
+                return {
+                    latitude,
+                    longitude,
+                    savedAt: Number(saved.savedAt) || 0
+                };
+            } catch (error) {
+                console.warn('读取天气位置失败：', error);
+                return null;
+            }
+        }
+
+        function saveWeatherCache(data) {
+            try {
+                localStorage.setItem(
+                    WEATHER_CACHE_KEY,
+                    JSON.stringify(data)
+                );
+            } catch (error) {
+                console.warn('保存天气缓存失败：', error);
+            }
+        }
+
+        function loadWeatherCache() {
+            try {
+                const raw = localStorage.getItem(WEATHER_CACHE_KEY);
+                if (!raw) return null;
+                return JSON.parse(raw);
+            } catch (error) {
+                console.warn('读取天气缓存失败：', error);
+                return null;
+            }
+        }
+
+        function renderCachedWeather(cache) {
+            if (!cache || !cache.current) return false;
+
+            const current = cache.current;
+            const meta = WEATHER_CODES[current.weather_code] || {
+                day: '🌡️',
+                night: '🌡️',
+                text: '未知天气'
+            };
+
+            const locationName = cache.locationName || '当前位置';
+
+            document.getElementById('weather-location').textContent = locationName;
+            document.getElementById('weather-condition').textContent = meta.text;
+            document.getElementById('weather-temp').textContent = `${Math.round(current.temperature_2m)}°C`;
+            document.getElementById('weather-icon').textContent = current.is_day === 1 ? meta.day : meta.night;
+            document.getElementById('weather-feels').textContent = `体感：${Math.round(current.apparent_temperature)}°C`;
+            document.getElementById('weather-humidity').textContent = `湿度：${Math.round(current.relative_humidity_2m)}%`;
+            document.getElementById('weather-wind').textContent = `风速：${Math.round(current.wind_speed_10m)} km/h`;
+
+            if (cache.updatedAt) {
+                const cachedDate = new Date(cache.updatedAt);
+                document.getElementById('weather-updated').textContent =
+                    `上次更新：${cachedDate.toLocaleTimeString('zh-CN', {hour:'2-digit', minute:'2-digit'})}`;
+            }
+
+            setWeatherStatus('显示上次天气，正在更新…');
+            return true;
+        }
+
+        function setWeatherStatus(message, withRetry=false) {
+            const box=document.getElementById('weather-status');
+            if(!box)return;
+            box.textContent=message;
+            if(withRetry){
+                const btn=document.createElement('button');
+                btn.type='button';
+                btn.textContent='重试';
+                btn.onclick=loadWeather;
+                box.appendChild(btn);
+            }
+        }
+
+        function formatWeatherUpdateTime(){
+            return new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+        }
+
+        async function reverseGeocode(latitude,longitude,useIpFallback=false){
+            const base='https://api.bigdatacloud.net/data/reverse-geocode-client';
+            const params=new URLSearchParams({localityLanguage:'zh-CN'});
+            if(!useIpFallback){
+                params.set('latitude',latitude);
+                params.set('longitude',longitude);
+            }
+            const res=await fetch(`${base}?${params.toString()}`);
+            if(!res.ok)throw new Error(`位置解析失败：HTTP ${res.status}`);
+            return res.json();
+        }
+
+        function buildLocationName(data,fallback='当前位置'){
+            const city=data.city || data.locality || data.principalSubdivision;
+            return city || fallback;
+        }
+
+        async function fetchWeather(latitude,longitude,locationName,source){
+            const url=new URL('https://api.open-meteo.com/v1/forecast');
+            url.searchParams.set('latitude',latitude);
+            url.searchParams.set('longitude',longitude);
+            url.searchParams.set('current','temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,is_day');
+            url.searchParams.set('timezone','auto');
+            url.searchParams.set('temperature_unit','celsius');
+            url.searchParams.set('wind_speed_unit','kmh');
+
+            const res=await fetch(url.toString());
+            if(!res.ok)throw new Error(`天气请求失败：HTTP ${res.status}`);
+
+            const data=await res.json();
+            const current=data.current;
+            const meta=WEATHER_CODES[current.weather_code] || {day:'🌡️',night:'🌡️',text:'未知天气'};
+
+            document.getElementById('weather-location').textContent=locationName;
+            document.getElementById('weather-condition').textContent=meta.text;
+            document.getElementById('weather-temp').textContent=`${Math.round(current.temperature_2m)}°C`;
+            document.getElementById('weather-icon').textContent=current.is_day===1 ? meta.day : meta.night;
+            document.getElementById('weather-feels').textContent=`体感：${Math.round(current.apparent_temperature)}°C`;
+            document.getElementById('weather-humidity').textContent=`湿度：${Math.round(current.relative_humidity_2m)}%`;
+            document.getElementById('weather-wind').textContent=`风速：${Math.round(current.wind_speed_10m)} km/h`;
+            document.getElementById('weather-updated').textContent=`更新：${formatWeatherUpdateTime()}`;
+            setWeatherStatus(source==='browser' ? '已使用浏览器定位' : '使用网络位置估算');
+        }
+
+        async function loadWeatherFromCoordinates(latitude,longitude){
+            try{
+                let locationName='当前位置';
+                try{
+                    const place=await reverseGeocode(latitude,longitude,false);
+                    locationName=buildLocationName(place);
+                }catch(e){
+                    console.warn('反向地理编码失败，继续显示天气。',e);
+                }
+
+                const url=new URL('https://api.open-meteo.com/v1/forecast');
+                url.searchParams.set('latitude',latitude);
+                url.searchParams.set('longitude',longitude);
+                url.searchParams.set('current','temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,is_day');
+                url.searchParams.set('timezone','auto');
+                url.searchParams.set('temperature_unit','celsius');
+                url.searchParams.set('wind_speed_unit','kmh');
+
+                const res=await fetch(url.toString());
+                if(!res.ok)throw new Error(`天气请求失败：HTTP ${res.status}`);
+                const data=await res.json();
+                const current=data.current;
+                const meta=WEATHER_CODES[current.weather_code] || {day:'🌡️',night:'🌡️',text:'未知天气'};
+
+                document.getElementById('weather-location').textContent=locationName;
+                document.getElementById('weather-condition').textContent=meta.text;
+                document.getElementById('weather-temp').textContent=`${Math.round(current.temperature_2m)}°C`;
+                document.getElementById('weather-icon').textContent=current.is_day===1 ? meta.day : meta.night;
+                document.getElementById('weather-feels').textContent=`体感：${Math.round(current.apparent_temperature)}°C`;
+                document.getElementById('weather-humidity').textContent=`湿度：${Math.round(current.relative_humidity_2m)}%`;
+                document.getElementById('weather-wind').textContent=`风速：${Math.round(current.wind_speed_10m)} km/h`;
+                const updatedAt=Date.now();
+                document.getElementById('weather-updated').textContent=`更新：${formatWeatherUpdateTime()}`;
+                setWeatherStatus('天气已更新');
+
+                saveWeatherCache({
+                    locationName,
+                    current,
+                    updatedAt
+                });
+            }catch(e){
+                console.error(e);
+                const cached=loadWeatherCache();
+                if(!renderCachedWeather(cached)){
+                    document.getElementById('weather-location').textContent='天气获取失败';
+                    document.getElementById('weather-condition').textContent='请稍后重试';
+                    document.getElementById('weather-temp').textContent='--°C';
+                    setWeatherStatus('天气服务暂时不可用',true);
+                }else{
+                    setWeatherStatus('当前网络不可用，显示上次天气');
+                }
+            }
+        }
+
+        async function loadWeatherByIpFallback(){
+            try{
+                setWeatherStatus('正在使用网络位置估算…');
+                const place=await reverseGeocode(null,null,true);
+                if(!Number.isFinite(place.latitude)||!Number.isFinite(place.longitude))throw new Error('备用位置接口未返回有效坐标');
+                await loadWeatherFromCoordinates(place.latitude,place.longitude);
+                saveWeatherLocation(place.latitude,place.longitude);
+            }catch(e){
+                console.error(e);
+                const cached=loadWeatherCache();
+                if(!renderCachedWeather(cached)){
+                    document.getElementById('weather-location').textContent='无法获取位置';
+                    document.getElementById('weather-condition').textContent='请允许定位后重试';
+                    setWeatherStatus('未能获取当前位置',true);
+                }
+            }
+        }
+
+        function requestWeatherLocation(){
+            if(!navigator.geolocation){
+                loadWeatherByIpFallback();
+                return;
+            }
+
+            setWeatherStatus('正在请求定位权限…');
+
+            navigator.geolocation.getCurrentPosition(
+                position=>{
+                    const {latitude,longitude}=position.coords;
+                    saveWeatherLocation(latitude,longitude);
+                    loadWeatherFromCoordinates(latitude,longitude);
+                },
+                error=>{
+                    console.warn('浏览器定位不可用：',error);
+                    loadWeatherByIpFallback();
+                },
+                {enableHighAccuracy:false,timeout:8000,maximumAge:300000}
+            );
+        }
+
+        function refreshWeather(){
+            const saved=getSavedWeatherLocation();
+            if(saved){
+                loadWeatherFromCoordinates(saved.latitude,saved.longitude);
+                return;
+            }
+            requestWeatherLocation();
+        }
+
+        // 手动更新：同时重新获取当前位置并刷新天气。
+        // 与自动刷新不同，这个按钮会主动更新 localStorage 中保存的位置。
+        function refreshWeatherAndLocation(){
+            const button=document.querySelector('.weather-refresh-btn');
+            if(button){
+                button.disabled=true;
+                button.innerText='📍 正在更新…';
+            }
+
+            setWeatherStatus('正在重新获取当前位置…');
+
+            const finish=()=>{
+                if(button){
+                    button.disabled=false;
+                    button.innerText='🔄 更新天气';
+                }
+            };
+
+            if(!navigator.geolocation){
+                loadWeatherByIpFallback().finally(finish);
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                position=>{
+                    const {latitude,longitude}=position.coords;
+                    saveWeatherLocation(latitude,longitude);
+                    loadWeatherFromCoordinates(latitude,longitude).finally(finish);
+                },
+                error=>{
+                    console.warn('手动更新位置失败：',error);
+                    loadWeatherByIpFallback().finally(finish);
+                },
+                {enableHighAccuracy:false,timeout:8000,maximumAge:0}
+            );
+        }
+
+        // 首次打开时读取上次缓存；有已保存的位置后，不再重复请求浏览器定位权限。
+        const initialWeatherCache=loadWeatherCache();
+        if(initialWeatherCache){
+            renderCachedWeather(initialWeatherCache);
+        }
+        refreshWeather();
+        setInterval(refreshWeather,10*60*1000);
+
+
+        // ==================== WMP 风格本地播放器 ====================
+        (function initWmpPlayers() {
+            const players = Array.from(document.querySelectorAll('[data-wmp-player]'));
+            let activeAudio = null;
+
+            function formatMediaTime(seconds) {
+                if (!Number.isFinite(seconds) || seconds < 0) return '00:00';
+                const total = Math.floor(seconds);
+                const h = Math.floor(total / 3600);
+                const m = Math.floor((total % 3600) / 60);
+                const s = total % 60;
+                if (h > 0) {
+                    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+                }
+                return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            }
+
+            function setPlayerStatus(player, text) {
+                const status = player.querySelector('.wmp-status');
+                if (status) status.textContent = text;
+            }
+
+            function updatePlayer(player) {
+                const audio = player.querySelector('audio');
+                if (!audio) return;
+
+                const current = player.querySelector('.wmp-current');
+                const duration = player.querySelector('.wmp-duration');
+                const progress = player.querySelector('.wmp-progress');
+                const thumb = player.querySelector('.wmp-thumb');
+                const playButton = player.querySelector('[data-action="play"]');
+                const status = player.querySelector('.wmp-status');
+
+                const currentTime = Number.isFinite(audio.currentTime) ? audio.currentTime : 0;
+                const total = Number.isFinite(audio.duration) ? audio.duration : 0;
+                const ratio = total > 0 ? Math.min(1, Math.max(0, currentTime / total)) : 0;
+
+                if (current) current.textContent = formatMediaTime(currentTime);
+                if (duration) duration.textContent = formatMediaTime(total);
+                if (progress) progress.style.width = `${ratio * 100}%`;
+                if (thumb) thumb.style.left = `${ratio * 100}%`;
+                if (playButton) playButton.textContent = audio.paused ? '▶' : 'Ⅱ';
+
+                if (audio.error) {
+                    if (status) status.textContent = '无法读取音频文件';
+                } else if (audio.ended) {
+                    if (status) status.textContent = '播放结束';
+                } else if (!audio.paused) {
+                    if (status) status.textContent = '正在播放';
+                } else if (currentTime > 0) {
+                    if (status) status.textContent = '已暂停';
+                } else {
+                    if (status) status.textContent = 'Windows Media Player 风格播放器';
+                }
+            }
+
+            function stopOtherPlayers(exceptAudio) {
+                players.forEach(player => {
+                    const audio = player.querySelector('audio');
+                    if (audio && audio !== exceptAudio && !audio.paused) {
+                        audio.pause();
+                        updatePlayer(player);
+                    }
+                });
+            }
+
+            function seekFromPointer(player, event) {
+                const audio = player.querySelector('audio');
+                const seek = player.querySelector('.wmp-seek');
+                if (!audio || !seek || !Number.isFinite(audio.duration) || audio.duration <= 0) return;
+                const rect = seek.getBoundingClientRect();
+                const ratio = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+                audio.currentTime = ratio * audio.duration;
+                updatePlayer(player);
+            }
+
+            players.forEach(player => {
+                const audio = player.querySelector('audio');
+                if (!audio) return;
+
+                audio.volume = 0.85;
+
+                const playButton = player.querySelector('[data-action="play"]');
+                const stopButton = player.querySelector('[data-action="stop"]');
+                const restartButton = player.querySelector('[data-action="restart"]');
+                const seek = player.querySelector('.wmp-seek');
+                const volume = player.querySelector('.wmp-volume-range');
+
+                playButton.addEventListener('click', () => {
+                    if (audio.paused || audio.ended) {
+                        stopOtherPlayers(audio);
+                        const promise = audio.play();
+                        if (promise && typeof promise.catch === 'function') {
+                            promise.catch(() => setPlayerStatus(player, '浏览器阻止了自动播放，请再次点击播放'));
+                        }
+                    } else {
+                        audio.pause();
+                    }
+                    updatePlayer(player);
+                    activeAudio = audio;
+                });
+
+                stopButton.addEventListener('click', () => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                    updatePlayer(player);
+                    activeAudio = null;
+                });
+
+                restartButton.addEventListener('click', () => {
+                    audio.currentTime = 0;
+                    stopOtherPlayers(audio);
+                    const promise = audio.play();
+                    if (promise && typeof promise.catch === 'function') {
+                        promise.catch(() => {});
+                    }
+                    updatePlayer(player);
+                    activeAudio = audio;
+                });
+
+                seek.addEventListener('click', event => seekFromPointer(player, event));
+
+                volume.addEventListener('input', () => {
+                    audio.volume = Number(volume.value);
+                    updatePlayer(player);
+                });
+
+                audio.addEventListener('loadedmetadata', () => updatePlayer(player));
+                audio.addEventListener('timeupdate', () => updatePlayer(player));
+                audio.addEventListener('progress', () => {
+                    const buffered = player.querySelector('.wmp-buffer');
+                    if (!buffered || !Number.isFinite(audio.duration) || audio.duration <= 0 || !audio.buffered.length) return;
+                    try {
+                        const end = audio.buffered.end(audio.buffered.length - 1);
+                        buffered.style.width = `${Math.min(100, (end / audio.duration) * 100)}%`;
+                    } catch (_) {}
+                });
+                audio.addEventListener('play', () => {
+                    stopOtherPlayers(audio);
+                    activeAudio = audio;
+                    updatePlayer(player);
+                });
+                audio.addEventListener('pause', () => updatePlayer(player));
+                audio.addEventListener('ended', () => {
+                    audio.currentTime = 0;
+                    activeAudio = null;
+                    updatePlayer(player);
+                });
+
+                updatePlayer(player);
+            });
+
+            // 页面失去焦点时不强行暂停，保持与普通播放器一致。
+            window.addEventListener('beforeunload', () => {
+                if (activeAudio && !activeAudio.paused) activeAudio.pause();
+            });
+        })();
+
+        // 网易云音乐控件
+        function playNeteaseMusic() {
+            const playerWrap = document.getElementById('netease-player-wrap');
+            const player = document.getElementById('netease-player');
+            const button = document.getElementById('netease-play-btn');
+
+            if (!playerWrap || !player || !button) return;
+
+            const playerUrl =
+                'https://music.163.com/outchain/player?type=2&id=2086154795&auto=1&height=66';
+
+            playerWrap.hidden = false;
+            if (player.src !== playerUrl) {
+                player.src = playerUrl;
+            } else {
+                player.src = 'about:blank';
+                requestAnimationFrame(() => {
+                    player.src = playerUrl;
+                });
+            }
+
+            button.innerText = '🎵 网易云音乐已加载';
+        }
+
+        // 用户背景的 localStorage 键名。
+        const BACKGROUND_KEY = 'dotel_background_v1';
+        const BACKGROUND_PRESET_KEY = 'dotel_background_preset_v1';
+        const BACKGROUND_VIDEO_DB = 'dotelBackgroundDB';
+        const BACKGROUND_VIDEO_STORE = 'video';
+        let activeBackgroundLayer = null;
+        let backgroundSwitchTimer = null;
+        let activeVideoObjectUrl = null;
+
+        const PRESET_BACKGROUNDS = {
+            vista: {
+                name: 'Vista 经典',
+                type: 'image',
+                value: "url('background.webp'), linear-gradient(135deg, #0052d4, #4364f7, #6fb1fc)"
+            },
+            night: {
+                name: '深蓝夜景',
+                type: 'image',
+                value: 'linear-gradient(135deg, #0b1f3a 0%, #163d73 48%, #0a6aa8 100%)'
+            },
+            horizon5: {
+                name: '地平线5',
+                type: 'image',
+                value: "url('background2.webp')"
+            },
+            minecraft: {
+                name: 'Minecraft',
+                type: 'image',
+                value: "url('background3.webp')"
+            },
+            radio: {
+                name: '逗乐电台',
+                type: 'image',
+                value: "url('background4.webp')"
+            },
+            vistaDynamic: {
+                name: 'Vista 经典动态',
+                type: 'video',
+                value: 'background_m1.mp4'
+            },
+            vistaRain: {
+                name: 'Vista 雨夜街头',
+                type: 'video',
+                value: 'background_m2.mp4'
+            }
+        };
+
+        // ==================== Aero 背景切换系统（图片 + 视频） ====================
+        function getBackgroundLayers() {
+            return [
+                document.getElementById('aero-bg-layer-a'),
+                document.getElementById('aero-bg-layer-b')
+            ];
+        }
+
+        function getLayerVideo(layer) {
+            return layer ? layer.querySelector('video') : null;
+        }
+
+        function clearBackgroundLayer(layer) {
+            if (!layer) return;
+            const video = getLayerVideo(layer);
+            if (video) {
+                try { video.pause(); } catch (e) {}
+                video.removeAttribute('src');
+                try { video.load(); } catch (e) {}
+                video.style.display = 'none';
+            }
+            layer.style.backgroundImage = 'none';
+            layer.style.opacity = '0';
+        }
+
+        function applyMediaToLayer(layer, media, autoPlayVideo) {
+            const video = getLayerVideo(layer);
+            if (!layer) return;
+
+            layer.style.backgroundImage = 'none';
+
+            if (media.type === 'video') {
+                if (video) {
+                    video.style.display = 'block';
+                    video.loop = true;
+                    video.muted = true;
+                    video.playsInline = true;
+                    video.src = media.value;
+                    try { video.load(); } catch (e) {}
+                    if (autoPlayVideo) {
+                        const playPromise = video.play();
+                        if (playPromise && typeof playPromise.catch === 'function') {
+                            playPromise.catch(function () {});
+                        }
+                    }
+                }
+            } else {
+                if (video) {
+                    try { video.pause(); } catch (e) {}
+                    video.removeAttribute('src');
+                    try { video.load(); } catch (e) {}
+                    video.style.display = 'none';
+                }
+                layer.style.backgroundImage = media.value;
+            }
+        }
+
+        function createImageMedia(value) {
+            return { type: 'image', value: value };
+        }
+
+        function createVideoMedia(url) {
+            return { type: 'video', value: url };
+        }
+
+        function setBodyBackgroundSource(media, animate = true) {
+            const layers = getBackgroundLayers();
+            if (!layers[0] || !layers[1]) {
+                if (media.type === 'video') {
+                    document.body.style.backgroundImage = '';
+                } else {
+                    document.body.style.backgroundImage = media.value;
+                }
+                return;
+            }
+
+            if (!activeBackgroundLayer) {
+                const layer = layers[0];
+                layer.style.transition = 'none';
+                applyMediaToLayer(layer, media, true);
+                layer.style.opacity = '1';
+                activeBackgroundLayer = layer;
+                clearBackgroundLayer(layers[1]);
+                return;
+            }
+
+            const current = activeBackgroundLayer;
+            const next = current === layers[0] ? layers[1] : layers[0];
+
+            if (!animate) {
+                current.style.transition = 'none';
+                next.style.transition = 'none';
+                applyMediaToLayer(next, media, true);
+                next.style.opacity = '1';
+                clearBackgroundLayer(current);
+                activeBackgroundLayer = next;
+                return;
+            }
+
+            clearTimeout(backgroundSwitchTimer);
+
+            next.style.transition = 'none';
+            applyMediaToLayer(next, media, true);
+            next.style.opacity = '0';
+            void next.offsetWidth;
+
+            current.style.transition = 'opacity 500ms ease-in-out';
+            next.style.transition = 'opacity 500ms ease-in-out';
+            current.style.opacity = '0';
+            next.style.opacity = '1';
+            activeBackgroundLayer = next;
+
+            backgroundSwitchTimer = setTimeout(() => {
+                current.style.transition = 'none';
+                clearBackgroundLayer(current);
+                next.style.transition = '';
+            }, 540);
+        }
+
+        function setBodyBackground(backgroundImage, animate = true) {
+            setBodyBackgroundSource(createImageMedia(backgroundImage), animate);
+        }
+
+        function openVideoDb(onSuccess, onFailure) {
+            if (!window.indexedDB) {
+                if (onFailure) onFailure();
+                return;
+            }
+            let request;
+            try {
+                request = indexedDB.open(BACKGROUND_VIDEO_DB, 1);
+            } catch (e) {
+                if (onFailure) onFailure();
+                return;
+            }
+            request.onupgradeneeded = function (event) {
+                const db = event.target.result;
+                if (!db.objectStoreNames.contains(BACKGROUND_VIDEO_STORE)) {
+                    db.createObjectStore(BACKGROUND_VIDEO_STORE);
+                }
+            };
+            request.onsuccess = function (event) {
+                onSuccess(event.target.result);
+            };
+            request.onerror = function () {
+                if (onFailure) onFailure();
+            };
+        }
+
+        function saveVideoBackground(file, callback) {
+            openVideoDb(function (db) {
+                let tx;
+                try {
+                    tx = db.transaction([BACKGROUND_VIDEO_STORE], 'readwrite');
+                    tx.objectStore(BACKGROUND_VIDEO_STORE).put(file, 'current');
+                    tx.oncomplete = function () {
+                        db.close();
+                        if (callback) callback(true);
+                    };
+                    tx.onerror = function () {
+                        db.close();
+                        if (callback) callback(false);
+                    };
+                } catch (e) {
+                    db.close();
+                    if (callback) callback(false);
+                }
+            }, function () {
+                if (callback) callback(false);
+            });
+        }
+
+        function loadVideoBackground(callback) {
+            openVideoDb(function (db) {
+                let request;
+                try {
+                    request = db.transaction([BACKGROUND_VIDEO_STORE], 'readonly')
+                        .objectStore(BACKGROUND_VIDEO_STORE).get('current');
+                    request.onsuccess = function (event) {
+                        const file = event.target.result;
+                        db.close();
+                        callback(file || null);
+                    };
+                    request.onerror = function () {
+                        db.close();
+                        callback(null);
+                    };
+                } catch (e) {
+                    db.close();
+                    callback(null);
+                }
+            }, function () {
+                callback(null);
+            });
+        }
+
+        function clearVideoBackground(callback) {
+            if (!window.indexedDB) {
+                if (callback) callback();
+                return;
+            }
+            openVideoDb(function (db) {
+                try {
+                    const tx = db.transaction([BACKGROUND_VIDEO_STORE], 'readwrite');
+                    tx.objectStore(BACKGROUND_VIDEO_STORE).delete('current');
+                    tx.oncomplete = function () {
+                        db.close();
+                        if (callback) callback();
+                    };
+                    tx.onerror = function () {
+                        db.close();
+                        if (callback) callback();
+                    };
+                } catch (e) {
+                    db.close();
+                    if (callback) callback();
+                }
+            }, function () {
+                if (callback) callback();
+            });
+        }
+
+        function revokeActiveVideoUrl() {
+            if (activeVideoObjectUrl) {
+                try { URL.revokeObjectURL(activeVideoObjectUrl); } catch (e) {}
+                activeVideoObjectUrl = null;
+            }
+        }
+
+        // 保存自定义背景，并支持图片 / 视频。
+        function changeBackground(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const isVideo = file.type.indexOf('video/') === 0 || /\.(mp4|webm|ogg|mov)$/i.test(file.name);
+
+            if (isVideo) {
+                if (!window.URL || !window.URL.createObjectURL) {
+                    alert('当前浏览器不支持本地视频背景。');
+                    return;
+                }
+
+                revokeActiveVideoUrl();
+                activeVideoObjectUrl = URL.createObjectURL(file);
+                setBodyBackgroundSource(createVideoMedia(activeVideoObjectUrl));
+
+                try {
+                    localStorage.removeItem(BACKGROUND_KEY);
+                    localStorage.removeItem(BACKGROUND_PRESET_KEY);
+                } catch (error) {}
+
+                saveVideoBackground(file);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = e.target.result;
+                revokeActiveVideoUrl();
+                clearVideoBackground();
+                setBodyBackground(imageData ? `url('${imageData}')` : '', true);
+                try {
+                    localStorage.setItem(BACKGROUND_KEY, imageData);
+                    localStorage.removeItem(BACKGROUND_PRESET_KEY);
+                } catch (error) {
+                    console.warn('背景图片过大，无法保存到 localStorage：', error);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 应用预设背景并持久保存。
+        function applyPresetBackground(presetKey) {
+            const preset = PRESET_BACKGROUNDS[presetKey];
+            if (!preset) return;
+
+            revokeActiveVideoUrl();
+            clearVideoBackground();
+            setBodyBackgroundSource(preset.type === 'video' ? createVideoMedia(preset.value) : createImageMedia(preset.value));
+
+            try {
+                localStorage.setItem(BACKGROUND_PRESET_KEY, presetKey);
+                localStorage.removeItem(BACKGROUND_KEY);
+            } catch (error) {
+                console.warn('保存预设背景失败：', error);
+            }
+
+            const input = document.getElementById('bgInput');
+            if (input) input.value = '';
+        }
+
+        function loadSavedBackground() {
+            try {
+                const presetKey = localStorage.getItem(BACKGROUND_PRESET_KEY);
+                if (presetKey && PRESET_BACKGROUNDS[presetKey]) {
+                    const preset = PRESET_BACKGROUNDS[presetKey];
+                    setBodyBackgroundSource(preset.type === 'video' ? createVideoMedia(preset.value) : createImageMedia(preset.value), false);
+                    return;
+                }
+
+                const saved = localStorage.getItem(BACKGROUND_KEY);
+                if (saved) {
+                    setBodyBackground(`url('${saved}')`, false);
+                    return;
+                }
+            } catch (error) {
+                console.warn('读取保存的背景失败：', error);
+            }
+
+            // 没有图片/预设时，尝试恢复上次保存的本地视频。
+            loadVideoBackground(function (file) {
+                if (!file) return;
+                if (!window.URL || !window.URL.createObjectURL) return;
+                revokeActiveVideoUrl();
+                activeVideoObjectUrl = URL.createObjectURL(file);
+                setBodyBackgroundSource(createVideoMedia(activeVideoObjectUrl), false);
+            });
+        }
+
+        function resetBackground() {
+            revokeActiveVideoUrl();
+            clearVideoBackground();
+            setBodyBackground(PRESET_BACKGROUNDS.vista.value);
+            try {
+                localStorage.removeItem(BACKGROUND_KEY);
+                localStorage.removeItem(BACKGROUND_PRESET_KEY);
+            } catch (error) {
+                console.warn('清除背景设置失败：', error);
+            }
+            document.getElementById('bgInput').value = '';
+        }
+
+        loadSavedBackground();
+    </script>
 
 </body>
 </html>
