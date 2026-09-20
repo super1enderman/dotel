@@ -844,6 +844,33 @@
             border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.5);
         }
+        /* ==================== 隐藏彩蛋入口 ==================== */
+        /* 放在可滚动内容流的最后一个元素，只有滚动到网页最底部时才能碰到。 */
+        .hidden-easter-egg-button {
+            display: block;
+            width: 6px;
+            height: 6px;
+            padding: 0;
+            margin: 0 2px 0 auto;
+            border: 0;
+            outline: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 0;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .hidden-easter-egg-button:hover,
+        .hidden-easter-egg-button:focus,
+        .hidden-easter-egg-button:active {
+            opacity: 0;
+            outline: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
     </style>
 </head>
 <body>
@@ -1146,6 +1173,14 @@
             <p>© 2026 逗乐工作室</p>
         </footer>
         </div>
+        <!-- 隐藏彩蛋入口：位于滚动内容的最末端，只有滚动到最底部的右下角才能碰到 -->
+        <button
+            type="button"
+            class="hidden-easter-egg-button"
+            aria-label="隐藏入口"
+            tabindex="-1"
+            onclick="window.location.href='bestofworld.html'">
+        </button>
     </div>
 
     <script>
