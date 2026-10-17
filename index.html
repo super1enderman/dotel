@@ -20,6 +20,8 @@
 
     <!-- 引入 7.css 核心样式库 -->
     <link rel="stylesheet" href="https://unpkg.com/7.css">
+    <!-- Win11 风格 emoji 矢量图标（本地，避免不同设备的 emoji 字体差异） -->
+    <link rel="stylesheet" href="emoji/emoji.css">
     <style>
         /* 全局背景设置 */
         body {
@@ -100,12 +102,18 @@
         }
 
         /* ==================== 右上角 Win7 风格天气小工具 ==================== */
+        /* 天气窗口现在放在 #page-scroll 内部，与普通窗口处于同一个层叠上下文，
+           所以它的 z-index 会和普通窗口一起排序：默认置顶（脚本初始化时调用
+           bringToFront），点击其他窗口或最大化窗口后会正常被覆盖，点击它自己
+           则重新回到最上层。下面的 z-index 只是脚本未执行时的兜底值。
+           注意：position: fixed 不会被 #page-scroll 的 overflow 裁剪，
+           也不会随页面滚动移动。 */
         .weather-widget {
             position: fixed;
             top: 18px;
             right: 18px;
             width: 280px;
-            z-index: 50;
+            z-index: 50; /* 兜底值，实际层级由 bringToFront 动态管理 */
             margin: 0 !important;
         }
 
@@ -888,36 +896,6 @@
         alt="逗乐工作室 Logo"
         draggable="false">
 
-    <div class="window glass weather-widget" id="weather-widget">
-        <div class="title-bar">
-            <div class="title-bar-text">🌤️ 本地天气</div>
-            <div class="title-bar-controls" aria-hidden="true">
-                <button type="button" aria-label="Close" onclick="closeWeatherWidget()"></button>
-            </div>
-        </div>
-        <div class="window-body weather-body">
-            <div class="weather-main">
-                <div class="weather-icon" id="weather-icon">🌤️</div>
-                <div class="weather-info">
-                    <div class="weather-location" id="weather-location">正在获取位置...</div>
-                    <div class="weather-condition" id="weather-condition">正在读取天气</div>
-                    <div class="weather-temp" id="weather-temp">--°C</div>
-                </div>
-            </div>
-            <div class="weather-details">
-                <div id="weather-feels">体感：--°C</div>
-                <div id="weather-humidity">湿度：--%</div>
-                <div id="weather-wind">风速：-- km/h</div>
-                <div id="weather-updated">更新：--:--</div>
-            </div>
-            <div class="weather-status-row">
-                <div class="weather-status" id="weather-status">正在获取当前位置…</div>
-                <button type="button" class="weather-refresh-btn" onclick="refreshWeatherAndLocation()">🔄 更新天气</button>
-            </div>
-            <div class="weather-attribution">天气数据：Open-Meteo</div>
-        </div>
-    </div>
-
     <div id="minimized-container"></div>
 
     <div id="page-scroll" class="has-scrollbar">
@@ -939,19 +917,19 @@
                     <p style="margin: 0 0 12px 0; opacity: 0.85;">注重快乐、愉悦、高效的线上工作室</p>
                     <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
                         <a href="team.html" style="text-decoration: none;">
-                            <button type="button">👥 人员介绍</button>
+                            <button type="button"><img class="emoji" src="emoji/busts-in-silhouette.svg" alt=""> 人员介绍</button>
                         </a>
                         <a href="download.html" style="text-decoration: none;">
-                            <button type="button">📦 下载中心</button>
+                            <button type="button"><img class="emoji" src="emoji/package.svg" alt=""> 下载中心</button>
                         </a>
                         <a href="music_ul.html" style="text-decoration: none;">
-                            <button type="button">🎵 音乐解锁</button>
+                            <button type="button"><img class="emoji" src="emoji/musical-note.svg" alt=""> 音乐解锁</button>
                         </a>
                         <a href="time.html" style="text-decoration: none;">
-                            <button type="button">⏰ 沉浸时钟</button>
+                            <button type="button"><img class="emoji" src="emoji/alarm-clock.svg" alt=""> 沉浸时钟</button>
                         </a>
-                        <a href="thirteenth_school_arg\index.html" style="text-decoration: none;">
-                            <button type="button">🚫 体验ARG游戏</button>
+                        <a href="thirteenth_school_arg_v2\index.html" style="text-decoration: none;">
+                            <button type="button"><img class="emoji" src="emoji/prohibited.svg" alt=""> 体验ARG游戏</button>
                         </a>
                     </div>
                 </div>
@@ -978,7 +956,7 @@
         <!-- 3. 多功能计时器 (大屏自适应版 + 含小时) -->
         <div class="window glass timer-window">
             <div class="title-bar">
-                <div class="title-bar-text">⏱️ 多功能计时器</div>
+                <div class="title-bar-text"><img class="emoji" src="emoji/stopwatch.svg" alt=""> 多功能计时器</div>
                 <div class="title-bar-controls">
                     <button aria-label="Minimize" onclick="toggleMinimize(this)"></button>
                     <button aria-label="Maximize" onclick="toggleMaximize(this)"></button>
@@ -998,7 +976,7 @@
                     <div class="ntp-status" id="ntp-status-box">状态: 正在连接授时中心...</div>
                     <button onclick="syncNtpTime()" style="margin-top: 8px; font-size: 0.9em;">手动重新校准</button>
                     <div class="timer-dark-toggle">
-                        <button type="button" id="timer-theme-btn" onclick="toggleTimerDarkMode()">🌙 深色模式</button>
+                        <button type="button" id="timer-theme-btn" onclick="toggleTimerDarkMode()"><img class="emoji" src="emoji/crescent-moon.svg" alt=""> 深色模式</button>
                     </div>
                 </div>
 
@@ -1030,7 +1008,7 @@
         <!-- 4. 试听作品 -->
         <div class="window glass">
             <div class="title-bar">
-                <div class="title-bar-text">🎵 音乐播放器</div>
+                <div class="title-bar-text"><img class="emoji" src="emoji/musical-note.svg" alt=""> 音乐播放器</div>
                 <div class="title-bar-controls">
                     <button aria-label="Minimize" onclick="toggleMinimize(this)"></button>
                     <button aria-label="Maximize" onclick="toggleMaximize(this)"></button>
@@ -1065,7 +1043,7 @@
                                 <button type="button" class="wmp-btn wmp-play" data-action="play" title="播放">▶</button>
                                 <button type="button" class="wmp-btn" data-action="stop" title="停止">■</button>
                                 <div class="wmp-volume">
-                                    <span class="wmp-volume-icon">🔊</span>
+                                    <span class="wmp-volume-icon"><img class="emoji" src="emoji/speaker-high-volume.svg" alt=""></span>
                                     <input class="wmp-volume-range" type="range" min="0" max="1" step="0.01" value="0.85" aria-label="音量">
                                 </div>
                             </div>
@@ -1082,25 +1060,25 @@
                     <strong style="font-size: 1.05em; color: #0b2545;">02. 小村之恋-邓丽君</strong>
                     <p style="margin: 4px 0 0 0; font-size: 0.85em; opacity: 0.85;">经典音乐，享受村庄生活！（侵删）</p>
                     <div class="wmp-player" data-wmp-player data-title="02. 小村之恋 - 邓丽君">
-                        <div class="wmp-top-glow"></div><div class="wmp-main"><div class="wmp-meta"><div class="wmp-disc"></div><div class="wmp-title-wrap"><div class="wmp-track-title">02. 小村之恋 - 邓丽君</div><div class="wmp-status">Windows Media Player 风格播放器</div></div></div><div class="wmp-progress-wrap"><span class="wmp-time wmp-current">00:00</span><div class="wmp-seek"><div class="wmp-buffer"></div><div class="wmp-progress"></div><div class="wmp-thumb"></div></div><span class="wmp-time wmp-duration">00:00</span></div><div class="wmp-controls"><button type="button" class="wmp-btn" data-action="restart" title="重新开始">↶</button><button type="button" class="wmp-btn wmp-play" data-action="play" title="播放">▶</button><button type="button" class="wmp-btn" data-action="stop" title="停止">■</button><div class="wmp-volume"><span class="wmp-volume-icon">🔊</span><input class="wmp-volume-range" type="range" min="0" max="1" step="0.01" value="0.85" aria-label="音量"></div></div></div><div class="wmp-bottom"></div><audio preload="metadata"><source src="music2.mp3" type="audio/mpeg">你的浏览器不支持音频播放。</audio></div>
+                        <div class="wmp-top-glow"></div><div class="wmp-main"><div class="wmp-meta"><div class="wmp-disc"></div><div class="wmp-title-wrap"><div class="wmp-track-title">02. 小村之恋 - 邓丽君</div><div class="wmp-status">Windows Media Player 风格播放器</div></div></div><div class="wmp-progress-wrap"><span class="wmp-time wmp-current">00:00</span><div class="wmp-seek"><div class="wmp-buffer"></div><div class="wmp-progress"></div><div class="wmp-thumb"></div></div><span class="wmp-time wmp-duration">00:00</span></div><div class="wmp-controls"><button type="button" class="wmp-btn" data-action="restart" title="重新开始">↶</button><button type="button" class="wmp-btn wmp-play" data-action="play" title="播放">▶</button><button type="button" class="wmp-btn" data-action="stop" title="停止">■</button><div class="wmp-volume"><span class="wmp-volume-icon"><img class="emoji" src="emoji/speaker-high-volume.svg" alt=""></span><input class="wmp-volume-range" type="range" min="0" max="1" step="0.01" value="0.85" aria-label="音量"></div></div></div><div class="wmp-bottom"></div><audio preload="metadata"><source src="music2.mp3" type="audio/mpeg">你的浏览器不支持音频播放。</audio></div>
                 </div>
 
                 <div class="music-item">
                     <strong style="font-size: 1.05em; color: #0b2545;">03. frutiger aero - Inuyasha</strong>
                     <p style="margin: 4px 0 0 0; font-size: 0.85em; opacity: 0.85;">清新氛围音乐，Frutiger Aero 风格（侵删）</p>
                     <div class="wmp-player" data-wmp-player data-title="03. frutiger aero - Inuyasha">
-                        <div class="wmp-top-glow"></div><div class="wmp-main"><div class="wmp-meta"><div class="wmp-disc"></div><div class="wmp-title-wrap"><div class="wmp-track-title">03. frutiger aero - Inuyasha</div><div class="wmp-status">Windows Media Player 风格播放器</div></div></div><div class="wmp-progress-wrap"><span class="wmp-time wmp-current">00:00</span><div class="wmp-seek"><div class="wmp-buffer"></div><div class="wmp-progress"></div><div class="wmp-thumb"></div></div><span class="wmp-time wmp-duration">00:00</span></div><div class="wmp-controls"><button type="button" class="wmp-btn" data-action="restart" title="重新开始">↶</button><button type="button" class="wmp-btn wmp-play" data-action="play" title="播放">▶</button><button type="button" class="wmp-btn" data-action="stop" title="停止">■</button><div class="wmp-volume"><span class="wmp-volume-icon">🔊</span><input class="wmp-volume-range" type="range" min="0" max="1" step="0.01" value="0.85" aria-label="音量"></div></div></div><div class="wmp-bottom"></div><audio preload="metadata"><source src="music3.mp3" type="audio/mpeg">你的浏览器不支持音频播放。</audio></div>
+                        <div class="wmp-top-glow"></div><div class="wmp-main"><div class="wmp-meta"><div class="wmp-disc"></div><div class="wmp-title-wrap"><div class="wmp-track-title">03. frutiger aero - Inuyasha</div><div class="wmp-status">Windows Media Player 风格播放器</div></div></div><div class="wmp-progress-wrap"><span class="wmp-time wmp-current">00:00</span><div class="wmp-seek"><div class="wmp-buffer"></div><div class="wmp-progress"></div><div class="wmp-thumb"></div></div><span class="wmp-time wmp-duration">00:00</span></div><div class="wmp-controls"><button type="button" class="wmp-btn" data-action="restart" title="重新开始">↶</button><button type="button" class="wmp-btn wmp-play" data-action="play" title="播放">▶</button><button type="button" class="wmp-btn" data-action="stop" title="停止">■</button><div class="wmp-volume"><span class="wmp-volume-icon"><img class="emoji" src="emoji/speaker-high-volume.svg" alt=""></span><input class="wmp-volume-range" type="range" min="0" max="1" step="0.01" value="0.85" aria-label="音量"></div></div></div><div class="wmp-bottom"></div><audio preload="metadata"><source src="music3.mp3" type="audio/mpeg">你的浏览器不支持音频播放。</audio></div>
                 </div>
 
                 <div class="music-item">
                     <strong style="font-size: 1.05em; color: #0b2545;">04. One Man's Dream（一个男人的梦想） - Yanni</strong>
                     <p style="margin: 4px 0 0 0; font-size: 0.85em; opacity: 0.85;">经典钢琴/新世纪音乐作品（侵删）</p>
                     <div class="wmp-player" data-wmp-player data-title="04. One Man's Dream（一个男人的梦想） - Yanni">
-                        <div class="wmp-top-glow"></div><div class="wmp-main"><div class="wmp-meta"><div class="wmp-disc"></div><div class="wmp-title-wrap"><div class="wmp-track-title">04. One Man's Dream（一个男人的梦想） - Yanni</div><div class="wmp-status">Windows Media Player 风格播放器</div></div></div><div class="wmp-progress-wrap"><span class="wmp-time wmp-current">00:00</span><div class="wmp-seek"><div class="wmp-buffer"></div><div class="wmp-progress"></div><div class="wmp-thumb"></div></div><span class="wmp-time wmp-duration">00:00</span></div><div class="wmp-controls"><button type="button" class="wmp-btn" data-action="restart" title="重新开始">↶</button><button type="button" class="wmp-btn wmp-play" data-action="play" title="播放">▶</button><button type="button" class="wmp-btn" data-action="stop" title="停止">■</button><div class="wmp-volume"><span class="wmp-volume-icon">🔊</span><input class="wmp-volume-range" type="range" min="0" max="1" step="0.01" value="0.85" aria-label="音量"></div></div></div><div class="wmp-bottom"></div><audio preload="metadata"><source src="music4.mp3" type="audio/mpeg">你的浏览器不支持音频播放。</audio></div>
+                        <div class="wmp-top-glow"></div><div class="wmp-main"><div class="wmp-meta"><div class="wmp-disc"></div><div class="wmp-title-wrap"><div class="wmp-track-title">04. One Man's Dream（一个男人的梦想） - Yanni</div><div class="wmp-status">Windows Media Player 风格播放器</div></div></div><div class="wmp-progress-wrap"><span class="wmp-time wmp-current">00:00</span><div class="wmp-seek"><div class="wmp-buffer"></div><div class="wmp-progress"></div><div class="wmp-thumb"></div></div><span class="wmp-time wmp-duration">00:00</span></div><div class="wmp-controls"><button type="button" class="wmp-btn" data-action="restart" title="重新开始">↶</button><button type="button" class="wmp-btn wmp-play" data-action="play" title="播放">▶</button><button type="button" class="wmp-btn" data-action="stop" title="停止">■</button><div class="wmp-volume"><span class="wmp-volume-icon"><img class="emoji" src="emoji/speaker-high-volume.svg" alt=""></span><input class="wmp-volume-range" type="range" min="0" max="1" step="0.01" value="0.85" aria-label="音量"></div></div></div><div class="wmp-bottom"></div><audio preload="metadata"><source src="music4.mp3" type="audio/mpeg">你的浏览器不支持音频播放。</audio></div>
                 </div>
 
                 <div class="music-item netease-item">
-                    <strong style="font-size: 1.05em; color: #0b2545;">☁️ 网易云音乐</strong>
+                    <strong style="font-size: 1.05em; color: #0b2545;"><img class="emoji" src="emoji/cloud.svg" alt=""> 网易云音乐</strong>
                     <p style="margin: 4px 0 10px 0; font-size: 0.85em; opacity: 0.85;">
                         歌曲 ID：2086154795 Tek It (sped up)这里的音乐不定期更新哦！可能是烂大街的也可能是抽象的或者好听的？
                     </p>
@@ -1132,15 +1110,15 @@
                 </div>
             </div>
             <div class="window-body has-scrollbar">
-                <p style="margin-top: 0;">📧 电子邮件：contact@dotel.top</p>
-                <p style="margin-bottom: 0;">💬 哔哩哔哩账号：超级末影人</p>
+                <p style="margin-top: 0;"><img class="emoji" src="emoji/e-mail.svg" alt=""> 电子邮件：contact@dotel.top</p>
+                <p style="margin-bottom: 0;"><img class="emoji" src="emoji/speech-balloon.svg" alt=""> 哔哩哔哩账号：超级末影人</p>
             </div>
         </div>
 
         <!-- 6. 自定义背景设置 -->
         <div class="window glass">
             <div class="title-bar">
-                <div class="title-bar-text">🎨 自定义背景设置</div>
+                <div class="title-bar-text"><img class="emoji" src="emoji/artist-palette.svg" alt=""> 自定义背景设置</div>
                 <div class="title-bar-controls">
                     <button aria-label="Minimize" onclick="toggleMinimize(this)"></button>
                     <button aria-label="Maximize" onclick="toggleMaximize(this)"></button>
@@ -1170,12 +1148,44 @@
         <!-- 底部还原按钮 -->
         <footer>
             <div class="restore-box" style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
-                <button onclick="restoreAllWindows()">🔄 还原所有已关闭/最小化/最大化的窗口</button>
-                <button type="button" onclick="location.href='index-ie.html'">🖥️ 切换至兼容模式</button>
+                <button onclick="restoreAllWindows()"><img class="emoji" src="emoji/counterclockwise-arrows.svg" alt=""> 还原所有已关闭/最小化/最大化的窗口</button>
+                <button type="button" onclick="location.href='index-ie.html'"><img class="emoji" src="emoji/desktop-computer.svg" alt=""> 切换至兼容模式</button>
             </div>
             <p>© 2026 逗乐工作室</p>
         </footer>
         </div>
+
+        <!-- 天气小工具：与普通窗口共用 #page-scroll 的层叠上下文，默认置顶但参与窗口层级排序 -->
+        <div class="window glass weather-widget" id="weather-widget">
+            <div class="title-bar">
+                <div class="title-bar-text"><img class="emoji" src="emoji/sun-behind-small-cloud.svg" alt=""> 本地天气</div>
+                <div class="title-bar-controls" aria-hidden="true">
+                    <button type="button" aria-label="Close" onclick="closeWeatherWidget()"></button>
+                </div>
+            </div>
+            <div class="window-body weather-body">
+                <div class="weather-main">
+                    <div class="weather-icon" id="weather-icon" aria-hidden="true"><img class="emoji" src="emoji/sun-behind-small-cloud.svg" alt=""></div>
+                    <div class="weather-info">
+                        <div class="weather-location" id="weather-location">正在获取位置...</div>
+                        <div class="weather-condition" id="weather-condition">正在读取天气</div>
+                        <div class="weather-temp" id="weather-temp">--°C</div>
+                    </div>
+                </div>
+                <div class="weather-details">
+                    <div id="weather-feels">体感：--°C</div>
+                    <div id="weather-humidity">湿度：--%</div>
+                    <div id="weather-wind">风速：-- km/h</div>
+                    <div id="weather-updated">更新：--:--</div>
+                </div>
+                <div class="weather-status-row">
+                    <div class="weather-status" id="weather-status">正在获取当前位置…</div>
+                    <button type="button" class="weather-refresh-btn" onclick="refreshWeatherAndLocation()"><img class="emoji" src="emoji/counterclockwise-arrows.svg" alt=""> 更新天气</button>
+                </div>
+                <div class="weather-attribution">天气数据：Open-Meteo</div>
+            </div>
+        </div>
+
         <!-- 隐藏彩蛋入口：位于滚动内容的最末端，只有滚动到最底部的右下角才能碰到 -->
         <button
             type="button"
@@ -1199,6 +1209,10 @@
         document.querySelectorAll('.window').forEach((win, index) => {
             if (win.classList.contains('weather-widget')) {
                 makeWeatherDraggable(win);
+                // 天气窗口默认置顶，但参与统一的窗口层级：
+                // 这里先把它抬到最上层，之后点击/最大化任何普通窗口都会正常盖住它，
+                // 点击天气窗口本身则会重新回到最上层。
+                bringToFront(win);
                 win.addEventListener('mousedown', () => {
                     bringToFront(win);
                 });
@@ -1265,7 +1279,9 @@
             if (!timerWindow || !themeButton) return;
 
             const enabled = timerWindow.classList.toggle('dark-mode');
-            themeButton.innerText = enabled ? '☀️ 浅色模式' : '🌙 深色模式';
+            themeButton.innerHTML = enabled
+                ? '<img class="emoji" src="emoji/sun.svg" alt=""> 浅色模式'
+                : '<img class="emoji" src="emoji/crescent-moon.svg" alt=""> 深色模式';
         }
 
         function switchTimerTab(tabName, btn) {
@@ -1843,14 +1859,46 @@
         }
 
         /* ==================== 本地天气小工具 ==================== */
-        const WEATHER_CODES = {
-            0:{day:'☀️',night:'🌙',text:'晴'},1:{day:'🌤️',night:'🌙',text:'大致晴朗'},2:{day:'⛅',night:'☁️',text:'局部多云'},3:{day:'☁️',night:'☁️',text:'阴天'},
-            45:{day:'🌫️',night:'🌫️',text:'雾'},48:{day:'🌫️',night:'🌫️',text:'霜雾'},51:{day:'🌦️',night:'🌧️',text:'毛毛雨'},53:{day:'🌦️',night:'🌧️',text:'中等毛毛雨'},55:{day:'🌧️',night:'🌧️',text:'较强毛毛雨'},
-            56:{day:'🌧️',night:'🌧️',text:'冻毛毛雨'},57:{day:'🌧️',night:'🌧️',text:'较强冻毛毛雨'},61:{day:'🌧️',night:'🌧️',text:'小雨'},63:{day:'🌧️',night:'🌧️',text:'中雨'},65:{day:'🌧️',night:'🌧️',text:'大雨'},
-            66:{day:'🌧️',night:'🌧️',text:'冻雨'},67:{day:'🌧️',night:'🌧️',text:'强冻雨'},71:{day:'🌨️',night:'🌨️',text:'小雪'},73:{day:'🌨️',night:'🌨️',text:'中雪'},75:{day:'❄️',night:'❄️',text:'大雪'},77:{day:'🌨️',night:'🌨️',text:'雪粒'},
-            80:{day:'🌦️',night:'🌧️',text:'阵雨'},81:{day:'🌦️',night:'🌧️',text:'中等阵雨'},82:{day:'⛈️',night:'⛈️',text:'强阵雨'},85:{day:'🌨️',night:'🌨️',text:'阵雪'},86:{day:'❄️',night:'❄️',text:'强阵雪'},
-            95:{day:'⛈️',night:'⛈️',text:'雷雨'},96:{day:'⛈️',night:'⛈️',text:'雷雨伴小冰雹'},99:{day:'⛈️',night:'⛈️',text:'雷雨伴强冰雹'}
+        // 天气图标统一使用本地 Fluent Emoji（SVG），避免不同系统的 emoji 字体差异。
+        const WEATHER_ICONS = {
+            sun: 'emoji/sun.svg',
+            sunSmallCloud: 'emoji/sun-behind-small-cloud.svg',
+            sunCloud: 'emoji/sun-behind-cloud.svg',
+            cloud: 'emoji/cloud.svg',
+            fog: 'emoji/fog.svg',
+            sunRain: 'emoji/sun-behind-rain-cloud.svg',
+            rain: 'emoji/cloud-with-rain.svg',
+            snow: 'emoji/cloud-with-snow.svg',
+            snowflake: 'emoji/snowflake.svg',
+            thunder: 'emoji/cloud-with-lightning-and-rain.svg',
+            thermometer: 'emoji/thermometer.svg',
+            moon: 'emoji/crescent-moon.svg'
         };
+
+        const WEATHER_CODES = {
+            0:{day:WEATHER_ICONS.sun,night:WEATHER_ICONS.moon,text:'晴'},1:{day:WEATHER_ICONS.sunSmallCloud,night:WEATHER_ICONS.moon,text:'大致晴朗'},2:{day:WEATHER_ICONS.sunCloud,night:WEATHER_ICONS.cloud,text:'局部多云'},3:{day:WEATHER_ICONS.cloud,night:WEATHER_ICONS.cloud,text:'阴天'},
+            45:{day:WEATHER_ICONS.fog,night:WEATHER_ICONS.fog,text:'雾'},48:{day:WEATHER_ICONS.fog,night:WEATHER_ICONS.fog,text:'霜雾'},51:{day:WEATHER_ICONS.sunRain,night:WEATHER_ICONS.rain,text:'毛毛雨'},53:{day:WEATHER_ICONS.sunRain,night:WEATHER_ICONS.rain,text:'中等毛毛雨'},55:{day:WEATHER_ICONS.rain,night:WEATHER_ICONS.rain,text:'较强毛毛雨'},
+            56:{day:WEATHER_ICONS.rain,night:WEATHER_ICONS.rain,text:'冻毛毛雨'},57:{day:WEATHER_ICONS.rain,night:WEATHER_ICONS.rain,text:'较强冻毛毛雨'},61:{day:WEATHER_ICONS.rain,night:WEATHER_ICONS.rain,text:'小雨'},63:{day:WEATHER_ICONS.rain,night:WEATHER_ICONS.rain,text:'中雨'},65:{day:WEATHER_ICONS.rain,night:WEATHER_ICONS.rain,text:'大雨'},
+            66:{day:WEATHER_ICONS.rain,night:WEATHER_ICONS.rain,text:'冻雨'},67:{day:WEATHER_ICONS.rain,night:WEATHER_ICONS.rain,text:'强冻雨'},71:{day:WEATHER_ICONS.snow,night:WEATHER_ICONS.snow,text:'小雪'},73:{day:WEATHER_ICONS.snow,night:WEATHER_ICONS.snow,text:'中雪'},75:{day:WEATHER_ICONS.snowflake,night:WEATHER_ICONS.snowflake,text:'大雪'},77:{day:WEATHER_ICONS.snow,night:WEATHER_ICONS.snow,text:'雪粒'},
+            80:{day:WEATHER_ICONS.sunRain,night:WEATHER_ICONS.rain,text:'阵雨'},81:{day:WEATHER_ICONS.sunRain,night:WEATHER_ICONS.rain,text:'中等阵雨'},82:{day:WEATHER_ICONS.thunder,night:WEATHER_ICONS.thunder,text:'强阵雨'},85:{day:WEATHER_ICONS.snow,night:WEATHER_ICONS.snow,text:'阵雪'},86:{day:WEATHER_ICONS.snowflake,night:WEATHER_ICONS.snowflake,text:'强阵雪'},
+            95:{day:WEATHER_ICONS.thunder,night:WEATHER_ICONS.thunder,text:'雷雨'},96:{day:WEATHER_ICONS.thunder,night:WEATHER_ICONS.thunder,text:'雷雨伴小冰雹'},99:{day:WEATHER_ICONS.thunder,night:WEATHER_ICONS.thunder,text:'雷雨伴强冰雹'}
+        };
+
+        // 更新天气小工具左侧的大图标（<img>），不再写入 emoji 字符。
+        function setWeatherIcon(src) {
+            const box = document.getElementById('weather-icon');
+            if (!box) return;
+            let img = box.querySelector('img');
+            if (!img) {
+                img = document.createElement('img');
+                img.className = 'emoji';
+                img.alt = '';
+                img.setAttribute('aria-hidden', 'true');
+                box.textContent = '';
+                box.appendChild(img);
+            }
+            if (src) img.src = src;
+        }
 
         /* ==================== 天气本地缓存 ==================== */
         const WEATHER_LOCATION_KEY = 'dotel_weather_location_v1';
@@ -1922,8 +1970,8 @@
 
             const current = cache.current;
             const meta = WEATHER_CODES[current.weather_code] || {
-                day: '🌡️',
-                night: '🌡️',
+                day: WEATHER_ICONS.thermometer,
+                night: WEATHER_ICONS.thermometer,
                 text: '未知天气'
             };
 
@@ -1932,7 +1980,7 @@
             document.getElementById('weather-location').textContent = locationName;
             document.getElementById('weather-condition').textContent = meta.text;
             document.getElementById('weather-temp').textContent = `${Math.round(current.temperature_2m)}°C`;
-            document.getElementById('weather-icon').textContent = current.is_day === 1 ? meta.day : meta.night;
+            setWeatherIcon(current.is_day === 1 ? meta.day : meta.night);
             document.getElementById('weather-feels').textContent = `体感：${Math.round(current.apparent_temperature)}°C`;
             document.getElementById('weather-humidity').textContent = `湿度：${Math.round(current.relative_humidity_2m)}%`;
             document.getElementById('weather-wind').textContent = `风速：${Math.round(current.wind_speed_10m)} km/h`;
@@ -1995,12 +2043,12 @@
 
             const data=await res.json();
             const current=data.current;
-            const meta=WEATHER_CODES[current.weather_code] || {day:'🌡️',night:'🌡️',text:'未知天气'};
+            const meta=WEATHER_CODES[current.weather_code] || {day:WEATHER_ICONS.thermometer,night:WEATHER_ICONS.thermometer,text:'未知天气'};
 
             document.getElementById('weather-location').textContent=locationName;
             document.getElementById('weather-condition').textContent=meta.text;
             document.getElementById('weather-temp').textContent=`${Math.round(current.temperature_2m)}°C`;
-            document.getElementById('weather-icon').textContent=current.is_day===1 ? meta.day : meta.night;
+            setWeatherIcon(current.is_day === 1 ? meta.day : meta.night);
             document.getElementById('weather-feels').textContent=`体感：${Math.round(current.apparent_temperature)}°C`;
             document.getElementById('weather-humidity').textContent=`湿度：${Math.round(current.relative_humidity_2m)}%`;
             document.getElementById('weather-wind').textContent=`风速：${Math.round(current.wind_speed_10m)} km/h`;
@@ -2030,12 +2078,12 @@
                 if(!res.ok)throw new Error(`天气请求失败：HTTP ${res.status}`);
                 const data=await res.json();
                 const current=data.current;
-                const meta=WEATHER_CODES[current.weather_code] || {day:'🌡️',night:'🌡️',text:'未知天气'};
+                const meta=WEATHER_CODES[current.weather_code] || {day:WEATHER_ICONS.thermometer,night:WEATHER_ICONS.thermometer,text:'未知天气'};
 
                 document.getElementById('weather-location').textContent=locationName;
                 document.getElementById('weather-condition').textContent=meta.text;
                 document.getElementById('weather-temp').textContent=`${Math.round(current.temperature_2m)}°C`;
-                document.getElementById('weather-icon').textContent=current.is_day===1 ? meta.day : meta.night;
+                setWeatherIcon(current.is_day === 1 ? meta.day : meta.night);
                 document.getElementById('weather-feels').textContent=`体感：${Math.round(current.apparent_temperature)}°C`;
                 document.getElementById('weather-humidity').textContent=`湿度：${Math.round(current.relative_humidity_2m)}%`;
                 document.getElementById('weather-wind').textContent=`风速：${Math.round(current.wind_speed_10m)} km/h`;
@@ -2117,7 +2165,7 @@
             const button=document.querySelector('.weather-refresh-btn');
             if(button){
                 button.disabled=true;
-                button.innerText='📍 正在更新…';
+                button.innerHTML='<img class="emoji" src="emoji/round-pushpin.svg" alt=""> 正在更新…';
             }
 
             setWeatherStatus('正在重新获取当前位置…');
@@ -2125,7 +2173,7 @@
             const finish=()=>{
                 if(button){
                     button.disabled=false;
-                    button.innerText='🔄 更新天气';
+                    button.innerHTML='<img class="emoji" src="emoji/counterclockwise-arrows.svg" alt=""> 更新天气';
                 }
             };
 
@@ -2336,7 +2384,7 @@
                 });
             }
 
-            button.innerText = '🎵 网易云音乐已加载';
+            button.innerHTML = '<img class="emoji" src="emoji/musical-note.svg" alt=""> 网易云音乐已加载';
         }
 
         // 用户背景的 localStorage 键名。

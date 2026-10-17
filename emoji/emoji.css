@@ -1,0 +1,47 @@
+/* ==========================================================================
+   Microsoft Fluent Emoji（Windows 11 风格 emoji）
+   来源：https://github.com/microsoft/fluentui-emoji
+   许可：MIT License
+   用途：用本地矢量图片替代 emoji 字符，避免不同系统/设备的 emoji 字体差异，
+        保证 Windows / macOS / Android / iOS 上显示一致，且可任意缩放不模糊。
+   ========================================================================== */
+
+.emoji {
+    display: inline-block;
+    /* Fluent 矢量图内部自带留白，放大到 1.1em 后视觉大小与文字 emoji 基本一致 */
+    width: 1.1em;
+    height: 1.1em;
+    vertical-align: -0.16em;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+    flex: 0 0 auto;
+}
+
+/* 标题栏中的图标稍微抬高，和标题文字基线更协调 */
+.title-bar-text .emoji {
+    vertical-align: -0.18em;
+}
+
+/* 与文字并列的内联 SVG 小图标（例如“全屏”按钮） */
+.ui-icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+    margin-right: 0.25em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex: 0 0 auto;
+}
+
+/* 天气小工具里的大图标：占满圆形底座 */
+.weather-icon .emoji {
+    width: 1.1em;
+    height: 1.1em;
+    margin: 0;
+}
