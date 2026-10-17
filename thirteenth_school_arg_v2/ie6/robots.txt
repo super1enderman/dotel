@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /bak/
+Disallow: /teacher/zhou/
+
+# 本文件由 linhe 于 2023-09-10 添加。
+# 原来的空间没有这个文件。加它只是不想让搜索引擎再翻到备份目录。

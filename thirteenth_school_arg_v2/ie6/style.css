@@ -1,0 +1,461 @@
+﻿@charset "utf-8";
+/* 临河十三中 · 样式表 style.css
+   只用 CSS 2.1 属性，IE6 / IE8 / 现代浏览器表现一致。
+   版式参考 2001—2004 年县中自建站点：定宽 760px 表格、宋体 12px、蓝色下划线链接。 */
+
+body {
+  margin: 0;
+  padding: 12px 0 24px 0;
+  background: #e4e5dd;
+  color: #222;
+  font-family: "宋体", SimSun, "MS Song", "新宋体", serif;
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+#wrap { width: 760px; margin: 0 auto; }
+
+a { color: #004a99; text-decoration: underline; }
+a:visited { color: #663399; }
+a:hover { color: #cc0000; }
+a:active { color: #cc0000; }
+img { border: 0; }
+
+/* ── 主表格 ────────────────────────────────────── */
+table.page {
+  width: 760px;
+  table-layout: fixed;
+  background: #ffffff;
+  border: 1px solid #6f7f6a;
+}
+
+/* ── 页头 ──────────────────────────────────────── */
+td.top {
+  background: #1f4d33;
+  color: #ffffff;
+  padding: 8px 6px;
+  border-bottom: 3px solid #9ab08f;
+}
+td.top a { color: #ffffff; }
+.school-name {
+  font-size: 19px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: #ffffff;
+  line-height: 1.4;
+}
+.school-en {
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #c9dcc0;
+  line-height: 1.4;
+}
+.school-sub {
+  font-size: 11px;
+  color: #e8f0e2;
+  letter-spacing: 3px;
+  line-height: 1.6;
+}
+
+.ct-cell { padding-right: 6px; }
+.ct-label { font-size: 10px; color: #d5e3cc; text-align: center; line-height: 1.5; }
+.ct-digits { text-align: center; line-height: 1.9; }
+.ct-digits span {
+  display: inline;
+  padding: 1px 3px;
+  margin: 0 0;
+  background: #000000;
+  color: #33ff66;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  font-weight: bold;
+  border: 1px solid #5a6b54;
+}
+
+/* ── 顶部导航 ──────────────────────────────────── */
+td.toplink {
+  background: #d8e2d2;
+  border-bottom: 1px solid #9ab08f;
+  padding: 5px 3px;
+  font-size: 11px;
+  line-height: 2;
+  text-align: center;
+}
+td.toplink .nv { white-space: nowrap; }
+td.toplink .nvi { padding: 0; }
+td.toplink a { color: #123f28; text-decoration: none; }
+td.toplink a:hover { color: #cc0000; text-decoration: underline; }
+td.toplink b { color: #7a1c1c; }
+
+/* ── 跑马灯 ────────────────────────────────────── */
+td.marquee {
+  background: #fffbe8;
+  border-bottom: 1px solid #d6c795;
+  padding: 2px 8px;
+  color: #7a2b2b;
+  font-size: 12px;
+  height: 20px;
+  overflow: hidden;
+}
+.ticker {
+  height: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+td.marquee #tkx { display: block; white-space: nowrap; line-height: 18px; }
+
+/* ── 主体 ──────────────────────────────────────── */
+td.bodycell { background: #ffffff; }
+
+td.sidebar {
+  background: #f3f5ee;
+  border-right: 1px solid #cdd4c6;
+  padding: 8px 8px 20px 8px;
+  font-size: 12px;
+}
+.side-t {
+  margin: 10px 0 4px 0;
+  padding: 2px 6px;
+  background: #d8e2d2;
+  border-left: 4px solid #1f4d33;
+  font-weight: bold;
+  color: #123f28;
+  font-size: 12px;
+}
+ul.sidenav { margin: 0; padding: 0 0 0 2px; list-style: none; }
+ul.sidenav li { line-height: 1.9; }
+ul.sidenav li a { text-decoration: none; color: #004a99; }
+ul.sidenav li a:hover { text-decoration: underline; }
+ul.sidenav li a.on { color: #7a1c1c; font-weight: bold; }
+.side-p { margin: 4px 0; line-height: 1.7; }
+table.sideinfo { width: 100%; font-size: 11px; color: #555; }
+table.sideinfo td { padding: 0 2px; border-bottom: 1px dotted #cdd4c6; }
+
+td.content {
+  padding: 12px 16px 30px 16px;
+  vertical-align: top;
+}
+
+/* ── 页脚 ──────────────────────────────────────── */
+td.footer {
+  background: #eef0e8;
+  border-top: 1px solid #cdd4c6;
+  padding: 8px 6px;
+  text-align: center;
+  font-size: 11px;
+  color: #555;
+  line-height: 1.7;
+}
+
+/* ── 标题与正文 ────────────────────────────────── */
+h1 {
+  font-size: 15px;
+  margin: 0 0 10px 0;
+  padding: 3px 0 3px 9px;
+  border-left: 5px solid #1f4d33;
+  background: #f0f4ec;
+  color: #123f28;
+  font-weight: bold;
+}
+h2 {
+  font-size: 13px;
+  margin: 16px 0 6px 0;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #cdd4c6;
+  color: #1f4d33;
+}
+h3 { font-size: 12px; margin: 10px 0 4px 0; color: #7a1c1c; }
+p { margin: 6px 0; }
+ul.plain { margin: 4px 0 4px 0; padding-left: 22px; }
+ul.plain li { line-height: 1.9; }
+.small { font-size: 11px; }
+.gray { color: #777; }
+.right { text-align: right; }
+
+.notice {
+  margin: 8px 0 12px 0;
+  padding: 6px 10px;
+  background: #fdf5da;
+  border: 1px solid #d9c27a;
+  color: #5b4420;
+}
+.warn {
+  margin: 8px 0;
+  padding: 6px 10px;
+  background: #fdeeec;
+  border-left: 3px solid #a33333;
+  color: #7a1c1c;
+}
+.ok {
+  margin: 8px 0;
+  padding: 6px 10px;
+  background: #eef7ea;
+  border-left: 3px solid #2f7a3f;
+  color: #1c5a28;
+}
+.err {
+  margin: 8px 0;
+  padding: 6px 10px;
+  background: #fdeeec;
+  border-left: 3px solid #a33333;
+  color: #7a1c1c;
+}
+.ok-box { border-color: #2f7a3f; }
+.ok-box .box-t { background: #e4f0de; border-bottom-color: #2f7a3f; color: #1c5a28; }
+
+.article { line-height: 2; }
+.article p { text-indent: 2em; margin: 8px 0; }
+.quote {
+  margin: 6px 0;
+  padding: 6px 10px;
+  background: #f6f6f0;
+  border-left: 3px solid #b8b8a8;
+  font-size: 12px;
+}
+
+.hr { margin: 12px 0; text-align: center; }
+
+/* ── 盒子 ──────────────────────────────────────── */
+.box {
+  margin: 12px 0;
+  border: 1px solid #b9c4b2;
+  background: #fcfcf8;
+}
+.box.dashed { border-style: dashed; }
+.box-t {
+  padding: 3px 9px;
+  background: #e8ede4;
+  border-bottom: 1px solid #b9c4b2;
+  font-weight: bold;
+  color: #123f28;
+}
+.box-b { padding: 6px 10px 10px 10px; }
+
+/* ── 表格 ──────────────────────────────────────── */
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0;
+  font-size: 12px;
+}
+table.data th {
+  background: #e0e8da;
+  border: 1px solid #a9b6a2;
+  padding: 3px 5px;
+  font-weight: bold;
+  color: #123f28;
+  text-align: left;
+  white-space: nowrap;
+}
+table.data td {
+  border: 1px solid #cfd6c8;
+  padding: 3px 5px;
+  vertical-align: top;
+}
+table.data tr.hd th { text-align: left; }
+table.data tr:hover td { background: #f8faf5; }
+table.data.half td, table.data.half th { font-size: 11px; }
+
+table.info { border-collapse: collapse; margin: 6px 0; }
+table.info td { padding: 2px 8px 2px 0; vertical-align: top; }
+table.info td.k { color: #555; white-space: nowrap; width: 90px; }
+
+table.form { border-collapse: collapse; margin: 6px 0; width: 100%; }
+table.form td { padding: 4px 6px; vertical-align: top; border-bottom: 1px dotted #d8ded2; }
+table.form td.fk { background: #f2f5ee; color: #445; white-space: nowrap; border-right: 1px solid #d8ded2; }
+
+table.raw { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 11px; }
+table.raw th { background: #e0e8da; border: 1px solid #a9b6a2; padding: 3px; text-align: left; }
+table.raw td { border: 1px solid #d5dbcf; padding: 3px; }
+table.raw tr.hl td { background: #fff3f3; }
+table.raw td.ip { font-family: Verdana, Arial, sans-serif; font-size: 10px; color: #444; }
+
+table.ascii { border-collapse: collapse; font-size: 11px; }
+table.ascii th { background: #e0e8da; border: 1px solid #a9b6a2; padding: 2px 4px; }
+table.ascii td { border: 1px solid #d5dbcf; padding: 1px 4px; text-align: center; }
+
+/* ── 表单控件（2004 年风格） ────────────────────── */
+.inp {
+  font-family: "宋体", SimSun, serif;
+  font-size: 12px;
+  border: 1px solid #7d8c78;
+  background: #ffffff;
+  padding: 1px 3px;
+  color: #222;
+}
+.inp-mini {
+  font-family: "宋体", SimSun, serif;
+  font-size: 11px;
+  border: 1px solid #7d8c78;
+  background: #ffffff;
+  width: 100px;
+  color: #888;
+}
+.btn {
+  font-family: "宋体", SimSun, serif;
+  font-size: 12px;
+  border: 1px solid #5c6b57;
+  background: #dfe6da;
+  color: #123f28;
+  padding: 1px 8px;
+  cursor: pointer;
+}
+.btn-mini {
+  font-family: "宋体", SimSun, serif;
+  font-size: 11px;
+  border: 1px solid #5c6b57;
+  background: #dfe6da;
+  color: #123f28;
+  padding: 0 6px;
+  cursor: pointer;
+}
+
+.bigbtn {
+  display: block;
+  margin: 6px 0;
+  padding: 6px 12px;
+  background: #1f4d33;
+  color: #ffffff;
+  border: 1px solid #123020;
+  text-decoration: none;
+  font-weight: bold;
+  text-align: left;
+}
+.bigbtn:visited { color: #ffffff; }
+.bigbtn:hover { background: #2c6b47; color: #ffffff; text-decoration: none; }
+
+.gate {
+  margin: 0 0 14px 0;
+  padding: 10px 12px;
+  background: #f7f9f3;
+  border: 1px solid #b9c4b2;
+}
+.gate-t { font-weight: bold; color: #123f28; margin-bottom: 6px; }
+
+/* ── 预格式块（地图 / 座位 / 代码 / 日志） ──────── */
+pre.map, pre.seat, pre.log, pre.code {
+  font-family: "SimSun", "宋体", "Courier New", Courier, monospace;
+  font-size: 12px;
+  line-height: 1.35;
+  background: #fbfbf6;
+  border: 1px solid #d5dbcf;
+  padding: 8px 10px;
+  overflow: auto;
+  color: #333;
+}
+pre.seat { font-size: 12px; line-height: 1.5; }
+pre.log { background: #f6f6f0; }
+pre.code { background: #f4f4ee; color: #444; }
+.seatwrap { overflow: auto; }
+
+/* ── 状态标记 ──────────────────────────────────── */
+.miss { color: #a33333; }
+.blank { color: #b0b0a8; }
+.torn { color: #b0b0a8; border-bottom: 1px dotted #b0b0a8; padding: 0 2px; }
+.neg { color: #a33333; }
+code {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  background: #f2f2ea;
+  padding: 0 2px;
+  color: #333;
+}
+code.b64 { word-break: break-all; font-size: 10px; display: inline-block; }
+.hit { color: #7a7a6a; }
+.d { color: #666; font-family: Verdana, Arial, sans-serif; font-size: 11px; }
+ul.newslist { margin: 6px 0; padding-left: 0; list-style: none; }
+ul.newslist li { line-height: 2; border-bottom: 1px dotted #dfe4d9; }
+ul.newslist .d { display: inline-block; width: 78px; }
+
+/* ── 存档 / 进度 ───────────────────────────────── */
+#codeArea { margin-top: 10px; }
+#codeBox { width: 100%; height: 52px; }
+
+/* ── IE6 兼容版标记 ────────────────────────────── */
+.ie6note {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px dotted #cdd4c6;
+  color: #8a8a7a;
+  font-size: 10px;
+}
+/* ── 座位表（真实表格，避免方框字符对不齐） ────── */
+table.seatmap {
+  border-collapse: collapse;
+  margin: 14px auto 6px auto;
+}
+table.seatmap td, table.seatmap th {
+  border: 1px solid #b9c4b2;
+  width: 54px;
+  height: 26px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 11px;
+  color: #333;
+}
+table.seatmap td.desk { background: #fdfdf8; }
+table.seatmap td.podium {
+  background: #e8ede4;
+  color: #123f28;
+  letter-spacing: 6px;
+  font-weight: bold;
+  height: 22px;
+}
+table.seatmap th.rownum {
+  background: #f2f5ee;
+  color: #667;
+  font-weight: normal;
+  font-size: 11px;
+}
+p.seatcap {
+  text-align: center;
+  font-size: 11px;
+  color: #777;
+  margin: 2px 0 12px 0;
+}
+
+/* ── 校园平面图（表格版） ──────────────────────── */
+table.campus {
+  border-collapse: collapse;
+  width: 96%;
+  margin: 14px auto;
+  font-size: 11px;
+  text-align: center;
+  color: #333;
+}
+table.campus td {
+  border: 1px solid #a9b6a2;
+  background: #fbfbf6;
+  padding: 12px 6px;
+  line-height: 1.6;
+}
+table.campus td.c-north {
+  background: #f0eee6;
+  border-style: dashed;
+  border-color: #b0a88f;
+  color: #6b6455;
+}
+table.campus td.c-fill { border: 0; background: transparent; }
+table.campus td.c-build { background: #eef1e8; }
+table.campus td.c-yard { background: #f7f7f0; }
+table.campus td.c-water { background: #f4f6f8; }
+table.campus td.c-back {
+  background: #fdf8ea;
+  color: #7a5a1c;
+  letter-spacing: 2px;
+}
+table.campus td.c-guard { background: #eef1e8; }
+table.campus td.c-gate {
+  background: #d8e2d2;
+  color: #123f28;
+  letter-spacing: 4px;
+  font-weight: bold;
+}
+table.campus .c-s {
+  display: block;
+  color: #777;
+  font-size: 10px;
+  letter-spacing: 0;
+  margin-top: 2px;
+}

@@ -1,0 +1,54 @@
+# 文件清单　/　2004-11-17 全站备份
+# 格式：路径<TAB>状态<TAB>字节数
+# 共 43 个网页文件
+
+index.html	ok	4182
+school.html	ok	3121
+history.html	ok	6408
+teachers.html	ok	2855
+map.html	ok	4302
+map_clock.html	ok	1977
+map_guard.html	ok	1204
+news.html	ok	3822
+news_20030915.html	ok	1688
+news_20031028.html	ok	2104
+news_20031103.html	ok	1402
+news_20031110.html	ok	1519
+news_20031117.html	ok	2411
+news_20031118.html	ok	1360
+news_20031119.html	ok	1244
+news_20031205.html	ok	1730
+news_20031229.html	ok	1506
+news_20040320.html	ok	1841
+news_20040418.html	ok	1277
+news_20040617.html	ok	1725
+news_20040702.html	ok	2033
+news_20040910.html	ok	1112
+news_20041117.html	ok	1160
+class07.html	ok	1310
+class07_index.html	ok	2210
+class07_seat.html	ok	5602
+class07_duty.html	ok	3384
+class07_money.html	ok	4407
+class07_alumni.html	ok	9118
+class07_album.html	ok	3021
+class07_score.html	ok	2334
+class07_43.html	ok	0
+works.html	ok	1801
+works_w01.html	ok	3210
+works_w02.html	ok	2801
+works_w03.html	ok	1602
+xkan.html	ok	1500
+xkan_4.html	ok	2106
+xkan_4_draft.html	ok	2913
+guestbook.html	ok	28440
+guestbook_2002.html	ok	1904
+maintain.html	ok	3302
+admin.html	ok	1255
+
+# 说明
+# 1. class07_43.html 状态为 ok，字节数为 0。备份时未报错。
+# 2. guestbook.html 内含全部留言（含已屏蔽 1 条）。
+# 3. 相册图片（images/album*.jpg）未备份，备份时已不存在。
+# 4. 后台页面（admin_panel 等）与工具页为 2005 年后由他人添加，
+#    不在本次备份内，故本清单只有 43 个文件。

@@ -1,0 +1,30 @@
+/* 临河十三中 · IE6 / IE7 / IE8 兼容修正表
+   本文件只在 ie6/ 版本中加载。 */
+
+/* IE6 不会给表格单元格自动分配宽度，补一个固定表格布局 */
+table.page { width: 760px; }
+
+td.content { width: 600px; }
+td.sidebar { width: 158px; }
+
+/* IE6 中 pre 直接按内容宽度撑开，会顶破版面 */
+pre.map, pre.seat, pre.log, pre.code {
+  width: 96%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* IE6 的按钮比文字高出 1px，压一下 */
+.btn, .btn-mini { padding-top: 0; padding-bottom: 0; }
+
+/* IE6 不支持 tr:hover，保持默认底色，避免行间闪烁 */
+table.data tr:hover td { background: transparent; }
+
+/* IE6 对 inline-block 支持不完整，导航按钮退化为块级更稳妥 */
+.bigbtn { display: block; }
+
+/* 数字计数器：IE6 需要重置行高，否则会断行 */
+.ct-digits span { line-height: 1.6; }
+
+/* 让 IE 使用更好的缩放（IE7+） */
+img { -ms-interpolation-mode: bicubic; }
