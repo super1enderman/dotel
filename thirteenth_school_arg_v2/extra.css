@@ -1,0 +1,44 @@
+@charset "utf-8";
+/* 现代浏览器渐进增强（IE6 不加载本文件，加载了也全部忽略）
+   只用不影响版式的装饰性属性。 */
+
+body {
+  background-color: #e4e5dd;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(0,0,0,.012) 0 1px, transparent 1px 4px);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: #1f4d33; color: #ffffff; }
+::-moz-selection { background: #1f4d33; color: #ffffff; }
+
+a:focus, .btn:focus, .inp:focus, .bigbtn:focus {
+  outline: 2px solid #9ab08f;
+  outline-offset: 1px;
+}
+
+.inp:focus, .inp-mini:focus {
+  background: #fffdf3;
+  border-color: #1f4d33;
+}
+
+table.page {
+  box-shadow: 0 0 0 4px #f7f7f2, 0 6px 18px rgba(0,0,0,.10);
+}
+
+td.top {
+  background-image: linear-gradient(#275c3c, #1a4229);
+}
+
+.bigbtn {
+  transition: background .12s linear;
+}
+
+table.data tr:hover td { background: #f6f9f1; }
+
+/* 打印：去掉装饰 */
+@media print {
+  body { background: #fff; padding: 0; }
+  td.sidebar, td.toplink, td.marquee, #ieBar { display: none; }
+  table.page { border: 0; box-shadow: none; }
+}

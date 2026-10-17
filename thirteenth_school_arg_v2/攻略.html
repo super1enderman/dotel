@@ -1,0 +1,332 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=820">
+<title>攻略 · 《临河十三中：本站暂不开放》</title>
+<style>
+body{margin:0;padding:24px 0 60px;background:#e8e6de;color:#222;
+  font-family:"宋体",SimSun,"Microsoft YaHei",serif;font-size:13px;line-height:1.9}
+#w{width:820px;margin:0 auto;background:#fff;border:1px solid #7a7a6a}
+.hd{background:#7a1c1c;color:#fff;padding:14px 20px}
+.hd h1{margin:0;font-size:20px;letter-spacing:2px}
+.hd p{margin:4px 0 0;font-size:12px;color:#f0d8d8}
+.bd{padding:18px 26px 40px}
+h2{font-size:15px;color:#7a1c1c;border-bottom:2px solid #7a1c1c;padding-bottom:3px;margin:26px 0 10px}
+h3{font-size:13px;color:#1f4d33;margin:16px 0 6px;border-left:4px solid #1f4d33;padding-left:8px}
+h4{font-size:13px;margin:12px 0 4px;color:#333}
+p{margin:6px 0}
+ul,ol{margin:6px 0;padding-left:24px}
+li{margin:3px 0}
+.warn{background:#fdecec;border:1px solid #c96;padding:8px 12px;margin:10px 0;color:#7a1c1c}
+.tip{background:#eef4ea;border-left:3px solid #2f7a3f;padding:8px 12px;margin:10px 0}
+table{border-collapse:collapse;width:100%;margin:8px 0;font-size:12px}
+th{background:#e6e2d6;border:1px solid #b3ae9a;padding:4px 7px;text-align:left}
+td{border:1px solid #cfcaba;padding:4px 7px;vertical-align:top}
+code{background:#f2f0e6;padding:0 3px;font-family:"Courier New",monospace;font-size:12px}
+kbd{background:#222;color:#fff;padding:0 5px;font-size:11px;border-radius:2px}
+a{color:#004a99}
+.mono{font-family:"SimSun","宋体","Courier New",monospace;background:#f6f5ee;border:1px solid #ddd9c9;padding:8px 10px;font-size:12px;overflow:auto}
+.small{font-size:11px;color:#777}
+.big{background:#fdf6e3;border:1px dashed #b3a06a;padding:10px 14px;margin:10px 0;font-size:14px}
+.big b{color:#7a1c1c;font-size:16px;letter-spacing:3px}
+hr{border:0;border-top:1px dotted #bbb;margin:18px 0}
+.ft{padding:10px 26px;border-top:1px solid #ccc;font-size:11px;color:#777;text-align:center}
+</style>
+</head>
+<body>
+<div id="w">
+
+<div class="hd">
+  <h1>《临河十三中：本站暂不开放》完全攻略</h1>
+  <p>第一季　全流程 · 全部答案 · 三个结局 · 彩蛋清单 · 设计说明</p>
+</div>
+
+<div class="bd">
+
+<div class="warn">
+<b>剧透警告。</b>本文件包含全部谜题答案、结局内容与剧情真相，只给两类人看：<br>
+① 卡住超过 20 分钟、只想看某一步的玩家；② 后续要继续做这个系列的作者。<br>
+<b>第一次游玩请先关掉本文件。</b>本作的乐趣几乎全部来自“自己发现”，看答案等于没玩。
+</div>
+
+<h2>一、三十秒速查表（只给已经放弃思考的人）</h2>
+
+<table>
+<tr><th width="120">位置</th><th width="150">要输入什么</th><th>正确答案</th></tr>
+<tr><td>班级网页 <code>class07.html</code></td><td>访问密码</td><td><b>0701</b></td></tr>
+<tr><td>维护后台 <code>admin.html</code></td><td>登录密码</td><td><b>20041117</b></td></tr>
+<tr><td>传达室登记簿 <code>map_guard.html</code></td><td>实际时间（4 位）</td><td><b>1707</b></td></tr>
+<tr><td>Base64 串（后台日志 2005-03-11）</td><td>解码结果</td><td><b>你找不到的东西在 /bak/20041117/</b></td></tr>
+<tr><td>留言板 1720—1726</td><td>七条留言的首字</td><td><b>西侧旧钟慢七分</b></td></tr>
+<tr><td>结案报告 第一问</td><td>第 43 位同学的姓名</td><td><b>沈冬</b></td></tr>
+<tr><td>结案报告 第二问</td><td>合影中的位置</td><td><b>后排右起第三</b></td></tr>
+<tr><td>结案报告 第三问</td><td>是否回过学校</td><td><b>回来过，登记簿上有记录</b></td></tr>
+<tr><td>结案报告 第四问</td><td>挂钟上的时间</td><td><b>17:00</b>（注意：不是 17:07）</td></tr>
+</table>
+
+<h2>二、完整流程</h2>
+
+<h3>第一幕　先把这个破站看完（约 15 分钟）</h3>
+<p>这一幕没有谜题。要做的事只有一件：<b>按顺序把主要栏目都点一遍</b>，并且在纸上记下几个数字。</p>
+<ol>
+<li><a href="index.html">首页</a>。读顶部公告条“本站部分功能暂不开放”。<br>
+右侧页头写着“您是第 <b>0043</b> 位访问者”。<b>刷新几次。</b>它不会变。</li>
+<li><a href="school.html">学校简介</a> → <a href="history.html">沿革</a>。<br>
+看一眼最下面的“1998 年教学点清理登记表”：01—13 号都有名有姓，<b>第 14 号整行空白</b>。这是留给下一季的钩子，本季不用管。</li>
+<li><a href="news.html">公告列表</a>，15 条全读。重点记这五条：</li>
+</ol>
+<table>
+<tr><th width="110">公告</th><th>要记住的东西</th></tr>
+<tr><td>2003-11-17 撤并通知</td><td>要求按“正式学籍编号”报材料，没有编号的“暂不报送”</td></tr>
+<tr><td>2003-12-05 作息调整</td><td><b>放学时间 17:00</b>（12 月 8 日起；此前 17:20）</td></tr>
+<tr><td>2004-04-18 报名情况</td><td>“<b>42 名</b>学生完成报名”</td></tr>
+<tr><td>2004-06-17 中考情况</td><td>“全班共 <b>43 人</b>参加，平均分 <b>512</b>”</td></tr>
+<tr><td>2004-07-02 资料移交</td><td>“正式学籍 42 份”“借读材料 1 份，<b>其中 1 份由家长取回</b>”</td></tr>
+</table>
+<ol start="4">
+<li><a href="map.html">校园地图</a> → <a href="map_clock.html">挂钟校准记录</a>。记：2001-03-05 换电池，“按值日表<b>放学时间</b>校对”。</li>
+<li><a href="teachers.html">教师介绍</a>。班主任周明远，语文兼信息技术，网站是他一个人做的。</li>
+<li><a href="works.html">学生作品</a> → 读 <a href="works_w02.html">《我的妈妈》</a>。这一篇<b>没有署名</b>。全篇讲他妈妈在东莞打工。</li>
+<li><a href="xkan.html">《大院》校刊</a> → <a href="xkan_4.html">第 4 期</a> → 最下面那个 <a href="xkan_4_draft.html">未刊稿《操场西侧的旧钟》</a>。<br>
+记住这句话：<b>“每天放学以后，操场西边的钟都会慢七分钟。”</b></li>
+<li><a href="guestbook.html">留言板</a>，70 条全读一遍。这一页信息量最大，注意四处：<br>
+① 1720—1726 这七条；② 1742 那一行只写着“本留言暂不显示”；③ 1749 那条“家长”；④ 最后 1781、1782 两条。</li>
+</ol>
+
+<div class="tip">读到这里，你已经拥有了全部线索。之后的每一步都只是“把已有的东西对上号”。</div>
+
+<h3>第二幕　发现“多出来一个人”（约 20 分钟）</h3>
+
+<h4>2-1　先解留言板的藏头（这一步会反复用到）</h4>
+<p>把 1720 到 1726 这七条留言的<b>第一个字</b>竖着抄下来：</p>
+<div class="mono">1720 小黑　<b>西</b>头的水房又停水了，今天别去打水。
+1721 磊子　<b>侧</b>门锁了，倒垃圾走后门。
+1722 秋禾　<b>旧</b>作业本还在讲台下面，要的自己拿。
+1723 马骁　<b>钟</b>停了三天了，没人管。
+1724 露露　<b>慢</b>点跑，走廊刚拖过。
+1725 匿名　<b>七</b>点半到校，别再迟到。
+1726 路过　<b>分</b>班表贴在后门，自己看。</div>
+<div class="big">竖读：<b>西侧旧钟慢七分</b></div>
+<p>为什么是这七条？去看 <a href="v_guestbook.html">留言板原始档</a>：这七条的 IP <b>全是 61.53.148.217</b>，时间集中在 16:41—16:58，
+昵称却是七个人。这是 2003 年 11 月 17 日（撤并通知下达那天）放学前后，周明远一个人替七个人发的。</p>
+
+<h4>2-2　三个“人数对不上”</h4>
+<table>
+<tr><th width="90">材料</th><th>算一遍</th><th width="170">结论</th></tr>
+<tr><td>成绩单 vs 公告</td><td>42 个人的总分合计 <b>21504</b>。21504 ÷ 42 = <b>512.0</b>，正好等于公告里写的平均分。<br>
+如果真是 43 人，21504 ÷ 43 = 500.09，对不上。</td>
+<td>平均分是按 <b>42 人</b>算的，参加人数却写 43。<br>第 43 个人“在人数上存在，在分数上不存在”。</td></tr>
+<tr><td>班费账本</td><td>每人 12 元。账上收入 <b>504.00</b>。504 ÷ 12 = <b>42</b>。</td>
+<td>收费名单只有 42 人。备注写着“座号 43 免收，免收金额未登记”。</td></tr>
+<tr><td>值日表</td><td>7 组 × 6 人 = <b>42</b> 人。<br>但卫生检查记录 2003-11-12 写“第七组全组 <b>7 人</b>到齐”。</td>
+<td>表格上是 6 人，检查记录上是 7 人。记录比现实多一个人。</td></tr>
+</table>
+
+<h4>2-3　第 43 个座位</h4>
+<p>打开 <a href="class07.html">班级网页</a>。（现在还没密码，先看下一步；下面这段等你进来再看。）</p>
+<ul>
+<li>班级主页写“全班人数 <b>43 人</b>”。</li>
+<li><a href="class07_seat.html">座位表</a>只有 42 格。下面“加座说明”写着：<b>座号 43，位置后排右起第三</b>，靠后门走道，课桌从器材室借的，没入册。</li>
+<li><a href="class07_duty.html">值日表</a>写着“座号 43 不参与轮值”。</li>
+<li><a href="class07_money.html">班费账本</a>最后一行：周老师补入 8 元，结余归零。</li>
+<li><a href="class07_album.html">班级相册</a>（只有文字说明）：② 毕业合影“后排右起第三位<b>被国旗挡住半张脸</b>”；④ 中考送考的车上“数了两遍，<b>42 个</b>人”；⑤ 空教室“<b>43 把</b>椅子，一把不少”。</li>
+<li><a href="class07_alumni.html">毕业纪念册</a>：页头写“共收录 <b>43</b> 位”，往下数，第 <b>21</b> 条<b>姓名栏是空的</b>，留言却写着“老师，谢谢你。”</li>
+</ul>
+
+<h3>第三幕　开两道锁（约 10 分钟）</h3>
+
+<h4>3-1　班级网页密码 = 0701</h4>
+<p>去 <a href="maintain.html">网页维护</a>，看“维护记录”第二条（2001-09-10）：</p>
+<div class="mono">规则：<b>班号（两位）+ 建站年份（后两位）</b>。设定后未再更改。</div>
+<p>班号 = 初三（七）班 = <code>07</code>；建站年份 = 首页公告“本站建于 <b>2001</b> 年 9 月 10 日” → 后两位 <code>01</code>。</p>
+<div class="big">密码：<b>0701</b>（在 <a href="class07.html">class07.html</a> 输入）</div>
+
+<h4>3-2　后台密码 = 20041117</h4>
+<p>登录页自己说了“请输入本站停止更新的日期（YYYYMMDD）”。<b>抬头看页脚</b>：</p>
+<div class="mono">最后更新时间：2004 年 11 月 17 日 17:07</div>
+<div class="big">密码：<b>20041117</b>（在 <a href="admin.html">admin.html</a> 输入）</div>
+<p>进去以后，<b>三个地方一定要看</b>（第四幕就靠它们）：</p>
+<ul>
+<li>后台首页“系统状态”：<b>当前在线 1 人</b>，在线用户 webmaster_13，上次活动 <b>2004-11-17 17:07</b>。</li>
+<li><a href="admin_todo.html">待办事项</a>：只有一条 #1，状态“未完成”，内容是“等七班学生材料补齐后，将第 43 号姓名填回学籍表、点名册、成绩单三处”，备注四个字：<b>材料未到</b>。</li>
+<li><a href="admin_log.html">维护日志</a>：2005-03-11 那一行有串 Base64。</li>
+</ul>
+
+<h3>第四幕　备份目录（约 15 分钟，全作转折点）</h3>
+
+<h4>4-1　解开 Base64</h4>
+<p><a href="admin_log.html">维护日志</a>里 2005-03-11 那行：</p>
+<div class="mono">5L2g5om+5LiN5Yiw55qE5Lic6KW/5ZyoIC9iYWsvMjAwNDExMTcv</div>
+<p>打开 <a href="tools_b64.html">编码转换工具</a>，粘贴到“输入”，点“← 解码”：</p>
+<div class="big">你找不到的东西在 <b>/bak/20041117/</b></div>
+<p class="small">这是 2005 年那个学生罗一鸣留给后来人的话。他把备份放进了备份目录，还怕以后被人误删，改过文件名。</p>
+
+<h4>4-2　进备份目录</h4>
+<p>打开 <a href="jump.html">站内快速跳转</a>，输入：</p>
+<div class="mono">bak/20041117/README.txt</div>
+<p>（或者直接在地址栏把当前文件名换成这个路径，效果一样。）</p>
+<p>README 里说本目录有三个文件：<code>01.txt</code>、<code>02.txt</code>、<code>03.txt</code>，还有一个关键句：
+“<b>class07_43.html 下载下来就是 0 字节。我下载了三次，都是 0 字节。</b>”</p>
+
+<h4>4-3　三个文件都要读</h4>
+<table>
+<tr><th width="130">文件</th><th>内容</th><th width="220">为什么重要</th></tr>
+<tr><td><code>bak/20041117/01.txt</code></td><td>全站文件清单，正好 <b>43</b> 个网页</td><td>第 32 行：<code>class07_43.html　ok　0</code>。状态 ok，字节数 0。周明远给第 43 个人做了一整页，那一页是空的。</td></tr>
+<tr><td><code>bak/20041117/02.txt</code></td><td>点名册导出，43 行</td><td>第 43 行：<code>43[TAB][TAB][TAB]</code>。有座号，没学号，没姓名，只有一个 tab。</td></tr>
+<tr><td><code>bak/20041117/03.txt</code></td><td><b>情况说明（草稿）</b></td><td>全作最核心的一份材料。周明远亲手写的认罪书 + 自辩书。第六幕的“名”就在这里面。</td></tr>
+</table>
+<div class="tip"><b>03.txt 必读的三段：</b><br>
+① “那天放学以后，他回来了……他坐在办公室那把旧椅子上，从五点坐到七点多。我没想出办法。”<br>
+② “我在网站上给他留了一个位置……我把这些都做成四十三份的样子。检查看的是材料。材料上有他，他就是有的。”<br>
+③ “网站上的那些东西，我一篇一篇删了。删到最后一页，我没删。我在那一页上写了他的名字。保存了三次。保存了三次。”</div>
+
+<h3>第五幕　把钟拨回去（约 10 分钟）</h3>
+
+<h4>5-1　七分钟是怎么来的</h4>
+<p>三份材料拼起来：</p>
+<ol>
+<li><a href="xkan_4_draft.html">未刊稿</a>：“每天放学以后，操场西边的钟都会慢七分钟。”</li>
+<li><a href="news_20031205.html">公告</a>：放学时间 17:00。</li>
+<li><a href="map_clock.html">校准记录</a>：2001-03-05 换电池，由值日生“按值日表放学时间校对”，也就是把钟拨到 17:00 —— 而他拨的时候，真实时间已经是 <b>17:07</b>。</li>
+</ol>
+<div class="big">结论：挂钟显示 17:00 时，实际时间是 <b>17:07</b>。挂钟<b>慢 7 分钟</b>。</div>
+
+<h4>5-2　登记簿要密码 = 1707</h4>
+<p>去 <a href="map_guard.html">传达室来访登记簿</a>，它要你填“该校学生到校时的<b>实际时间</b>”。</p>
+<p>注意：这一页特别写了“本簿时间一律以传达室挂钟为准”。所以登记簿上的 17:00 是挂钟读数，换算成实际时间是 17:07。</p>
+<div class="big">密码：<b>1707</b></div>
+
+<h4>5-3　那一行</h4>
+<p>进 <a href="map_guard_view.html">登记簿正文</a>，找到 2003-11-17：</p>
+<div class="mono">2003-11-17　<b>17:00</b>　学生一名，初三（七）班　回教室取物　<b>19:05</b>　聂</div>
+<p>换算成实际时间：<b>17:07 进校，19:12 离校</b>，在学校待了两小时零五分钟。</p>
+<p>再读下面“本页备注”：姓名栏原有两字，<b>被蓝黑墨水涂改，纸面有明显刮痕</b>，涂改处下方还辨得出一个“沈”字。</p>
+
+<h3>第六幕　把名字拼出来（约 10 分钟）</h3>
+<p>全站正文里<b>从来没有出现过</b>这个名字。它被拆成两半，分别藏在两份材料里。</p>
+
+<table>
+<tr><th width="70">部分</th><th width="200">从哪来</th><th>原文</th></tr>
+<tr><td><b>姓</b></td><td><a href="archive_jd.html">借读材料</a></td><td>“姓名：<b>沈</b>□（原件此处破损，第二字不可辨）”</td></tr>
+<tr><td><b>名</b></td><td><code>03.txt</code></td><td>“他的名字里有一个‘冬’字……他来的那天下了雪”<br>（<code>03.txt</code> 开头第一句也直接写了：“二〇〇二年九月，<b>沈冬</b>到我校借读。”）</td></tr>
+</table>
+
+<div class="warn"><b>干扰项，别上当：</b><br>
+① <b>沈亮</b>（座号 05）是<b>正式生</b>，有学号 030705，有成绩 605 分。纪念册里他自己写着“我姓沈，班里还有一个姓沈的，老师总喊错”。<br>
+② <b>xiaodong</b> 是留言板昵称（2002 旧档 2 条、2004 待审核 1 条），不是全名。<br>
+③ 合影里 43 个人，但正文从不点名第 43 位是谁。</div>
+
+<div class="big">姓名：<b>沈 冬</b></div>
+
+<h3>第七幕　结案（约 5 分钟）</h3>
+<p>打开 <a href="report.html">结案报告</a>，四问一次填完：</p>
+<table>
+<tr><th width="90">问题</th><th width="200">填什么</th><th>为什么</th></tr>
+<tr><td>一、姓名</td><td><b>沈冬</b></td><td>姓来自借读材料，名来自 03.txt。答“沈小冬”也认。</td></tr>
+<tr><td>二、位置</td><td><b>后排右起第三</b></td><td>座位表加座说明 + 相册②“后排右起第三位被国旗挡住半张脸”。</td></tr>
+<tr><td>三、当晚</td><td><b>回来过，登记簿上有记录</b></td><td>2003-11-17 那一行。</td></tr>
+<tr><td>四、挂钟时间</td><td><b>17:00</b></td><td><b>坑在这里</b>：第四问要的是“挂钟上显示的时间”，不是实际时间。实际 17:07，挂钟 17:00。填 17:07 会拿不到隐藏结局。</td></tr>
+</table>
+<p>前三问全对 → 结案通过，出现 A、B 两个结局入口。<br>
+第四问也对 → <b>多出第三个选项 C</b>。</p>
+
+<h2>三、三个结局</h2>
+
+<table>
+<tr><th width="110">结局</th><th width="230">条件</th><th>看什么</th></tr>
+<tr><td><a href="ending_a.html">A 归档</a></td><td>随时可走。答错姓名也能走（会变成“姓名栏空白”版本）。</td>
+<td>官方口径的真相：教学点、撤并、借读、伪造、43 的来历。沈冬的去向写成一行公文：“未参加考试，材料由其父取回。”<br>
+最后你被登记为<b>第 4 任维护志愿者</b>，回到首页，计数器还是 0043，待办还是 1 条。</td></tr>
+<tr><td><a href="ending_b.html">B 补录</a></td><td>姓名答对。</td>
+<td>你把名字写回三张表。系统接受了。2005 年二中发来通知：42 人复核、周明远被谈话、沈冬依然没有出现。<br>
+（证据 <code>03.txt</code> 开头就写着沈冬，但他本人从没在名单上出现过。）<br>
+结尾一句：“你补上的是一行字。不是一个人。”</td></tr>
+<tr><td><a href="ending_c.html">C 未完成（隐藏）</a></td><td>四问全对。</td>
+<td>全作唯一给出完整答案的地方：那两小时、03.txt 全文、0 字节的 43 号页、2004-07-05 那条<b>永远卡在审核队列里</b>的留言、
+2019 年同 IP 的自问自答、2023 年“在东莞见过他，他开了个修车铺，他说网站别关”。<br>
+结尾：待办 #1 状态改为“<b>保留</b>”。这是本站唯一一次，系统没有把什么东西归档。</td></tr>
+</table>
+
+<div class="tip"><b>一句话剧情（终极剧透）：</b>2003 年 11 月 17 日撤并通知下达那天，借读生沈冬放学后又回到学校，
+在办公室从 17:07 坐到 19:12，等班主任周明远替他把学籍办好。周明远没办成。第二天起，他开始在网站上
+伪造“沈冬在场”的证据——43 人参加运动会、43 个考场座位、43 条纪念册留言、43 人参加中考。
+2004 年 4 月报名失败，6 月缺考，7 月 2 日父亲把材料取走，7 月 5 日沈冬在网站留了一条“我不考了，我爸回来了，下礼拜走”
+——这条留言<b>从未被审核通过</b>，在队列里躺了二十年。周明远在停更那天删掉了 <code>class07_43.html</code>，
+只留下一个 0 字节的空文件。沈冬后来去了东莞，开了个修车铺，托人带话说：网站别关。</div>
+
+<h2>四、彩蛋与隐藏细节清单</h2>
+<table>
+<tr><th width="30">#</th><th width="170">在哪</th><th>是什么</th></tr>
+<tr><td>1</td><td>每一页右上角</td><td>“您是第 0043 位访问者”。刷新不变，永远 43。</td></tr>
+<tr><td>2</td><td>每一页页脚</td><td>最后更新时间永远停在 <b>2004 年 11 月 17 日 17:07</b>。</td></tr>
+<tr><td>3</td><td>首页 <kbd>Ctrl+U</kbd> 看源码</td><td>三段真实 HTML 注释：“不要在首页写他的名字。检查首先看首页。”<br>“计数器坏了，一直是这个数。别修。”<br>“2004-11-17 17:07 全站备份完成。”</td></tr>
+<tr><td>4</td><td><a href="robots.txt">robots.txt</a></td><td>2004 年的校园站不该有这个文件。里面有 <code>Disallow: /teacher/zhou/</code> —— 这个目录本季从未存在过。</td></tr>
+<tr><td>5</td><td><a href="404.html">404 页</a></td><td>“最近被访问的页面”里列着 <code>/class07_43.html</code>、<code>/bak/20041117/README.txt</code>、<code>/bak/20050530/</code>。最后那条是 2004 年之后才被请求的。</td></tr>
+<tr><td>6</td><td><a href="bak_index.html">/bak/ 目录</a></td><td>403 页面下面写着：<code>/bak/20050530/</code> 存在但请求返回 404。</td></tr>
+<tr><td>7</td><td><code>01.txt</code> 第 32 行</td><td><code>class07_43.html　ok　0</code>。整部作品最重要的一个字节数。</td></tr>
+<tr><td>8</td><td><a href="guestbook.html">留言板</a> 1742</td><td>“本留言暂不显示。” 去<a href="v_guestbook.html">原始档</a>看原文：“老师，我们班的名单是不是少一个人？点名册最后一行是空的。”<br>屏蔽时间 2004-06-18 20:40，操作人 webmaster_13，<b>未填写理由</b>。</td></tr>
+<tr><td>9</td><td>留言板 1781 / 1782</td><td>2019-11-17 17:07，“老师，明天还上课吗”与回复“上。”<b>同一分钟、同一 IP</b>。而<a href="admin_log.html">维护日志</a>显示 2019 年那一天<b>没有任何登录记录</b>。<br>——那是周明远自己问、自己答。</td></tr>
+<tr><td>10</td><td>留言板 1749</td><td>“材料已取回。孩子不念了，谢谢老师这三年。” 2004-07-03。<b>答案就摆在留言板第 30 条</b>，只是没人读到这里。<br>它的审核状态是“不显示”，直到 2004-11-17 17:05（关站前两分钟）才被改成“通过”。</td></tr>
+<tr><td>11</td><td><a href="admin_pending.html">待审核留言</a></td><td>2004-07-05 09:41，昵称 <code>xiaodong</code>：“老师，我不考了。我爸回来了，下礼拜走。网站以后还开着吗。” 状态永远是“未审核”。</td></tr>
+<tr><td>12</td><td><a href="admin_log.html">维护日志</a></td><td>最后一行没有时间戳：“2004-11-17 17:07 至今　webmaster_13　该账号未退出登录。会话仍处于打开状态。”</td></tr>
+<tr><td>13</td><td>维护日志 2009-06-02</td><td>账号 <code>user_43</code> 密码错三次。<b>该账号不存在。</b>—— 第二季的钩子。</td></tr>
+<tr><td>14</td><td>维护日志 2005-12-20</td><td>“老师调走了。网站先留着吧。”</td></tr>
+<tr><td>15</td><td><a href="history.html">沿革</a> 登记表</td><td>01—13 号，第 <b>14</b> 号整行空白、被划去、未注明原因，此后历年登记表都没再出现过 14 号。</td></tr>
+<tr><td>16</td><td><a href="class07_score.html">成绩单</a></td><td>42 条，没有第 43 行。制表备注：“座号 43 在成绩库中无记录。导出时未作补充。”</td></tr>
+<tr><td>17</td><td><a href="xkan_4_draft.html">未刊稿</a> 说明</td><td>“第 1 页右上角有一行更小的字，被橡皮擦过，仍可辨认为：<b>别写我</b>。”</td></tr>
+<tr><td>18</td><td><a href="class07_alumni.html">纪念册</a></td><td>43 条里第 21 条姓名空白；第 28 条高翔写“老师，旗子后面那个人我认识”。</td></tr>
+<tr><td>19</td><td><a href="works_w02.html">《我的妈妈》</a></td><td>“我妈在东莞。”——在结局之前 20 分钟就埋下了的答案。</td></tr>
+<tr><td>20</td><td><a href="tools.html">整理工具</a></td><td>点“清除本机记录”会清进度；进度码可以跨电脑带走。</td></tr>
+</table>
+
+<h2>五、给作者的说明（第二季怎么接）</h2>
+
+<h3>5-1　结构</h3>
+<div class="mono">thirteenth_school_arg/
+|-- index.html            入口（现代版）
+|-- style.css             版式（CSS 2.1，IE6 通用）
+|-- extra.css             现代版增强（IE6 不加载）
+|-- lh.js                 全部脚本（ES3 写法，两套版本共用一份）
+|-- 攻略.html             本文件（发布时可以删除）
+|-- README.txt
+|-- images/               校徽、分隔线、NEW 图标（GIF，程序生成）
+|-- bak/20041117/         README.txt / 01.txt / 02.txt / 03.txt（真实文件）
+|-- robots.txt
+`-- ie6/                   IE6 兼容版（同一套页面，HTML 4.01 + ie6.css）</div>
+<p>所有页面都是<b>构建出来的静态文件</b>，源码在 <code>src/</code>：
+<code>src/data-*.mjs</code> 放内容，<code>src/build.mjs</code> 渲染，
+<code>node src/build.mjs</code> 一次生成两套版本（<code>out/</code> 与 <code>out/ie6/</code>）。
+改内容只需要改 <code>data-*.mjs</code>，两套版本自动同步。</p>
+
+<h3>5-2　伏笔登记（第二季可直接取用）</h3>
+<table>
+<tr><th width="180">伏笔</th><th>可以怎么用</th></tr>
+<tr><td>教学点编号 01—14</td><td>13 号是本季。第 14 号登记表整行空白，被划掉且没有原因。<b>第二季：14 号。</b></td></tr>
+<tr><td><code>user_43</code></td><td>2009 年三次输错密码，账号不存在。它知道密码规则（日期），但不知道年份是哪一年。</td></tr>
+<tr><td><code>/bak/20050530/</code></td><td>目录存在、无内容、返回 404。是谁在 2005 年建了它？</td></tr>
+<tr><td><code>linhe</code></td><td>2023 年登录、续费、留了一句“在东莞见过他”。身份未说明（只留下一个“罗”字口气）。</td></tr>
+<tr><td><code>/teacher/zhou/</code></td><td>robots.txt 里的路径，从来没存在过。可能是被删掉的教师个人页。</td></tr>
+<tr><td>北侧车间</td><td>2003-09-15 停用，围线一直没拆。相册⑥ 2004-09 还看得见。</td></tr>
+<tr><td>周明远本人</td><td>2005 年调走，此后只以“未退出的会话”形式存在。他是否还活着，本季没有写。</td></tr>
+</table>
+
+<h3>5-3　设计约束（写第二季时请继续遵守）</h3>
+<ul>
+<li><b>不出现</b>跳脸、鬼影、音效惊吓、血、突然弹窗、黑屏红字。恐怖只能来自“两份材料对不上”。</li>
+<li>每个答案必须<b>能从站内文字推出</b>，不需要外部搜索、不需要懂代码、不需要图片和声音。</li>
+<li>每一条线索至少<b>两条独立路径</b>可达（例如姓名既在 03.txt，也能从借读材料 + 留言昵称拼出来）。</li>
+<li>允许矛盾，不解释矛盾。玩家把矛盾抄下来，就是玩法本身。</li>
+<li>结尾必须给答案。<b>可以给得晚，不能不给。</b>（这一条是作者本人加的。）</li>
+</ul>
+
+<hr>
+<p class="small">《临河十三中：本站暂不开放》第一季　攻略<br>
+本作人物、学校、地名均为虚构。文中所有公文、表格、编号均为叙事道具，不对应任何真实机构。</p>
+
+</div>
+<div class="ft">攻略文件 · 建议在通关后再看 · 看完请勿剧透给下一个玩的人</div>
+
+</div>
+</body>
+</html>
