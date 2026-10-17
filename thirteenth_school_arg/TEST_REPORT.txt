@@ -1,0 +1,9 @@
+第一版静态/启动测试记录
+======================
+- node --check game.js：通过（JavaScript 语法检查）。
+- Python HTMLParser：通过（index.html 可解析；未发现重复 id）。
+- 引用文件检查：index.html 引用的 style.css 与 game.js 均存在。
+- Node VM 启动冒烟测试：通过（模拟浏览器基础 DOM，首页成功渲染；日期线索存在；初始章节锁定状态正确；本地存档接口已初始化）。
+- Chromium headless 实测：当前运行环境启动超时，未能完成真实图形浏览器自动化测试；因此未将其记为通过。
+
+人工验收建议：解压后打开 index.html，按攻略逐章输入答案，并验证三条隐藏线索均收集后隐藏结局按钮出现。
