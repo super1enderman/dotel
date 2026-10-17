@@ -1,0 +1,16 @@
+# ============================================================
+# Cloudflare Workers 静态资源忽略清单（格式与 .gitignore 相同）
+#
+# Workers 构建时会把仓库根目录当作静态资源目录（assets.directory "."）
+# 整个上传，其中 .git 里的 pack 文件可能超过 25 MiB 单文件上限，
+# 导致部署报错：[ERROR] Asset too large.
+#
+# 文档：https://developers.cloudflare.com/workers/static-assets/binding/#ignoring-assets
+# ============================================================
+
+# Git 版本库元数据：不应作为网站资源公开，且其 pack 文件常超过 25 MiB
+.git
+
+# 依赖与 Wrangler 本地缓存
+node_modules
+.wrangler
