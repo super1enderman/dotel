@@ -52,11 +52,6 @@
 <tr><td>空间状态</td><td class="miss">已过期</td></tr>
 </table>
 
-<div class="side-t">档案整理进度</div>
-<p class="side-p">已查阅 <b id="seenCount">0</b> / 64 页</p>
-<p class="side-p small gray">进度保存在本机。清除浏览器数据会丢失。</p>
-<p class="side-p"><a href="jump.html">站内快速跳转</a></p>
-
 <div class="side-t">站内搜索</div>
 <form action="404.html" method="get" onsubmit="return true;">
 <p class="side-p"><input type="text" name="q" size="12" class="inp-mini" value="请输入关键字">
@@ -79,8 +74,8 @@
 <p class="warn">本报告提交后不可修改。请确认所有内容后一次性提交。</p>
 
 <div class="box "><div class="box-t">说明</div><div class="box-b">
-<p>本报告用于对本站遗留档案作出结论。结论将记入后台日志。</p>
-<p class="small">所有问题均可从本站资料中得出。答错可以重新提交，系统记录尝试次数。</p>
+<p>本报告用于对本站遗留档案作出结论，提交后记入后台日志。</p>
+<p class="small">姓名一栏如无法确定，可留空；留空者不予补录。</p>
 </div></div>
 
 <form action="report.html" method="get" onsubmit="return LH.report(this)">
@@ -105,7 +100,7 @@
 <tr><td class="fk" valign="top">四、时间</td>
 <td>若该同学回过学校，传达室<strong>挂钟上</strong>显示他进校的时间是几点？<br>
 <input type="text" name="q4" size="10" class="inp" autocomplete="off" placeholder="HH:MM">　
-<span class="small gray">（本项须先完成前三项）</span></td></tr>
+<span class="small gray">（可留空）</span></td></tr>
 
 <tr><td class="fk">&nbsp;</td><td>
 <input type="submit" value=" 提 交 结 案 报 告 " class="btn">
@@ -128,7 +123,7 @@
       <a class="bigbtn" href="ending_b.html" id="btnB">B　补录：把姓名写回学籍表第 43 行</a><br>
       <a class="bigbtn" href="ending_c.html" id="btnC" style="display:none">C　不补全：把待办留着</a>
     </p>
-    <p class="small gray" id="cHint">若你确信自己掌握了全部材料，第四项会打开另一条路。</p>
+    <p class="small gray" id="cHint">第四项与本报告其余各项一并归档。</p>
   </div></div>
 </div>
 
@@ -137,7 +132,6 @@
     <p>第一项未能确认。按现行规定，姓名无法确认的，不得补录。</p>
     <p>你可以按现状归档，或返回继续查阅资料。</p>
     <p><a class="bigbtn" href="ending_a.html">A　按现状归档（不再补录）</a></p>
-    <p class="small gray">提示：姓名由两部分组成，分别记录在两份不同的材料里。</p>
   </div></div>
 </div>
 
@@ -151,6 +145,10 @@
 <hr>
 <p class="small"><a href="archive.html">返回档案室</a>　|　<a href="index.html">返回首页</a></p>
 
+<div class="help" id="help-rep">
+  <a href="#" class="helplink" onclick="return LH.help('rep')">请求帮助</a>
+  <div id="helptext-rep"></div>
+</div>
     </td>
   </tr></table>
 </td></tr>
@@ -158,7 +156,7 @@
 <tr><td class="footer">
   <div>临河县第二中学附设教学点（编号 13）　版权所有　© 2001-2004　保留所有权利</div>
   <div>本站由 Microsoft FrontPage 2000 制作　|　建议 Internet Explorer 5.0 以上　|　最佳浏览分辨率 800×600</div>
-  <div>最后更新时间：2004 年 11 月 17 日 17:07　|　管理员：webmaster_13　|　<a href="index.html">返回首页</a>　<a href="toc.html">站点地图</a>　<a href="tools.html">整理工具</a>　|　<a href="../index.html">标准版</a></div>
+  <div>最后更新时间：2004 年 11 月 17 日 17:07　|　管理员：webmaster_13　|　<a href="index.html">返回首页</a>　<a href="toc.html">站点地图</a>　<a href="tools.html">整理工具</a>　<a href="#" onclick="return LH.reset()">清除本机记录</a>　|　<a href="../index.html">标准版</a></div>
   <div class="ie6note">本页为 IE6 兼容版：HTML 4.01、不使用 CSS3 与新版脚本属性。</div>
 </td></tr>
 

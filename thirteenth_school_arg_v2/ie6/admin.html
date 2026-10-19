@@ -52,11 +52,6 @@
 <tr><td>空间状态</td><td class="miss">已过期</td></tr>
 </table>
 
-<div class="side-t">档案整理进度</div>
-<p class="side-p">已查阅 <b id="seenCount">0</b> / 64 页</p>
-<p class="side-p small gray">进度保存在本机。清除浏览器数据会丢失。</p>
-<p class="side-p"><a href="jump.html">站内快速跳转</a></p>
-
 <div class="side-t">站内搜索</div>
 <form action="404.html" method="get" onsubmit="return true;">
 <p class="side-p"><input type="text" name="q" size="12" class="inp-mini" value="请输入关键字">
@@ -77,12 +72,12 @@
 <div class="gate">
   <div class="gate-t">本页为网站维护后台，仅限管理员使用。</div>
   <form action="admin_panel.html" method="get" onsubmit="return LH.gate(this,'p2')" data-next="admin_panel.html">
-    <p>请输入本站停止更新的日期（YYYYMMDD）：</p>
+    <p>管理密码：</p>
     <p><input type="text" name="pw" size="14" class="inp" autocomplete="off">
        <input type="submit" value=" 确 定 " class="btn"></p>
   </form>
   <div id="err-p2" class="err" style="display:none"></div>
-  <p class="small gray">本站每一页的页脚都写着“最后更新时间”。</p>
+  <p class="small gray">密码由管理员自行保管，本站不提供找回。</p>
 </div>
 
 <h1>维护后台登录</h1>
@@ -100,11 +95,14 @@
 </div></div>
 
 <div class="box "><div class="box-t">安全提示</div><div class="box-b">
-<p class="small">密码提示：本站停止更新的日期，八位数字。<br>
-（管理员备注：密码按日期设定，好记。不写在本页。）</p>
-<p class="small gray">连续三次输入错误将暂时锁定账号。—— 本提示为 2002 年添加，后台并未实现锁定功能。</p>
+<p class="small">后台不设多用户，亦不记录明文密码。连续三次输入错误将暂时锁定账号。</p>
+<p class="small gray">—— 本提示为 2002 年添加，后台并未实现锁定功能。</p>
 </div></div>
 
+<div class="help" id="help-p2">
+  <a href="#" class="helplink" onclick="return LH.help('p2')">请求帮助</a>
+  <div id="helptext-p2"></div>
+</div>
     </td>
   </tr></table>
 </td></tr>
@@ -112,7 +110,7 @@
 <tr><td class="footer">
   <div>临河县第二中学附设教学点（编号 13）　版权所有　© 2001-2004　保留所有权利</div>
   <div>本站由 Microsoft FrontPage 2000 制作　|　建议 Internet Explorer 5.0 以上　|　最佳浏览分辨率 800×600</div>
-  <div>最后更新时间：2004 年 11 月 17 日 17:07　|　管理员：webmaster_13　|　<a href="index.html">返回首页</a>　<a href="toc.html">站点地图</a>　<a href="tools.html">整理工具</a>　|　<a href="../index.html">标准版</a></div>
+  <div>最后更新时间：2004 年 11 月 17 日 17:07　|　管理员：webmaster_13　|　<a href="index.html">返回首页</a>　<a href="toc.html">站点地图</a>　<a href="tools.html">整理工具</a>　<a href="#" onclick="return LH.reset()">清除本机记录</a>　|　<a href="../index.html">标准版</a></div>
   <div class="ie6note">本页为 IE6 兼容版：HTML 4.01、不使用 CSS3 与新版脚本属性。</div>
 </td></tr>
 
