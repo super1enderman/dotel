@@ -17,6 +17,100 @@ LH.MSG = {
   p7: '时间不正确。请先确认挂钟与实际时间的差别。'
 };
 
+/* ─────────────── 卡关求助（三条，逐条放出） ───────────────
+   第三条里用 %%…%% 包住的部分是答案：先不显示，
+   旁边给一个“点击显示答案（这将显示答案！）”的开关，点了才出现。 */
+LH.HELP = {
+  p1: [
+    '密码规则是建站那天定下的，写在本站某一页的维护记录里。',
+    '规则是：班号（两位）+ 建站年份（后两位）。班号在首页公告里有，建站年份在首页第一段。',
+    '初三（七）班 → 07；本站建于 2001 年 → 01。合起来是：%%0701%%'
+  ],
+  p2: [
+    '管理员备注说过：密码按日期设定，八位数字。',
+    '本站只有一个日期是反反复复出现的，就在每一页的最下面。',
+    '页脚写着“最后更新时间：2004 年 11 月 17 日”。八位数字是：%%20041117%%'
+  ],
+  p7: [
+    '口令是一个时间，4 位数字，24 小时制。',
+    '那天他是放学以后回学校的。冬季放学的钟点，公告里写过。',
+    '放 学 17:00。挂钟慢七分钟——挂钟显示 17:00 时，实际已是 17:07。口令是：%%1707%%'
+  ],
+  b64: [
+    '那串字母数字不是乱码，是一种编码。',
+    '本站有解码工具，在页脚的“整理工具”里。',
+    '复制到“编码转换（Base64）”，点“← 解码”。解码结果是：%%你找不到的东西在 /bak/20041117/%%'
+  ],
+  rep: [
+    '第一问要两个字。姓在档案室，名在备份文件里。',
+    '借读材料上写着“沈□”；备份目录 03.txt 里说名字里有个“冬”。别和座号 05 的沈亮弄混。',
+    '姓名：%%沈冬%%　　位置：%%后排右起第三%%　　当晚：%%回来过（登记簿上有）%%　　第四问要的是挂钟读数：%%17:00%%（不是 17:07）'
+  ]
+};
+LH._hints = {};
+
+/* 把一条提示里的 %%答案%% 转成「点开才显示」 */
+LH.markAnswer = function (key, raw) {
+  var segs = String(raw).split('%%');
+  var out = '', i, opened = false;
+  if (segs.length < 2) { return raw; }
+  for (i = 0; i < segs.length; i++) {
+    if (i % 2 === 0) {
+      out += segs[i];
+    } else {
+      if (!opened) {
+        out += '<span class="anslink"><a href="#" onclick="return LH.reveal(\'' + key + '\')">'
+          + '［点击显示答案］</a> <span class="ansnote">（这将显示答案！）</span></span>';
+        opened = true;
+      }
+      out += '<span class="ans">' + segs[i] + '</span>';
+    }
+  }
+  return out;
+};
+
+/* 点一下，把这条提示里所有答案一起放出来 */
+LH.reveal = function (key) {
+  var box = LH.el('helptext-' + key), spans, i, c;
+  if (!box) { return false; }
+  spans = box.getElementsByTagName('span');
+  for (i = 0; i < spans.length; i++) {
+    c = spans[i].className || '';
+    if (c === 'ans') { spans[i].style.display = 'inline'; spans[i].className = 'ans on'; }
+    else if (c === 'anslink') { spans[i].style.display = 'none'; }
+  }
+  return false;
+};
+
+LH.help = function (key) {
+  var list = LH.HELP[key] || [];
+  var box = LH.el('helptext-' + key);
+  var wrap = LH.el('help-' + key);
+  var link = wrap ? wrap.getElementsByTagName('a')[0] : null;
+  var n = LH._hints[key] || 0;
+  var p;
+  if (!box || n >= list.length) { return false; }
+
+  p = document.createElement('p');
+  p.className = 'helpline';
+  p.innerHTML = '<b>提示 ' + (n + 1) + '：</b>' + LH.markAnswer(key, list[n]);
+  box.appendChild(p);
+
+  n++;
+  LH._hints[key] = n;
+
+  if (link) {
+    if (n >= list.length) {
+      link.innerHTML = '没有更多提示了';
+      link.className = 'helplink off';
+      link.onclick = function () { return false; };
+    } else {
+      link.innerHTML = (n === 1) ? '再看一条' : '最后一条提示';
+    }
+  }
+  return false;
+};
+
 /* ─────────────── 基础工具 ─────────────── */
 LH.isArray = function (o) { return Object.prototype.toString.call(o) === '[object Array]'; };
 
@@ -388,20 +482,21 @@ LH.importCode = function () {
   if (!ta || !ta.value) { return; }
   s = LH.b64dec(ta.value);
   parts = s.split('|');
-  if (parts[0] !== 'LH13') { alert('进度码无法识别。'); return; }
+  if (parts[0] !== 'LH13') { alert('工作记录无法识别。'); return; }
   var o = LH.load();
   o.seen = parts[1] || '';
   o.gates = parts[2] || '';
   o.tries = parseInt(parts[3], 10) || 0;
   LH.save(o);
-  alert('进度已导入。已查阅 ' + (o.seen ? o.seen.split(',').length : 0) + ' 页。');
+  alert('已导入。已查阅 ' + (o.seen ? o.seen.split(',').length : 0) + ' 页。');
   location.reload();
 };
 
 LH.reset = function () {
-  if (!confirm('确定清除本机保存的查阅记录吗？')) { return; }
+  if (!confirm('清除本机保存的查阅记录？清除后将回到首页，从头开始。')) { return false; }
   LH._mem = { seen: '', tries: 0, gates: '' };
   try { window.localStorage.removeItem(LH.KEY); } catch (e) { }
   document.cookie = LH.KEY + '=;path=/;expires=Thu, 1 Jan 1970 00:00:00 GMT';
-  location.reload();
+  location.href = 'index.html';
+  return false;
 };
